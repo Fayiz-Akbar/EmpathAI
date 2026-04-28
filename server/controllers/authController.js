@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // Fungsi Register
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.req.body || req.body;
+    const { name, email, password } = req.body;
 
     // Cek apakah email sudah terdaftar
     const existingUser = await User.findOne({ email });
