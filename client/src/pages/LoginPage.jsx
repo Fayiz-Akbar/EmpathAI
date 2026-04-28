@@ -162,7 +162,7 @@ const LoginPage = () => {
         <div className="flex justify-end">
           <button
             type="button"
-            className="text-sm font-medium text-[#8FA697] transition-colors duration-200 cursor-pointer hover:text-[#7A9182]"
+            className="text-sm text-[#64748B] hover:text-[#4A5568] font-medium"
           >
             Lupa password?
           </button>

@@ -23,7 +23,7 @@ const AuthInput = ({
     <div className="flex flex-col gap-1.5 min-w-full">
       <label
         htmlFor={id}
-        className="text-sm font-medium text-[#94A3B8]"
+        className="block text-sm font-medium text-[#94A3B8] mb-1"
       >
         {label}
         {required && <span className="ml-0.5 text-red-500">*</span>}
@@ -39,9 +39,7 @@ const AuthInput = ({
           placeholder={placeholder}
           required={required}
           autoComplete={autoComplete}
-          className={`w-full px-4 py-3 text-sm rounded-xl border bg-transparent transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-[#8FA697] focus:border-[#8FA697] placeholder-[#94A3B8] text-[#4A5568] ${
-            error ? 'border-red-500' : 'border-gray-200'
-          }`}
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8FA697] text-[#4A5568] bg-transparent"
           style={{
             paddingRight: isPasswordField ? '48px' : '16px',
           }}
