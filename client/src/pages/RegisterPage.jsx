@@ -47,27 +47,27 @@ const RegisterPage = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Nama lengkap wajib diisi';
+      newErrors.name = 'Full name is required';
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Nama minimal 2 karakter';
+      newErrors.name = 'Name must be at least 2 characters';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email wajib diisi';
+      newErrors.email = 'Email address is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Format email tidak valid';
+      newErrors.email = 'Invalid email format';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password wajib diisi';
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password minimal 6 karakter';
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Konfirmasi password wajib diisi';
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Password tidak cocok';
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -94,7 +94,7 @@ const RegisterPage = () => {
 
       setApiMessage({
         type: 'success',
-        text: data.message || 'Registrasi berhasil! Mengalihkan ke halaman login...',
+        text: data.message || 'Registration successful! Redirecting to log in...',
       });
 
       // Redirect to login after a short delay for success feedback
@@ -103,7 +103,7 @@ const RegisterPage = () => {
       }, 1500);
     } catch (error) {
       const message =
-        error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.';
+        error.response?.data?.message || 'An error occurred. Please try again.';
       setApiMessage({ type: 'error', text: message });
     } finally {
       setIsLoading(false);
@@ -112,10 +112,10 @@ const RegisterPage = () => {
 
   return (
     <AuthLayout
-      title="Buat Akun Baru"
-      subtitle="Mulai perjalanan menuju kesehatan mental yang lebih baik"
-      footerText="Sudah punya akun?"
-      footerLinkText="Masuk di sini"
+      title="EmpathAI"
+      subtitle="Start your journey to better well-being."
+      footerText="Already have an account?"
+      footerLinkText="Log in"
       footerLinkTo="/login"
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
@@ -147,29 +147,27 @@ const RegisterPage = () => {
         {/* Full Name Field */}
         <AuthInput
           id="name"
-          label="Nama Lengkap"
+          label="Full Name"
           type="text"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Masukkan nama lengkap"
+          placeholder="e.g. Jane Doe"
           error={errors.name}
           required
           autoComplete="name"
-          animationDelay="delay-100"
         />
 
         {/* Email Field */}
         <AuthInput
           id="email"
-          label="Email"
+          label="Email Address"
           type="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="contoh@email.com"
+          placeholder="you@example.com"
           error={errors.email}
           required
           autoComplete="email"
-          animationDelay="delay-200"
         />
 
         {/* Password Field */}
@@ -179,37 +177,38 @@ const RegisterPage = () => {
           type="password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="Minimal 6 karakter"
+          placeholder="Create a password"
           error={errors.password}
           required
           autoComplete="new-password"
-          animationDelay="delay-300"
         />
 
         {/* Confirm Password Field */}
         <AuthInput
           id="confirmPassword"
-          label="Konfirmasi Password"
+          label="Confirm Password"
           type="password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          placeholder="Ulangi password"
+          placeholder="Confirm your password"
           error={errors.confirmPassword}
           required
           autoComplete="new-password"
-          animationDelay="delay-400"
         />
 
         {/* Submit Button */}
-        <div className="mt-1">
-          <AuthButton
-            id="register-button"
-            type="submit"
-            isLoading={isLoading}
-          >
-            Buat Akun
-          </AuthButton>
-        </div>
+        <AuthButton
+          id="register-button"
+          type="submit"
+          isLoading={isLoading}
+        >
+          Create Account
+        </AuthButton>
+
+        {/* Terms of Service text */}
+        <p className="text-xs text-center text-[#94A3B8] mt-2 px-4 leading-relaxed">
+          By creating an account, you agree to our Terms of Service and Privacy Policy.
+        </p>
       </form>
     </AuthLayout>
   );

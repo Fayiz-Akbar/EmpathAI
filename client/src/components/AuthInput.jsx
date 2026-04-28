@@ -20,14 +20,15 @@ const AuthInput = ({
   };
 
   return (
-    <div className="flex flex-col gap-1.5 min-w-full">
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-[#94A3B8] mb-1"
-      >
-        {label}
-        {required && <span className="ml-0.5 text-red-500">*</span>}
-      </label>
+    <div className="flex flex-col min-w-full">
+      {label && (
+        <label
+          htmlFor={id}
+          className="block text-sm font-medium text-[#64748B] mb-2"
+        >
+          {label}
+        </label>
+      )}
 
       <div className="relative">
         <input

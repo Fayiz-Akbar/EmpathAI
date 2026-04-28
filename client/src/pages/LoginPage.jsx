@@ -45,15 +45,15 @@ const LoginPage = () => {
     const newErrors = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email wajib diisi';
+      newErrors.email = 'Email address is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Format email tidak valid';
+      newErrors.email = 'Invalid email format';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password wajib diisi';
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password minimal 6 karakter';
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     setErrors(newErrors);
@@ -81,7 +81,7 @@ const LoginPage = () => {
       localStorage.setItem('empathAI_token', data.token);
       localStorage.setItem('empathAI_user', JSON.stringify(data.user));
 
-      setApiMessage({ type: 'success', text: data.message || 'Login berhasil!' });
+      setApiMessage({ type: 'success', text: data.message || 'Log in successful!' });
 
       // Brief delay so user sees success feedback before redirect
       setTimeout(() => {
@@ -89,7 +89,7 @@ const LoginPage = () => {
       }, 800);
     } catch (error) {
       const message =
-        error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.';
+        error.response?.data?.message || 'An error occurred. Please try again.';
       setApiMessage({ type: 'error', text: message });
     } finally {
       setIsLoading(false);
@@ -98,10 +98,10 @@ const LoginPage = () => {
 
   return (
     <AuthLayout
-      title="Selamat Datang Kembali"
-      subtitle="Masuk ke akunmu untuk melanjutkan percakapan"
-      footerText="Belum punya akun?"
-      footerLinkText="Daftar sekarang"
+      title="Welcome to EmpathAI"
+      subtitle="Your safe space for mental well-being."
+      footerText="Don't have an account?"
+      footerLinkText="Sign up"
       footerLinkTo="/register"
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
@@ -133,38 +133,34 @@ const LoginPage = () => {
         {/* Email Field */}
         <AuthInput
           id="email"
-          label="Email"
           type="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="contoh@email.com"
+          placeholder="Email address"
           error={errors.email}
           required
           autoComplete="email"
-          animationDelay="delay-200"
         />
 
         {/* Password Field */}
         <AuthInput
           id="password"
-          label="Password"
           type="password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="Masukkan password"
+          placeholder="Password"
           error={errors.password}
           required
           autoComplete="current-password"
-          animationDelay="delay-300"
         />
 
         {/* Forgot Password Link */}
         <div className="flex justify-end">
           <button
             type="button"
-            className="text-sm text-[#64748B] hover:text-[#4A5568] font-medium"
+            className="text-sm text-[#94A3B8] hover:text-[#4A5568]"
           >
-            Lupa password?
+            Forgot password?
           </button>
         </div>
 
@@ -174,8 +170,8 @@ const LoginPage = () => {
           type="submit"
           isLoading={isLoading}
         >
-          Masuk
-        </AuthButton>
+          Sign In
+        </AuthButton
       </form>
     </AuthLayout>
   );

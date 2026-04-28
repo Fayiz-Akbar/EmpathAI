@@ -12,13 +12,10 @@ const AuthLayout = ({
     <div className="min-h-screen w-full bg-[#FAF9F6] flex items-center justify-center p-4">
       <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-[#4A5568] text-center">
-            EmpathAI
-          </h1>
-          <h2 className="text-lg font-semibold mb-1 text-[#4A5568]">
+          <h1 className="text-2xl font-bold text-[#1E293B] text-center mb-2">
             {title}
-          </h2>
-          <p className="text-sm text-[#94A3B8] text-center mb-6">
+          </h1>
+          <p className="text-sm text-[#94A3B8] text-center">
             {subtitle}
           </p>
         </div>
