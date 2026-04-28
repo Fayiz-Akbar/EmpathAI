@@ -118,7 +118,7 @@ const RegisterPage = () => {
       footerLinkText="Log in"
       footerLinkTo="/login"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-[18px]">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4.5">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
@@ -206,7 +206,7 @@ const RegisterPage = () => {
         </AuthButton>
 
         {/* Terms of Service text */}
-        <p className="text-xs text-center text-[#94A3B8] mt-2 px-4 leading-relaxed">
+        <p className="text-xs text-center text-text-secondary mt-2 px-4 leading-relaxed">
           By creating an account, you agree to our Terms of Service and Privacy Policy.
         </p>
       </form>

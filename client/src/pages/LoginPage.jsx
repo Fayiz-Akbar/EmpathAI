@@ -100,12 +100,12 @@ const LoginPage = () => {
     <AuthLayout
       title="Welcome to EmpathAI"
       subtitle="Your safe space for mental well-being."
-      logo={<div className="w-[72px] h-[72px] bg-[#E2E8F0] rounded-full"></div>}
+      logo={<div className="w-18 h-18 bg-[#E2E8F0] rounded-full"></div>}
       footerText="Don't have an account?"
       footerLinkText="Sign up"
       footerLinkTo="/register"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-[18px]">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4.5">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
@@ -159,7 +159,7 @@ const LoginPage = () => {
         <div className="flex justify-end -mt-2 mb-2">
           <button
             type="button"
-            className="text-sm text-[#94A3B8] hover:text-[#4A5568] transition-colors"
+            className="text-sm text-text-secondary hover:text-text-primary transition-colors"
           >
             Forgot password?
           </button>

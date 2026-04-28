@@ -24,7 +24,7 @@ const AuthInput = ({
       {label && (
         <label
           htmlFor={id}
-          className="block text-sm font-medium text-[#64748B] mb-2"
+          className="block text-sm font-medium text-text-interactive mb-2"
         >
           {label}
         </label>
@@ -40,7 +40,7 @@ const AuthInput = ({
           placeholder={placeholder}
           required={required}
           autoComplete={autoComplete}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8FA697] text-[#4A5568] bg-transparent"
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary text-text-primary bg-transparent"
           style={{
             paddingRight: isPasswordField ? '48px' : '16px',
           }}
@@ -50,7 +50,7 @@ const AuthInput = ({
           <button
             type="button"
             onClick={handleTogglePassword}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg transition-colors duration-200 hover:bg-gray-100 focus:outline-none text-[#94A3B8]"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg transition-colors duration-200 hover:bg-gray-100 focus:outline-none text-text-secondary"
             tabIndex={-1}
             aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
           >

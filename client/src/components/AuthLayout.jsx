@@ -10,7 +10,7 @@ const AuthLayout = ({
   footerLinkTo = '/',
 }) => {
   return (
-    <div className="min-h-screen w-full bg-[#FAF9F6] flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen w-full bg-bg-main flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-[400px] bg-white rounded-[2.5rem] px-6 py-10 sm:p-10 shadow-sm mx-auto">
         
         {logo && (
@@ -23,7 +23,7 @@ const AuthLayout = ({
           <h1 className="text-2xl font-bold text-[#1E293B] mb-2">
             {title}
           </h1>
-          <p className="text-sm text-[#94A3B8]">
+          <p className="text-sm text-text-secondary">
              {subtitle}
           </p>
         </div>
@@ -31,11 +31,11 @@ const AuthLayout = ({
         {children}
 
         {footerText && footerLinkText && (
-          <p className="text-center text-[13px] mt-6 text-[#94A3B8]">
+          <p className="text-center text-[13px] mt-6 text-text-secondary">
             {footerText}{' '}
             <Link
               to={footerLinkTo}
-              className="font-bold text-[#64748B] hover:text-[#4A5568] ml-1"
+              className="font-bold text-text-interactive hover:text-text-primary ml-1"
             >
               {footerLinkText}
             </Link>
