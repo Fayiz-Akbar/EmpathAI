@@ -8,11 +8,11 @@ const chatMessageSchema = new mongoose.Schema({
   },
   message: { 
     type: String, 
-    required: true // Input dari user
+    required: true
   },
   response: { 
     type: String, 
-    required: true // Balasan dari model AI
+    required: true 
   },
   emotion: { 
     type: String, 
