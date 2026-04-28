@@ -11,9 +11,9 @@ const AuthButton = ({
 
   const getVariantClasses = () => {
     if (variant === 'primary') {
-      return 'bg-[#8FA697] text-white hover:bg-[#7a9182]';
+      return 'bg-[#8FA697] text-white hover:bg-[#7a9182] border border-transparent';
     }
-    return 'bg-transparent text-[#8FA697] border-2 border-[#8FA697] hover:bg-[#FAF9F6]';
+    return 'bg-transparent text-[#8FA697] border border-[#8FA697] hover:bg-[#FAF9F6]';
   };
 
   return (
@@ -23,9 +23,9 @@ const AuthButton = ({
       onClick={onClick}
       disabled={isDisabled}
       className={`
-        w-full py-3.5 px-6 text-sm font-semibold rounded-xl
+        w-full py-4 px-6 text-sm font-semibold rounded-full
         flex items-center justify-center gap-2
-        transition-all duration-200
+        transition-colors duration-200
         ${isDisabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}
         ${getVariantClasses()}
       `}

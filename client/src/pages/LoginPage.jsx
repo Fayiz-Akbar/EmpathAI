@@ -159,10 +159,10 @@ const LoginPage = () => {
         />
 
         {/* Forgot Password Link */}
-        <div className="flex justify-end -mt-1">
+        <div className="flex justify-end">
           <button
             type="button"
-            className="text-xs font-medium text-[#8FA697] transition-colors duration-200 cursor-pointer hover:underline underline-offset-2"
+            className="text-sm font-medium text-[#8FA697] transition-colors duration-200 cursor-pointer hover:text-[#7A9182]"
           >
             Lupa password?
           </button>
