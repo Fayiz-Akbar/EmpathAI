@@ -4,30 +4,38 @@ const AuthLayout = ({
   children,
   title,
   subtitle,
+  logo,
   footerText = '',
   footerLinkText = '',
   footerLinkTo = '/',
 }) => {
   return (
-    <div className="min-h-screen w-full bg-[#FAF9F6] flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-sm">
+    <div className="min-h-screen w-full bg-[#FAF9F6] flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-[400px] bg-white rounded-[2.5rem] px-6 py-10 sm:p-10 shadow-sm mx-auto">
+        
+        {logo && (
+          <div className="flex justify-center mb-6">
+            {logo}
+          </div>
+        )}
+
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-[#1E293B] text-center mb-2">
+          <h1 className="text-2xl font-bold text-[#1E293B] mb-2">
             {title}
           </h1>
-          <p className="text-sm text-[#94A3B8] text-center">
-            {subtitle}
+          <p className="text-sm text-[#94A3B8]">
+             {subtitle}
           </p>
         </div>
 
         {children}
 
         {footerText && footerLinkText && (
-          <p className="text-center text-sm mt-6 text-[#94A3B8]">
+          <p className="text-center text-[13px] mt-6 text-[#94A3B8]">
             {footerText}{' '}
             <Link
               to={footerLinkTo}
-              className="text-sm text-[#64748B] hover:text-[#4A5568] font-medium"
+              className="font-bold text-[#64748B] hover:text-[#4A5568] ml-1"
             >
               {footerLinkText}
             </Link>

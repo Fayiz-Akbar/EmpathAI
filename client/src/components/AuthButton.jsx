@@ -14,7 +14,7 @@ const AuthButton = ({
       type={type}
       onClick={onClick}
       disabled={isDisabled}
-      className={`w-full bg-[#8FA697] text-white font-semibold rounded-xl py-3 mt-4 hover:bg-[#7a8f81] transition-colors ${isDisabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`w-full bg-[#8FA697] text-white font-semibold rounded-full py-4 mt-2 hover:bg-[#7a8f81] transition-colors ${isDisabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       {isLoading && (
         <svg

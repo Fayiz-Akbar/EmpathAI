@@ -118,7 +118,7 @@ const RegisterPage = () => {
       footerLinkText="Log in"
       footerLinkTo="/login"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-[18px]">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
