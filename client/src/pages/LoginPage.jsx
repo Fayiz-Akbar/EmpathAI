@@ -171,7 +171,7 @@ const LoginPage = () => {
           isLoading={isLoading}
         >
           Sign In
-        </AuthButton
+        </AuthButton>
       </form>
     </AuthLayout>
   );
