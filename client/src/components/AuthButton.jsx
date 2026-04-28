@@ -1,15 +1,3 @@
-/**
- * AuthButton — A reusable, animated button component for authentication forms.
- *
- * @param {Object} props
- * @param {string} props.children - Button label text.
- * @param {string} [props.type] - Button type attribute (default: 'submit').
- * @param {boolean} [props.isLoading] - Whether the button is in a loading state.
- * @param {boolean} [props.disabled] - Whether the button is disabled.
- * @param {Function} [props.onClick] - Click handler callback.
- * @param {string} [props.variant] - Button variant: 'primary' or 'outline'.
- * @param {string} [props.id] - Unique identifier for testing.
- */
 const AuthButton = ({
   children,
   type = 'submit',
@@ -21,26 +9,12 @@ const AuthButton = ({
 }) => {
   const isDisabled = disabled || isLoading;
 
-  const baseStyles = {
-    fontFamily: 'var(--font-heading)',
-    borderRadius: 'var(--radius-button)',
-    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  const getVariantClasses = () => {
+    if (variant === 'primary') {
+      return 'bg-[#8FA697] text-white hover:bg-[#7a9182]';
+    }
+    return 'bg-transparent text-[#8FA697] border-2 border-[#8FA697] hover:bg-[#FAF9F6]';
   };
-
-  const variantStyles =
-    variant === 'primary'
-      ? {
-          backgroundColor: isDisabled ? 'var(--color-primary-light)' : 'var(--color-primary)',
-          color: '#FFFFFF',
-          border: 'none',
-          boxShadow: isDisabled ? 'none' : 'var(--shadow-button)',
-        }
-      : {
-          backgroundColor: 'transparent',
-          color: 'var(--color-primary)',
-          border: '1.5px solid var(--color-primary)',
-          boxShadow: 'none',
-        };
 
   return (
     <button
@@ -49,43 +23,13 @@ const AuthButton = ({
       onClick={onClick}
       disabled={isDisabled}
       className={`
-        w-full py-3.5 px-6 text-sm font-semibold
+        w-full py-3.5 px-6 text-sm font-semibold rounded-xl
         flex items-center justify-center gap-2
-        cursor-pointer
-        animate-fade-in-up opacity-0 delay-400
-        ${isDisabled ? 'cursor-not-allowed' : ''}
+        transition-all duration-200
+        ${isDisabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}
+        ${getVariantClasses()}
       `}
-      style={{ ...baseStyles, ...variantStyles }}
-      onMouseEnter={(e) => {
-        if (!isDisabled && variant === 'primary') {
-          e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
-          e.currentTarget.style.boxShadow = 'var(--shadow-button-hover)';
-          e.currentTarget.style.transform = 'translateY(-1px)';
-        } else if (!isDisabled && variant === 'outline') {
-          e.currentTarget.style.backgroundColor = 'var(--color-primary-subtle)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isDisabled && variant === 'primary') {
-          e.currentTarget.style.backgroundColor = 'var(--color-primary)';
-          e.currentTarget.style.boxShadow = 'var(--shadow-button)';
-          e.currentTarget.style.transform = 'translateY(0)';
-        } else if (!isDisabled && variant === 'outline') {
-          e.currentTarget.style.backgroundColor = 'transparent';
-        }
-      }}
-      onMouseDown={(e) => {
-        if (!isDisabled) {
-          e.currentTarget.style.transform = 'translateY(0) scale(0.98)';
-        }
-      }}
-      onMouseUp={(e) => {
-        if (!isDisabled) {
-          e.currentTarget.style.transform = 'translateY(-1px) scale(1)';
-        }
-      }}
     >
-      {/* Loading Spinner */}
       {isLoading && (
         <svg
           className="animate-spin"

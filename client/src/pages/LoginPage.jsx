@@ -108,18 +108,11 @@ const LoginPage = () => {
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
-            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in"
-            style={{
-              backgroundColor:
-                apiMessage.type === 'error'
-                  ? 'var(--color-error-bg)'
-                  : 'var(--color-success-bg)',
-              color:
-                apiMessage.type === 'error'
-                  ? 'var(--color-error)'
-                  : 'var(--color-success)',
-              borderRadius: 'var(--radius-input)',
-            }}
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm ${
+              apiMessage.type === 'error'
+                ? 'bg-red-50 text-red-500'
+                : 'bg-green-50 text-green-600'
+            }`}
           >
             {apiMessage.type === 'error' ? (
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -166,17 +159,10 @@ const LoginPage = () => {
         />
 
         {/* Forgot Password Link */}
-        <div className="flex justify-end -mt-1 animate-fade-in-up opacity-0 delay-300">
+        <div className="flex justify-end -mt-1">
           <button
             type="button"
-            className="text-xs font-medium transition-colors duration-200 cursor-pointer bg-transparent border-none"
-            style={{ color: 'var(--color-text-interactive)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--color-primary)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--color-text-interactive)';
-            }}
+            className="text-xs font-medium text-[#8FA697] transition-colors duration-200 cursor-pointer hover:underline underline-offset-2"
           >
             Lupa password?
           </button>
