@@ -112,17 +112,17 @@ const RegisterPage = () => {
 
   return (
     <AuthLayout
-      title="EmpathAI"
+      title="Create Account"
       subtitle="Start your journey to better well-being."
       footerText="Already have an account?"
       footerLinkText="Log in"
       footerLinkTo="/login"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4.5">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm ${
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in ${
               apiMessage.type === 'error'
                 ? 'bg-red-50 text-red-500'
                 : 'bg-green-50 text-green-600'
@@ -206,8 +206,11 @@ const RegisterPage = () => {
         </AuthButton>
 
         {/* Terms of Service text */}
-        <p className="text-xs text-center text-text-secondary mt-2 px-4 leading-relaxed">
-          By creating an account, you agree to our Terms of Service and Privacy Policy.
+        <p className="text-[11px] text-center text-gray-400 px-4 leading-relaxed">
+          By creating an account, you agree to our{' '}
+          <span className="text-[#8FA697] cursor-pointer hover:underline">Terms of Service</span>{' '}
+          and{' '}
+          <span className="text-[#8FA697] cursor-pointer hover:underline">Privacy Policy</span>.
         </p>
       </form>
     </AuthLayout>

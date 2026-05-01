@@ -85,7 +85,7 @@ const LoginPage = () => {
 
       // Brief delay so user sees success feedback before redirect
       setTimeout(() => {
-        navigate('/');
+        navigate('/chat');
       }, 800);
     } catch (error) {
       const message =
@@ -100,16 +100,15 @@ const LoginPage = () => {
     <AuthLayout
       title="Welcome to EmpathAI"
       subtitle="Your safe space for mental well-being."
-      logo={<div className="w-18 h-18 bg-[#E2E8F0] rounded-full"></div>}
       footerText="Don't have an account?"
       footerLinkText="Sign up"
       footerLinkTo="/register"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4.5">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm ${
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in ${
               apiMessage.type === 'error'
                 ? 'bg-red-50 text-red-500'
                 : 'bg-green-50 text-green-600'
@@ -134,10 +133,11 @@ const LoginPage = () => {
         {/* Email Field */}
         <AuthInput
           id="email"
+          label="Email"
           type="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Email address"
+          placeholder="you@example.com"
           error={errors.email}
           required
           autoComplete="email"
@@ -146,35 +146,34 @@ const LoginPage = () => {
         {/* Password Field */}
         <AuthInput
           id="password"
+          label="Password"
           type="password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="Password"
+          placeholder="Enter your password"
           error={errors.password}
           required
           autoComplete="current-password"
         />
 
         {/* Forgot Password Link */}
-        <div className="flex justify-end -mt-2 mb-2">
+        <div className="flex justify-end -mt-1">
           <button
             type="button"
-            className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            className="text-xs text-gray-400 hover:text-[#8FA697] transition-colors duration-200"
           >
             Forgot password?
           </button>
         </div>
 
         {/* Submit Button */}
-        <div className="mt-2">
-          <AuthButton
-            id="login-button"
-            type="submit"
-            isLoading={isLoading}
-          >
-            Sign In
-          </AuthButton>
-        </div>
+        <AuthButton
+          id="login-button"
+          type="submit"
+          isLoading={isLoading}
+        >
+          Sign In
+        </AuthButton>
       </form>
     </AuthLayout>
   );
