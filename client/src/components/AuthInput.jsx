@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 
 /**
  * AuthInput — Reusable text input for authentication forms.
- * Supports label, placeholder, password toggle, error messages,
- * and all standard input props.
  */
 const AuthInput = ({
   id,
-  label,
   type = 'text',
   value,
   onChange,
@@ -22,16 +19,7 @@ const AuthInput = ({
   const inputType = isPasswordField && showPassword ? 'text' : type;
 
   return (
-    <div className="flex flex-col gap-1.5 w-full">
-      {label && (
-        <label
-          htmlFor={id}
-          className="text-sm font-medium text-[#64748B]"
-        >
-          {label}
-        </label>
-      )}
-
+    <div className="flex flex-col w-full mb-3.5">
       <div className="relative">
         <input
           id={id}
@@ -43,14 +31,14 @@ const AuthInput = ({
           required={required}
           autoComplete={autoComplete}
           className={`
-            w-full px-4 py-3 rounded-xl border bg-[#F7F7F5]
-            text-[#4A5568] text-sm placeholder-gray-400
+            w-full px-5 py-3.5 rounded-2xl border bg-white
+            text-[#4A5568] text-[14px] placeholder-[#A0AAB2]
             transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-[#8FA697]/30 focus:border-[#8FA697] focus:bg-white
+            focus:outline-none focus:ring-1 focus:ring-[#8FA697] focus:border-[#8FA697]
             ${error ? 'border-red-300 bg-red-50/30' : 'border-gray-200'}
           `}
           style={{
-            paddingRight: isPasswordField ? '48px' : '16px',
+            paddingRight: isPasswordField ? '48px' : '20px',
           }}
         />
 
@@ -59,7 +47,7 @@ const AuthInput = ({
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg transition-colors duration-200 hover:bg-gray-100 focus:outline-none text-gray-400 hover:text-gray-600"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg transition-colors duration-200 hover:bg-gray-50 focus:outline-none text-gray-400 hover:text-gray-600"
             tabIndex={-1}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
@@ -82,7 +70,7 @@ const AuthInput = ({
 
       {/* Error message */}
       {error && (
-        <p className="text-xs text-red-500 flex items-center gap-1 mt-0.5">
+        <p className="text-[13px] text-red-500 flex items-center gap-1 mt-1 ml-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
@@ -97,7 +85,6 @@ const AuthInput = ({
 
 AuthInput.propTypes = {
   id: PropTypes.string.isRequired,
-  label: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,

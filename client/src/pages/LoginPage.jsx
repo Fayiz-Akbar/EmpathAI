@@ -103,8 +103,9 @@ const LoginPage = () => {
       footerText="Don't have an account?"
       footerLinkText="Sign up"
       footerLinkTo="/register"
+      topText="Login"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col w-full">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
@@ -133,11 +134,10 @@ const LoginPage = () => {
         {/* Email Field */}
         <AuthInput
           id="email"
-          label="Email"
           type="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="you@example.com"
+          placeholder="Email address"
           error={errors.email}
           required
           autoComplete="email"
@@ -146,21 +146,20 @@ const LoginPage = () => {
         {/* Password Field */}
         <AuthInput
           id="password"
-          label="Password"
           type="password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="Enter your password"
+          placeholder="Password"
           error={errors.password}
           required
           autoComplete="current-password"
         />
 
         {/* Forgot Password Link */}
-        <div className="flex justify-end -mt-1">
+        <div className="flex justify-end -mt-1.5 mb-6">
           <button
             type="button"
-            className="text-xs text-gray-400 hover:text-[#8FA697] transition-colors duration-200"
+            className="text-[12.5px] text-[#A0AAB2] hover:text-[#8FA697] transition-colors duration-200"
           >
             Forgot password?
           </button>

@@ -117,8 +117,9 @@ const RegisterPage = () => {
       footerText="Already have an account?"
       footerLinkText="Log in"
       footerLinkTo="/login"
+      topText="Register"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col w-full">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
@@ -147,11 +148,10 @@ const RegisterPage = () => {
         {/* Full Name Field */}
         <AuthInput
           id="name"
-          label="Full Name"
           type="text"
           value={formData.name}
           onChange={handleChange}
-          placeholder="e.g. Jane Doe"
+          placeholder="Full Name"
           error={errors.name}
           required
           autoComplete="name"
@@ -160,11 +160,10 @@ const RegisterPage = () => {
         {/* Email Field */}
         <AuthInput
           id="email"
-          label="Email Address"
           type="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="you@example.com"
+          placeholder="Email address"
           error={errors.email}
           required
           autoComplete="email"
@@ -173,11 +172,10 @@ const RegisterPage = () => {
         {/* Password Field */}
         <AuthInput
           id="password"
-          label="Password"
           type="password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="Create a password"
+          placeholder="Password"
           error={errors.password}
           required
           autoComplete="new-password"
@@ -186,11 +184,10 @@ const RegisterPage = () => {
         {/* Confirm Password Field */}
         <AuthInput
           id="confirmPassword"
-          label="Confirm Password"
           type="password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          placeholder="Confirm your password"
+          placeholder="Confirm password"
           error={errors.confirmPassword}
           required
           autoComplete="new-password"
@@ -206,7 +203,7 @@ const RegisterPage = () => {
         </AuthButton>
 
         {/* Terms of Service text */}
-        <p className="text-[11px] text-center text-gray-400 px-4 leading-relaxed">
+        <p className="text-[11px] text-center text-gray-400 px-4 leading-relaxed mt-4">
           By creating an account, you agree to our{' '}
           <span className="text-[#8FA697] cursor-pointer hover:underline">Terms of Service</span>{' '}
           and{' '}

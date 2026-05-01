@@ -13,37 +13,43 @@ const AuthLayout = ({
   footerText = '',
   footerLinkText = '',
   footerLinkTo = '/',
+  topText = 'Login',
 }) => {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#FAF9F6]">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#8FA697] opacity-[0.04]" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-[#8FA697] opacity-[0.03]" />
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F3F4F6] relative overflow-hidden font-sans">
+      {/* Top Left Text */}
+      <div className="absolute top-6 left-6">
+        <span className="text-gray-400 font-semibold text-lg tracking-wide">{topText}</span>
       </div>
 
       {/* Form Card */}
-      <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-sm">
-        {/* Header — no graphic/avatar above the title per design spec */}
-        <div className="text-center mb-2">
-          <h1 className="text-2xl font-bold text-[#1E293B] mb-1 font-[Outfit]">
+      <div className="w-[90%] max-w-[420px] bg-[#FAF9F6] rounded-[2.5rem] px-8 py-10 shadow-sm border-[6px] border-white flex flex-col items-center relative z-10 my-8">
+        
+        {/* Gray Circle Avatar Placeholder */}
+        <div className="w-[60px] h-[60px] bg-[#E2E8F0] rounded-full mb-6 shrink-0"></div>
+
+        {/* Header */}
+        <div className="text-center mb-8 w-full">
+          <h1 className="text-[22px] font-bold text-[#1E293B] mb-1.5 tracking-tight">
             {title}
           </h1>
-          <p className="text-sm text-gray-400 leading-relaxed">
+          <p className="text-[13.5px] text-[#64748B]">
             {subtitle}
           </p>
         </div>
 
         {/* Form Content */}
-        {children}
+        <div className="w-full">
+          {children}
+        </div>
 
         {/* Footer Link */}
         {footerText && footerLinkText && (
-          <p className="text-center text-[13px] mt-2 text-gray-400">
+          <p className="text-center text-[13.5px] mt-10 text-[#64748B]">
             {footerText}{' '}
             <Link
               to={footerLinkTo}
-              className="font-semibold text-[#8FA697] hover:text-[#6e8c78] transition-colors duration-200 ml-0.5"
+              className="font-bold text-[#8FA697] hover:text-[#7a8f81] transition-colors"
             >
               {footerLinkText}
             </Link>
@@ -61,6 +67,7 @@ AuthLayout.propTypes = {
   footerText: PropTypes.string,
   footerLinkText: PropTypes.string,
   footerLinkTo: PropTypes.string,
+  topText: PropTypes.string,
 };
 
 export default AuthLayout;
