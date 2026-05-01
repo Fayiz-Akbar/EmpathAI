@@ -10,9 +10,9 @@ import { sendMessage as sendChatMessage } from '../services/chatService';
  * Manages message state and communicates with the chat API.
  */
 const ChatPage = () => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState(() => [
     {
-      id: 1,
+      id: crypto.randomUUID(),
       isUser: false,
       text: "Hi there! 👋 I'm EmpathAI. How are you feeling today?",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -41,7 +41,7 @@ const ChatPage = () => {
   const handleSend = async (messageText) => {
     // Add user message immediately
     const userMessage = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       isUser: true,
       text: messageText,
       time: getCurrentTime(),
@@ -55,7 +55,7 @@ const ChatPage = () => {
       const response = await sendChatMessage(sessionId, messageText);
 
       const aiMessage = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         isUser: false,
         text: response.data?.response || "I hear you. Tell me more about how you're feeling.",
         time: getCurrentTime(),
@@ -65,7 +65,7 @@ const ChatPage = () => {
       // Fallback: rule-based response if API is unavailable
       const fallbackResponse = getFallbackResponse(messageText);
       const aiMessage = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         isUser: false,
         text: fallbackResponse,
         time: getCurrentTime(),

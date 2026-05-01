@@ -15,7 +15,7 @@ const AuthLayout = ({
   footerLinkTo = '/',
 }) => {
   return (
-    <div className="max-w-md mx-auto w-full min-h-screen bg-[#FAF9F6] relative shadow-lg overflow-hidden flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#FAF9F6]">
       {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#8FA697] opacity-[0.04]" />
@@ -23,7 +23,7 @@ const AuthLayout = ({
       </div>
 
       {/* Form Card */}
-      <div className="w-full max-w-sm bg-white rounded-3xl p-8 flex flex-col gap-4 shadow-sm relative z-10 animate-fade-in-up">
+      <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-sm">
         {/* Header — no graphic/avatar above the title per design spec */}
         <div className="text-center mb-2">
           <h1 className="text-2xl font-bold text-[#1E293B] mb-1 font-[Outfit]">
