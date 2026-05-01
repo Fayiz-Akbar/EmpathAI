@@ -2,12 +2,11 @@ import PropTypes from 'prop-types';
 
 /**
  * ChatHeader — Top bar of the chat page.
- * Contains menu button, "EmpathAI" title with chevron,
- * and share, options, and user avatar.
+ * Enforces precise height and flex structure as requested.
  */
 const ChatHeader = ({ onMenuClick }) => {
   return (
-    <header className="bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between z-20 shrink-0 sticky top-0">
+    <header className="w-full h-16 flex flex-shrink-0 items-center justify-between px-4 bg-white z-10 border-b border-gray-100">
       {/* Left Section */}
       <div className="flex items-center gap-3">
         {/* Menu Button */}
