@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import ChatHeader from '../components/ChatHeader';
 import ChatBubble from '../components/ChatBubble';
 import MessageInput from '../components/MessageInput';
+import Sidebar from '../components/Sidebar';
 import { sendMessage as sendChatMessage } from '../services/chatService';
 
 /**
  * ChatPage — Main chatbot interface.
- * Uses modular ChatHeader, ChatBubble, and MessageInput components.
+ * Uses modular ChatHeader, ChatBubble, MessageInput, and Sidebar components.
  * Manages message state and communicates with the chat API.
  */
 const ChatPage = () => {
@@ -19,6 +20,7 @@ const ChatPage = () => {
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const chatEndRef = useRef(null);
 
   /**
@@ -26,7 +28,7 @@ const ChatPage = () => {
    */
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   /**
    * Formats current time as HH:MM string.
@@ -100,15 +102,22 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto w-full h-screen bg-[#FAF9F6] flex flex-col relative shadow-xl overflow-hidden">
+    <div className="max-w-md mx-auto w-full h-screen bg-[#FAF9F6] relative shadow-lg overflow-hidden flex flex-col">
+      
+      {/* Sidebar Component */}
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+      />
+
       {/* Header */}
-      <ChatHeader />
+      <ChatHeader onMenuClick={() => setIsSidebarOpen(true)} />
 
       {/* Chat Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
+      <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-4">
         {/* Today Timestamp */}
-        <div className="flex justify-center my-2">
-          <span className="px-3 py-1 bg-white/80 text-[10px] font-semibold text-gray-400 rounded-full shadow-sm tracking-wider uppercase">
+        <div className="flex justify-center mb-1 mt-2">
+          <span className="px-3 py-1 text-[11px] font-semibold text-gray-400 bg-gray-100/50 rounded-full uppercase tracking-wider">
             Today
           </span>
         </div>
@@ -125,24 +134,11 @@ const ChatPage = () => {
 
         {/* Typing Indicator */}
         {isLoading && (
-          <div className="flex gap-2.5 max-w-[85%] animate-fade-in">
-            <div className="w-8 h-8 rounded-full bg-[#8FA697] flex-shrink-0 flex items-center justify-center text-white mt-auto mb-1 shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
-                <path d="M9 13v2"/>
-                <path d="M15 13v2"/>
-              </svg>
-            </div>
-            <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm border border-gray-50 flex items-center gap-1.5">
-              <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-            </div>
-          </div>
+          <ChatBubble isUser={false} isTyping={true} />
         )}
 
         {/* Scroll anchor */}
-        <div ref={chatEndRef} />
+        <div ref={chatEndRef} className="h-1" />
       </div>
 
       {/* Message Input */}
