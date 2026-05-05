@@ -5,19 +5,20 @@ import ChatPage from './pages/ChatPage';
 
 /**
  * App — Root component managing client-side routing.
- * Currently handles authentication routes; additional routes
- * (e.g., chat dashboard) can be added here as the project grows.
+ * Default route is the chat page (no login required).
+ * Auth routes are available for users who want to sign in.
  */
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<ChatPage />} />
+        <Route path="/chat" element={<ChatPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/chat" element={<ChatPage />} />
 
-        {/* Default: redirect to login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Default: redirect to chat */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

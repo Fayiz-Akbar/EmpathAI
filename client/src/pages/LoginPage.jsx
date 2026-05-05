@@ -108,7 +108,7 @@ const LoginPage = () => {
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in mb-2 ${
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium animate-fade-in mb-6 shadow-sm ${
               apiMessage.type === 'error'
                 ? 'bg-red-50 text-red-500'
                 : 'bg-green-50 text-green-600'
@@ -155,10 +155,10 @@ const LoginPage = () => {
         />
 
         {/* Forgot Password Link */}
-        <div className="flex justify-end -mt-1.5 mb-6">
+        <div className="flex justify-end -mt-2 mb-8">
           <button
             type="button"
-            className="text-[12.5px] text-[#A0AAB2] hover:text-[#8FA697] transition-colors duration-200"
+            className="text-[13.5px] text-[#8FA697] hover:text-[#7D9587] transition-colors duration-200"
           >
             Forgot password?
           </button>

@@ -1,54 +1,58 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ChatHeader from '../components/ChatHeader';
 import ChatBubble from '../components/ChatBubble';
 import MessageInput from '../components/MessageInput';
 import Sidebar from '../components/Sidebar';
 import { sendMessage as sendChatMessage, createSession, getHistory } from '../services/chatService';
-import { isAuthenticated, getCurrentUser } from '../services/authService';
+import { getCurrentUser } from '../services/authService';
 
 /**
- * ChatPage — Main chatbot interface.
- * Full-screen responsive layout: fills the entire viewport.
+ * ChatPage — Gemini-style chat interface.
+ * Two states:
+ *   1. Welcome (no messages): centered greeting + input.
+ *   2. Conversation (has messages): scrollable thread + bottom input.
+ *
+ * Sidebar is persistent on desktop (lg+), overlay drawer on mobile.
+ * No login required — works for both guests and authenticated users.
  */
 const ChatPage = () => {
-  const navigate = useNavigate();
-
-  // ── Auth Guard ──
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/login', { replace: true });
-    }
-  }, [navigate]);
-
   // ── State ──
-  const [messages, setMessages] = useState([
-    {
-      id: crypto.randomUUID(),
-      isUser: false,
-      text: "Hi there! 👋 I'm EmpathAI. How are you feeling today?",
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sessionId, setSessionId] = useState(() => localStorage.getItem('empathAI_sessionId') || '');
   const [chatSessions] = useState([]);
 
   const chatEndRef = useRef(null);
+  const hasMessages = messages.length > 0;
+
+  // ── Derive user name for greeting ──
+  const userName = (() => {
+    try {
+      const storedUser = localStorage.getItem('empathAI_user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        return user.name || null;
+      }
+    } catch {
+      // silently ignore
+    }
+    return null;
+  })();
 
   // ── Auto-scroll on new message ──
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+    if (hasMessages) {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading, hasMessages]);
 
-  // ── Initialize session on mount ──
+  // ── Initialize session on mount (only if authenticated) ──
   useEffect(() => {
     const initSession = async () => {
       const user = getCurrentUser();
       if (!user) return;
 
-      // If no session ID stored, create one
       if (!sessionId) {
         try {
           const result = await createSession(user.id, 'Sesi Curhat Baru');
@@ -66,7 +70,7 @@ const ChatPage = () => {
     initSession();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Load chat history when session changes ──
+  // ── Load chat history ──
   const loadHistory = useCallback(async (sid) => {
     if (!sid) return;
     try {
@@ -74,14 +78,12 @@ const ChatPage = () => {
       if (result.data && result.data.length > 0) {
         const historyMessages = [];
         result.data.forEach((chat) => {
-          // User message
           historyMessages.push({
             id: chat._id + '_user',
             isUser: true,
             text: chat.message,
             time: new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           });
-          // AI response
           historyMessages.push({
             id: chat._id + '_ai',
             isUser: false,
@@ -90,23 +92,14 @@ const ChatPage = () => {
             emotion: chat.emotion,
           });
         });
-
-        setMessages([
-          {
-            id: 'welcome',
-            isUser: false,
-            text: "Hi there! 👋 I'm EmpathAI. How are you feeling today?",
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          },
-          ...historyMessages,
-        ]);
+        setMessages(historyMessages);
       }
     } catch (error) {
       console.error('Failed to load history:', error);
     }
   }, []);
 
-  // ── Get current time string ──
+  // ── Get current time ──
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
@@ -143,8 +136,9 @@ const ChatPage = () => {
     setIsLoading(true);
 
     try {
-      // Ensure we have a session
       let currentSessionId = sessionId;
+
+      // Try to create a session if authenticated and none exists
       if (!currentSessionId) {
         const user = getCurrentUser();
         if (user) {
@@ -158,10 +152,7 @@ const ChatPage = () => {
       }
 
       if (currentSessionId) {
-        // Server expects: { session_id, message }
-        // Server returns: { message: 'Pesan terkirim', data: { response, emotion, ... } }
         const response = await sendChatMessage(currentSessionId, messageText);
-
         const aiMessage = {
           id: crypto.randomUUID(),
           isUser: false,
@@ -169,14 +160,21 @@ const ChatPage = () => {
           time: getCurrentTime(),
           emotion: response.data?.emotion,
         };
-
         setMessages((prev) => [...prev, aiMessage]);
       } else {
-        throw new Error('No session available');
+        // Guest mode — use fallback response
+        const fallback = getFallbackResponse(messageText);
+        const aiMessage = {
+          id: crypto.randomUUID(),
+          isUser: false,
+          text: fallback.reply,
+          time: getCurrentTime(),
+          emotion: fallback.emotion,
+        };
+        setMessages((prev) => [...prev, aiMessage]);
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-
       const fallback = getFallbackResponse(messageText);
       const errorMessage = {
         id: crypto.randomUUID(),
@@ -185,7 +183,6 @@ const ChatPage = () => {
         time: getCurrentTime(),
         emotion: fallback.emotion,
       };
-
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -195,26 +192,26 @@ const ChatPage = () => {
   // ── New chat handler ──
   const handleNewChat = async () => {
     const user = getCurrentUser();
-    if (!user) return;
 
-    try {
-      const result = await createSession(user.id, 'Sesi Curhat Baru');
-      const newSessionId = result.session?._id || result.session?.id;
-      if (newSessionId) {
-        setSessionId(newSessionId);
-        localStorage.setItem('empathAI_sessionId', newSessionId);
-        setMessages([
-          {
-            id: crypto.randomUUID(),
-            isUser: false,
-            text: "Hi there! 👋 I'm EmpathAI. How are you feeling today?",
-            time: getCurrentTime(),
-          },
-        ]);
+    if (user) {
+      try {
+        const result = await createSession(user.id, 'Sesi Curhat Baru');
+        const newSessionId = result.session?._id || result.session?.id;
+        if (newSessionId) {
+          setSessionId(newSessionId);
+          localStorage.setItem('empathAI_sessionId', newSessionId);
+        }
+      } catch (error) {
+        console.error('Failed to create new chat:', error);
       }
-    } catch (error) {
-      console.error('Failed to create new chat:', error);
+    } else {
+      // Guest: just clear session
+      setSessionId('');
+      localStorage.removeItem('empathAI_sessionId');
     }
+
+    // Reset to welcome screen
+    setMessages([]);
   };
 
   // ── Select session handler ──
@@ -225,10 +222,10 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col bg-stone-50 overflow-hidden">
-      {/* Sidebar Overlay */}
-      <Sidebar 
-        isOpen={isSidebarOpen} 
+    <div className="h-screen w-full flex bg-[#FAF9F6] overflow-hidden">
+      {/* Sidebar — persistent on lg+, overlay on mobile */}
+      <Sidebar
+        isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         chatSessions={chatSessions}
         onNewChat={handleNewChat}
@@ -236,40 +233,79 @@ const ChatPage = () => {
         activeSessionId={sessionId}
       />
 
-      {/* Header */}
-      <ChatHeader onMenuClick={() => setIsSidebarOpen(true)} />
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-full">
+        {/* Header */}
+        <ChatHeader onMenuClick={() => setIsSidebarOpen(true)} />
 
-      {/* Chat Area (Scrollable) */}
-      <div className="flex-1 overflow-y-auto no-scrollbar w-full">
-        {/* Container for messages — centered on desktop */}
-        <div className="w-full max-w-3xl mx-auto py-6 px-4 space-y-6">
-          {/* Date Badge */}
-          <div className="flex justify-center">
-            <span className="px-3 py-1 text-[11px] font-semibold text-gray-400 bg-stone-200/50 rounded-full uppercase tracking-wider">
-              Today
-            </span>
+        {/* Content: Welcome or Conversation */}
+        {!hasMessages ? (
+          /* ═══ Welcome State (like Gemini home) ═══ */
+          <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 pb-32">
+            {/* Greeting */}
+            <div className="text-center mb-12">
+              <h2 className="text-4xl sm:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#8FA697] to-[#B5C9BC] mb-3 font-[Outfit]">
+                {userName ? `Hi ${userName}` : 'Hi there'}
+              </h2>
+              <p className="text-3xl sm:text-4xl font-semibold text-[#4A5568] font-[Outfit]">
+                How are you feeling today?
+              </p>
+            </div>
+
+            {/* Input */}
+            <div className="w-full max-w-3xl">
+              <MessageInput onSend={handleSend} isLoading={isLoading} hasMessages={false} />
+            </div>
+
+            {/* Quick Action Chips */}
+            <div className="flex flex-wrap justify-center gap-3 mt-8 max-w-2xl">
+              {['I feel stressed 😰', 'Feeling anxious 😟', 'I\'m feeling happy 😊', 'Need motivation 💪'].map((chip) => (
+                <button
+                  key={chip}
+                  onClick={() => handleSend(chip)}
+                  className="px-4 py-2 text-[13px] text-[#5F6368] border border-[#DDD9D0] rounded-full hover:bg-[#E8E5DE] transition-colors duration-200"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
           </div>
+        ) : (
+          /* ═══ Conversation State ═══ */
+          <>
+            {/* Chat Area (Scrollable) */}
+            <div className="flex-1 overflow-y-auto no-scrollbar w-full">
+              <div className="w-full max-w-3xl mx-auto py-6 px-4 space-y-6">
+                {/* Date Badge */}
+                <div className="flex justify-center">
+                  <span className="px-3 py-1 text-[11px] font-semibold text-[#9CA3AF] bg-[#E8E5DE]/60 rounded-full uppercase tracking-wider">
+                    Today
+                  </span>
+                </div>
 
-          {/* Messages */}
-          {messages.map((msg) => (
-            <ChatBubble 
-              key={msg.id} 
-              isUser={msg.isUser} 
-              message={msg.text} 
-              time={msg.time}
-              emotion={msg.emotion}
-            />
-          ))}
+                {/* Messages */}
+                {messages.map((msg) => (
+                  <ChatBubble
+                    key={msg.id}
+                    isUser={msg.isUser}
+                    message={msg.text}
+                    time={msg.time}
+                    emotion={msg.emotion}
+                  />
+                ))}
 
-          {/* Typing Indicator */}
-          {isLoading && <ChatBubble isUser={false} isTyping={true} />}
-          
-          <div ref={chatEndRef} className="h-1 shrink-0" />
-        </div>
+                {/* Typing Indicator */}
+                {isLoading && <ChatBubble isUser={false} isTyping={true} />}
+
+                <div ref={chatEndRef} className="h-1 shrink-0" />
+              </div>
+            </div>
+
+            {/* Input Area (Bottom) */}
+            <MessageInput onSend={handleSend} isLoading={isLoading} hasMessages={true} />
+          </>
+        )}
       </div>
-
-      {/* Input Area (Bottom) */}
-      <MessageInput onSend={handleSend} isLoading={isLoading} />
     </div>
   );
 };

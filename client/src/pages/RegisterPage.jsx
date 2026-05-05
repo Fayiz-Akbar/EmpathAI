@@ -122,7 +122,7 @@ const RegisterPage = () => {
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in mb-2 ${
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium animate-fade-in mb-6 shadow-sm ${
               apiMessage.type === 'error'
                 ? 'bg-red-50 text-red-500'
                 : 'bg-green-50 text-green-600'
@@ -202,11 +202,11 @@ const RegisterPage = () => {
         </AuthButton>
 
         {/* Terms of Service text */}
-        <p className="text-[11px] text-center text-gray-400 px-4 leading-relaxed mt-4">
+        <p className="text-[12px] text-center text-gray-400 px-4 leading-relaxed mt-6">
           By creating an account, you agree to our{' '}
-          <span className="text-[#8FA697] cursor-pointer hover:underline">Terms of Service</span>{' '}
+          <span className="font-medium text-[#8FA697] cursor-pointer hover:text-[#7D9587] transition-colors">Terms of Service</span>{' '}
           and{' '}
-          <span className="text-[#8FA697] cursor-pointer hover:underline">Privacy Policy</span>.
+          <span className="font-medium text-[#8FA697] cursor-pointer hover:text-[#7D9587] transition-colors">Privacy Policy</span>.
         </p>
       </form>
     </AuthLayout>
