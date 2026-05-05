@@ -7,13 +7,14 @@ import PropTypes from 'prop-types';
  * @prop {string}  message    — The message text to display.
  * @prop {string}  time       — Formatted timestamp string.
  * @prop {boolean} isTyping   — If true, renders typing dots instead of text.
+ * @prop {string}  emotion    — Detected emotion label (optional, AI only).
  */
-const ChatBubble = ({ isUser, message, time, isTyping }) => {
+const ChatBubble = ({ isUser, message, time, isTyping, emotion }) => {
   if (isUser) {
     // ── User Bubble (Right Side) ──
     return (
       <div className="flex justify-end animate-fade-in">
-        <div className="bg-[#F8FAFC] px-4 py-3 rounded-2xl rounded-tr-sm max-w-[80%] flex flex-col gap-1 shadow-sm">
+        <div className="bg-blue-50/50 px-4 py-3 rounded-2xl rounded-tr-lg max-w-[75%] lg:max-w-[60%] flex flex-col gap-1">
           <p className="text-[15px] text-[#4A5568] leading-relaxed">
             {message}
           </p>
@@ -29,7 +30,7 @@ const ChatBubble = ({ isUser, message, time, isTyping }) => {
 
   // ── AI Bubble (Left Side) ──
   return (
-    <div className="flex gap-2.5 max-w-[85%] animate-fade-in">
+    <div className="flex gap-2.5 max-w-[85%] lg:max-w-[70%] animate-fade-in">
       {/* AI Avatar */}
       <div className="w-8 h-8 rounded-full bg-[#8FA697] flex-shrink-0 flex items-center justify-center text-white mt-auto shadow-sm">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -40,23 +41,30 @@ const ChatBubble = ({ isUser, message, time, isTyping }) => {
       </div>
 
       {/* AI Message / Typing Indicator */}
-      <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex flex-col gap-1 items-start justify-center border border-gray-50">
+      <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-lg shadow-sm flex flex-col gap-1 items-start justify-center border border-stone-100">
         {isTyping ? (
           <div className="flex items-center gap-1.5 h-6">
-            <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <span className="typing-dot w-2 h-2 bg-gray-300 rounded-full" />
+            <span className="typing-dot w-2 h-2 bg-gray-300 rounded-full" />
+            <span className="typing-dot w-2 h-2 bg-gray-300 rounded-full" />
           </div>
         ) : (
           <>
             <p className="text-[15px] text-[#4A5568] leading-relaxed">
               {message}
             </p>
-            {time && (
-              <span className="text-[10px] text-gray-400 self-start mt-0.5">
-                {time}
-              </span>
-            )}
+            <div className="flex items-center gap-2 mt-0.5">
+              {time && (
+                <span className="text-[10px] text-gray-400">
+                  {time}
+                </span>
+              )}
+              {emotion && emotion !== 'Netral' && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E8F0EB] text-[#8FA697] font-medium">
+                  {emotion}
+                </span>
+              )}
+            </div>
           </>
         )}
       </div>
@@ -69,6 +77,7 @@ ChatBubble.propTypes = {
   message: PropTypes.string,
   time: PropTypes.string,
   isTyping: PropTypes.bool,
+  emotion: PropTypes.string,
 };
 
 export default ChatBubble;

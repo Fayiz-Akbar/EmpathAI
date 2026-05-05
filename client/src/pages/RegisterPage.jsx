@@ -117,13 +117,12 @@ const RegisterPage = () => {
       footerText="Already have an account?"
       footerLinkText="Log in"
       footerLinkTo="/login"
-      topText="Register"
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col w-full">
         {/* API Feedback Message */}
         {apiMessage.text && (
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in ${
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm animate-fade-in mb-2 ${
               apiMessage.type === 'error'
                 ? 'bg-red-50 text-red-500'
                 : 'bg-green-50 text-green-600'

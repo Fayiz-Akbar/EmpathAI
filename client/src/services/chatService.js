@@ -10,6 +10,17 @@ const apiClient = axios.create({
 });
 
 /**
+ * Injects the auth token into every outgoing request.
+ */
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('empathAI_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+/**
  * Creates a new chat session for the given user.
  * @param {string} userId - The authenticated user's ID.
  * @param {string} [title] - Optional session title.
@@ -25,6 +36,8 @@ export const createSession = async (userId, title) => {
 
 /**
  * Sends a user message and receives AI response.
+ * Server expects: { session_id, message }
+ * Server returns: { message: '...', data: { session_id, message, response, emotion, timestamp } }
  * @param {string} sessionId - The active chat session ID.
  * @param {string} message - The user's message text.
  * @returns {Promise<Object>} The server response with AI reply.

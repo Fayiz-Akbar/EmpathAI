@@ -33,3 +33,33 @@ export const loginUser = async ({ email, password }) => {
   const response = await apiClient.post('/auth/login', { email, password });
   return response.data;
 };
+
+/**
+ * Checks if the user is currently authenticated.
+ * @returns {boolean}
+ */
+export const isAuthenticated = () => {
+  return !!localStorage.getItem('empathAI_token');
+};
+
+/**
+ * Retrieves the current user from localStorage.
+ * @returns {Object|null}
+ */
+export const getCurrentUser = () => {
+  try {
+    const user = localStorage.getItem('empathAI_user');
+    return user ? JSON.parse(user) : null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Logs the user out by clearing stored data.
+ */
+export const logout = () => {
+  localStorage.removeItem('empathAI_token');
+  localStorage.removeItem('empathAI_user');
+  localStorage.removeItem('empathAI_sessionId');
+};
