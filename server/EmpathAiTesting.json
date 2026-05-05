@@ -1,0 +1,494 @@
+{
+	"info": {
+		"name": "EmpathAI API Automated Tests",
+		"description": "Koleksi pengujian otomatis untuk Backend EmpathAI Capstone Project.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Register Akun",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code adalah 201 (Created)\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Mendapatkan pesan registrasi berhasil\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Registrasi berhasil! Silakan login.\");",
+							"});",
+							"",
+							"// Menyimpan email dan password otomatis ke variabel global untuk API Login",
+							"var reqBody = JSON.parse(pm.request.body.raw);",
+							"pm.globals.set(\"empathai_test_email\", reqBody.email);",
+							"pm.globals.set(\"empathai_test_pass\", reqBody.password);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Tester EmpathAI\",\n    \"email\": \"tester_{{$timestamp}}@example.com\",\n    \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/auth/register",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "5000",
+					"path": ["api", "auth", "register"]
+				}
+			}
+		},
+		{
+			"name": "2. Login Akun",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code adalah 200 (OK)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Berhasil mendapatkan Token dan User ID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('token');",
+							"    pm.expect(jsonData.user).to.have.property('id');",
+							"    ",
+							"    // Menyimpan User ID ke variabel global untuk dipakai API Session",
+							"    pm.globals.set(\"empathai_user_id\", jsonData.user.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{empathai_test_email}}\",\n    \"password\": \"{{empathai_test_pass}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/auth/login",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "5000",
+					"path": ["api", "auth", "login"]
+				}
+			}
+		},
+		{
+			"name": "3. Buat Sesi Chat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code adalah 201 (Created)\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Sesi baru berhasil dibuat dan memiliki _id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('session');",
+							"    pm.expect(jsonData.session).to.have.property('_id');",
+							"    ",
+							"    // Menyimpan Session ID ke variabel global",
+							"    pm.globals.set(\"empathai_session_id\", jsonData.session._id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"{{empathai_user_id}}\",\n    \"title\": \"Sesi Curhat Skripsi\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/chat/session",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "5000",
+					"path": ["api", "chat", "session"]
+				}
+			}
+		},
+		{
+			"name": "4. Kirim Pesan Chat (Test Emosi Stres)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code adalah 201 (Pesan Terkirim)\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Mendapatkan balasan AI dan label deteksi emosi\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.have.property('response');",
+							"    pm.expect(jsonData.data).to.have.property('emotion');",
+							"    pm.expect(jsonData.data.emotion).to.not.be.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"session_id\": \"{{empathai_session_id}}\",\n    \"message\": \"Jujur aku ngerasa capek banget akhir-akhir ini. Beban tugas numpuk rasanya mau burnout dan stres.\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/chat/message",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "5000",
+					"path": ["api", "chat", "message"]
+				}
+			}
+		},
+		{
+			"name": "5. Tarik Riwayat Chat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code adalah 200 (OK)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Berhasil menarik riwayat chat dalam bentuk Array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Waktu respons di bawah 500ms (API Cepat)\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/chat/history/{{empathai_session_id}}",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "5000",
+					"path": ["api", "chat", "history", "{{empathai_session_id}}"]
+				}
+			}
+		},{
+	"info": {
+		"name": "EmpathAI Ultimate API Tests (Full Coverage)",
+		"description": "Pengujian komprehensif mencakup Negative Cases (Error handling) dan Positive Cases.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Modul Autentikasi",
+			"item": [
+				{
+					"name": "1. Register (SUKSES)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code adalah 201\", function () { pm.response.to.have.status(201); });",
+									"var reqBody = JSON.parse(pm.request.body.raw);",
+									"pm.globals.set(\"test_email\", reqBody.email);",
+									"pm.globals.set(\"test_pass\", reqBody.password);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Testing User\",\n    \"email\": \"test_{{$timestamp}}@mail.com\",\n    \"password\": \"rahasia123\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "register"]}
+					}
+				},
+				{
+					"name": "2. Register (GAGAL - Email Duplikat)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code adalah 400 (Bad Request)\", function () { pm.response.to.have.status(400); });",
+									"pm.test(\"Pesan error sesuai\", function () { pm.expect(pm.response.json().message).to.eql(\"Email sudah terdaftar!\"); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Kloningan\",\n    \"email\": \"{{test_email}}\",\n    \"password\": \"rahasia123\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "register"]}
+					}
+				},
+				{
+					"name": "3. Login (GAGAL - User Tidak Ada)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code adalah 404 (Not Found)\", function () { pm.response.to.have.status(404); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ngasal_banget@mail.com\",\n    \"password\": \"12345\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "login"]}
+					}
+				},
+				{
+					"name": "4. Login (GAGAL - Password Salah)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code adalah 400 (Bad Request)\", function () { pm.response.to.have.status(400); });",
+									"pm.test(\"Pesan: Password salah\", function () { pm.expect(pm.response.json().message).to.eql(\"Password salah!\"); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{test_email}}\",\n    \"password\": \"password_salah\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "login"]}
+					}
+				},
+				{
+					"name": "5. Login (SUKSES)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code adalah 200\", function () { pm.response.to.have.status(200); });",
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"auth_token\", jsonData.token);",
+									"pm.globals.set(\"user_id\", jsonData.user.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{test_email}}\",\n    \"password\": \"{{test_pass}}\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "login"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Modul Chat & Sesi",
+			"item": [
+				{
+					"name": "6. Buat Sesi (GAGAL - Belum Login)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ditolak Middleware: Status 401 Unauthorized\", function () { pm.response.to.have.status(401); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"title\": \"Sesi Tanpa Token\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/chat/session", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "chat", "session"]}
+					}
+				},
+				{
+					"name": "7. Buat Sesi (SUKSES - Bawa Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 201\", function () { pm.response.to.have.status(201); });",
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"session_id\", jsonData.session._id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"title\": \"Sesi Sah\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/chat/session", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "chat", "session"]}
+					}
+				},
+				{
+					"name": "8. Nge-Chat AI (GAGAL - Token Palsu/Salah)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ditolak Middleware: Status 400 Bad Request\", function () { pm.response.to.have.status(400); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer token_palsu_123"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"session_id\": \"{{session_id}}\",\n    \"message\": \"Halo?\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/chat/message", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "chat", "message"]}
+					}
+				},
+				{
+					"name": "9. Nge-Chat AI (SUKSES)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 201\", function () { pm.response.to.have.status(201); });",
+									"pm.test(\"AI membalas dengan emosi Sedih\", function () { ",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.emotion).to.eql(\"Sedih\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"session_id\": \"{{session_id}}\",\n    \"message\": \"Aku sedih dan kecewa banget hari ini.\"\n}"
+						},
+						"url": {"raw": "http://localhost:5000/api/chat/message", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "chat", "message"]}
+					}
+				},
+				{
+					"name": "10. Tarik Riwayat (SUKSES)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code 200\", function () { pm.response.to.have.status(200); });",
+									"pm.test(\"Riwayat berbentuk array\", function () { pm.expect(pm.response.json().data).to.be.an('array'); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {"raw": "http://localhost:5000/api/chat/history/{{session_id}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "chat", "history", "{{session_id}}"]}
+					}
+				}
+			]
+		}
+	]
+}
+	]
+}
