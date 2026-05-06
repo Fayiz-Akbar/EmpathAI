@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { Sparkles, Zap, Heart, Brain } from 'lucide-react';
 import ChatHeader from '../components/ChatHeader';
 import ChatBubble from '../components/ChatBubble';
 import MessageInput from '../components/MessageInput';
@@ -162,49 +163,52 @@ const ChatPage = () => {
         activeSessionId={sessionId}
       />
 
-      <div className="flex-1 flex flex-col h-full bg-white relative min-w-0 lg:rounded-tl-3xl shadow-sm">
+      <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
         <ChatHeader onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
         {/* Scrollable Area */}
         <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col w-full">
-          
-          {/* Wrapper untuk membatasi lebar (max-w-4xl = aman) */}
-          <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col px-4 sm:px-8">
-            
-            {!hasMessages ? (
-              /* Welcome State */
-              <>
-                {/* Teks Sapaan */}
-                <div className="pt-10 sm:pt-16 pb-8 text-left animate-fade-in-up">
-                  <h1 className="text-4xl sm:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#6A7AC4] to-[#8FA697] tracking-tight mb-2 font-[Outfit]">
-                    {userName ? `Hello, ${userName}` : 'Hello there'}
+          {!hasMessages ? (
+            /* Welcome State (Centered vertically and horizontally) */
+            <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-8 pb-10">
+              <div className="w-full max-w-[800px] flex flex-col">
+                
+                {/* Greeting */}
+                <div className="text-left mb-8 pl-1 animate-fade-in-up">
+                  <h1 className="text-[3.5rem] font-medium text-transparent bg-clip-text bg-gradient-to-r from-[#4b90ff] to-[#ff5546] tracking-tight mb-2 font-[Outfit] leading-[1.1]">
+                    {userName ? `Hi ${userName}` : 'Hi there'}
                   </h1>
-                  <h2 className="text-4xl sm:text-5xl font-medium text-gray-400 tracking-tight font-[Outfit]">
+                  <h2 className="text-[3.5rem] font-medium text-[#c4c7c5] tracking-tight font-[Outfit] leading-[1.1]">
                     Where should we start?
                   </h2>
                 </div>
 
-                {/* Pendorong Cards ke bawah */}
-                <div className="flex-1"></div>
+                {/* Input Area (Centered) */}
+                <MessageInput onSend={handleSend} isLoading={isLoading} isCentered={true} />
 
-                {/* Grid Cards Saran */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pb-6 animate-fade-in-up delay-100">
-                  {['I feel stressed 😰', 'Feeling anxious 😟', "I'm feeling happy 😊", 'Need motivation 💪'].map((chip) => (
+                {/* Quick Action Chips (Pill shaped, below input) */}
+                <div className="flex flex-wrap justify-center gap-3 mt-10 animate-fade-in-up delay-100">
+                  {[
+                    { text: 'Analyze mood', icon: <Sparkles size={18} className="text-blue-500" /> }, 
+                    { text: 'Anxiety relief', icon: <Zap size={18} className="text-orange-500" /> }, 
+                    { text: 'Daily motivation', icon: <Heart size={18} className="text-red-500" /> }, 
+                    { text: 'Stress management', icon: <Brain size={18} className="text-purple-500" /> }
+                  ].map((chip) => (
                     <button
-                      key={chip}
-                      onClick={() => handleSend(chip)}
-                      className="text-left p-4 h-[110px] bg-gray-50 rounded-2xl flex flex-col justify-between hover:bg-gray-100 transition-colors focus:outline-none group"
+                      key={chip.text}
+                      onClick={() => handleSend(chip.text)}
+                      className="px-5 py-3.5 bg-white border border-[#E0E0E0] rounded-full flex items-center gap-2.5 hover:bg-[#F0F4F9] transition-all text-[14px] text-[#444746] font-medium focus:outline-none shadow-sm hover:shadow-md"
                     >
-                      <span className="text-sm text-gray-800 font-medium leading-snug">{chip}</span>
-                      <div className="self-end bg-white p-2 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        <svg className="w-4 h-4 text-[#8FA697]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                      </div>
+                      {chip.icon}
+                      <span>{chip.text}</span>
                     </button>
                   ))}
                 </div>
-              </>
-            ) : (
-              /* Conversation State */
+              </div>
+            </div>
+          ) : (
+            /* Conversation State */
+            <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col px-4 sm:px-8">
               <div className="py-6 space-y-6 pb-6">
                 <div className="flex justify-center">
                   <span className="px-3 py-1 text-xs font-semibold text-gray-400 bg-gray-50 rounded-full uppercase tracking-wider">
@@ -217,22 +221,23 @@ const ChatPage = () => {
                 {isLoading && <ChatBubble isUser={false} isTyping={true} />}
                 <div ref={chatEndRef} className="h-1 shrink-0" />
               </div>
-            )}
-
-          </div>
+            </div>
+          )}
         </div>
 
-        {/* Input Area (Luar dari area scroll, nempel di bawah) */}
-        <div className="w-full shrink-0 bg-white">
-          <div className="w-full max-w-4xl mx-auto px-4 sm:px-8 pb-6 pt-2">
-            <MessageInput onSend={handleSend} isLoading={isLoading} />
-            <div className="text-center mt-3">
-              <span className="text-xs text-gray-500 font-medium">
-                EmpathAI can make mistakes. Consider verifying important information.
-              </span>
+        {/* Input Area (Luar dari area scroll, nempel di bawah, HANYA TAMPIL SAAT ADA PESAN) */}
+        {hasMessages && (
+          <div className="w-full shrink-0 bg-white">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-8 pb-6 pt-2">
+              <MessageInput onSend={handleSend} isLoading={isLoading} isCentered={false} />
+              <div className="text-center mt-3">
+                <span className="text-xs text-gray-500 font-medium">
+                  EmpathAI can make mistakes. Consider verifying important information.
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>

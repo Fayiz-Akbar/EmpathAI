@@ -1,14 +1,16 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { 
+  Menu, 
+  Plus, 
+  MessageSquare, 
+  Settings, 
+  Search, 
+  LayoutGrid,
+  LogOut
+} from 'lucide-react';
 import { isAuthenticated } from '../services/authService';
 
-/**
- * Sidebar — Gemini-style navigation panel.
- * Desktop: persistent left column (visible when isOpen or always on lg+).
- * Mobile: overlay drawer with backdrop.
- *
- * Sections: Dashboard, New Chat, Chats list.
- */
 const Sidebar = ({ 
   isMobileOpen, 
   isDesktopOpen, 
@@ -31,7 +33,7 @@ const Sidebar = ({
 
   const handleDashboard = () => {
     if (window.innerWidth < 1024) onToggleMobile();
-    navigate('/');
+    navigate('/dashboard');
   };
 
   const handleNewChatClick = () => {
@@ -39,7 +41,7 @@ const Sidebar = ({
     if (window.innerWidth < 1024) onToggleMobile();
   };
 
-  const isDashboardActive = location.pathname === '/' || location.pathname === '/chat';
+  const isDashboardActive = location.pathname === '/dashboard';
 
   return (
     <>
@@ -60,9 +62,8 @@ const Sidebar = ({
           ${isDesktopOpen ? 'lg:w-[280px]' : 'lg:w-[72px]'}
         `}
       >
-        {/* Top Section: Hamburger + New Chat */}
-        <div className="flex items-center px-6 pt-6 pb-4 shrink-0 h-[80px]">
-          {/* Hamburger Button */}
+        {/* Top Section: Hamburger + Search */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2 shrink-0 h-[64px]">
           <button
             onClick={() => {
               if (window.innerWidth < 1024) {
@@ -71,63 +72,54 @@ const Sidebar = ({
                 onToggleDesktop();
               }
             }}
-            className="p-3 -ml-2 text-[#444746] hover:bg-[#E1E5EA] rounded-full transition-colors duration-200 shrink-0"
+            className="p-2.5 text-[#444746] hover:bg-[#E1E5EA] rounded-full transition-colors duration-200"
             aria-label="Toggle sidebar"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
+            <Menu size={22} />
           </button>
+          
+          {(isDesktopOpen || window.innerWidth < 1024) && (
+            <button className="p-2.5 text-[#444746] hover:bg-[#E1E5EA] rounded-full transition-colors duration-200">
+              <Search size={20} />
+            </button>
+          )}
         </div>
 
-        {/* The Rest of the Sidebar (Hidden when collapsed on desktop) */}
+        {/* The Rest of the Sidebar */}
         <div className={`flex flex-col flex-1 overflow-hidden transition-opacity duration-300 ${isDesktopOpen || window.innerWidth < 1024 ? 'opacity-100' : 'opacity-0 lg:invisible'}`}>
           
-          {/* Navigation Items */}
-          <nav className="flex flex-col gap-2 px-5 py-2 shrink-0">
+          <nav className="flex flex-col gap-1 px-3 py-2 shrink-0">
+            {/* New Chat Button */}
+            <button
+              onClick={handleNewChatClick}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-[#444746] hover:bg-[#E1E5EA] transition-colors duration-200 w-full text-left bg-[#E1E5EA]/40"
+            >
+              <Plus size={18} />
+              <span>New chat</span>
+            </button>
+
             {/* Dashboard */}
             <button
               onClick={handleDashboard}
-              className={`flex items-center gap-4 px-4 py-3.5 rounded-full text-[15px] font-medium transition-colors duration-200 w-full text-left ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium transition-colors duration-200 w-full text-left ${
                 isDashboardActive
                   ? 'bg-[#E1E5EA] text-[#1E293B]'
                   : 'text-[#444746] hover:bg-[#E1E5EA]'
               }`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
-              </svg>
-              Dashboard
-            </button>
-
-            {/* New Chat */}
-            <button
-              onClick={handleNewChatClick}
-              className="flex items-center gap-4 px-4 py-3.5 rounded-full text-[15px] font-medium text-[#444746] hover:bg-[#E1E5EA] transition-colors duration-200 w-full text-left"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                <line x1="12" y1="9" x2="12" y2="15" />
-                <line x1="9" y1="12" x2="15" y2="12" />
-              </svg>
-              New chat
+              <LayoutGrid size={18} />
+              <span>Dashboard</span>
             </button>
           </nav>
 
-          {/* Divider */}
-          <div className="mx-8 my-3 border-t border-[#E1E5EA]" />
-
-          {/* Chats Section */}
-          <div className="px-8 pt-3 pb-2 shrink-0">
-            <h3 className="text-[13px] font-semibold text-[#444746] tracking-wider uppercase">Chats</h3>
-          </div>
-          <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-4">
-            <div className="flex flex-col gap-1.5">
+          {/* Sections */}
+          <div className="flex-1 overflow-y-auto no-scrollbar px-3 flex flex-col gap-1">
+            {/* Chats section */}
+            <div className="mt-4 mb-1 px-4">
+              <h3 className="text-[13px] font-semibold text-[#444746]">Chats</h3>
+            </div>
+            
+            <div className="flex flex-col gap-0.5">
               {chatSessions.length > 0 ? (
                 chatSessions.map((session) => (
                   <button
@@ -136,47 +128,36 @@ const Sidebar = ({
                       if (onSelectSession) onSelectSession(session._id || session.id);
                       if (window.innerWidth < 1024) onToggleMobile();
                     }}
-                    className={`flex items-center gap-4 px-4 py-3.5 rounded-full text-[15px] text-left truncate transition-colors duration-200 w-full ${
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] text-left truncate transition-colors duration-200 w-full ${
                       activeSessionId === (session._id || session.id)
                         ? 'bg-[#E1E5EA] text-[#1E293B] font-medium'
                         : 'text-[#444746] hover:bg-[#E1E5EA]'
                     }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
+                    <MessageSquare size={16} className="shrink-0" />
                     <span className="truncate">{session.title || 'Untitled Chat'}</span>
                   </button>
                 ))
               ) : (
-                <p className="text-[14px] text-[#747775] px-4 py-4">No chat history yet</p>
+                <p className="text-[13px] text-[#747775] px-4 py-3 italic">No chat history yet</p>
               )}
             </div>
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-5 border-t border-[#E1E5EA] shrink-0 space-y-1.5">
-            {/* Settings */}
-            <button className="flex items-center gap-4 px-4 py-3.5 rounded-full text-[15px] text-[#444746] hover:bg-[#E1E5EA] font-medium transition-colors duration-200 w-full text-left">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-              Settings & help
+          <div className="px-3 py-3 border-t border-[#E1E5EA] shrink-0 flex flex-col gap-1">
+            <button className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] text-[#444746] hover:bg-[#E1E5EA] font-medium transition-colors duration-200 w-full text-left">
+              <Settings size={18} />
+              <span>Settings & help</span>
             </button>
 
-            {/* Log out — only show when authenticated */}
             {isAuthenticated() && (
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-4 px-4 py-3.5 rounded-full text-[15px] text-red-600 hover:bg-red-50 font-medium transition-colors duration-200 w-full text-left"
+                className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] text-red-600 hover:bg-red-50 font-medium transition-colors duration-200 w-full text-left"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
-                Log out
+                <LogOut size={18} />
+                <span>Log out</span>
               </button>
             )}
           </div>

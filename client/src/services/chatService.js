@@ -20,42 +20,72 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+// We'll use mock data since the backend might not exist or we want to test UI first.
+
 /**
  * Creates a new chat session for the given user.
- * @param {string} userId - The authenticated user's ID.
- * @param {string} [title] - Optional session title.
- * @returns {Promise<Object>} The created session object.
  */
 export const createSession = async (userId, title) => {
-  const response = await apiClient.post('/chat/session', {
-    user_id: userId,
-    title,
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id: `sess_${Date.now()}`,
+        user_id: userId,
+        title: title || 'New Conversation'
+      });
+    }, 500);
   });
-  return response.data;
 };
 
 /**
- * Sends a user message and receives AI response.
- * Server expects: { session_id, message }
- * Server returns: { message: '...', data: { session_id, message, response, emotion, timestamp } }
- * @param {string} sessionId - The active chat session ID.
- * @param {string} message - The user's message text.
- * @returns {Promise<Object>} The server response with AI reply.
+ * Sends a user message and receives AI response (mock).
  */
 export const sendMessage = async (sessionId, message) => {
-  const response = await apiClient.post('/chat/message', {
-    session_id: sessionId,
-    message,
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        message: 'Message processed successfully',
+        data: {
+          session_id: sessionId,
+          message: message,
+          response: `I hear you saying "${message}". That sounds like it could be challenging, but I'm here to support you. How does that make you feel?`,
+          emotion: 'empathetic',
+          timestamp: new Date().toISOString()
+        }
+      });
+    }, 1500); // 1.5s delay to show typing indicator
   });
-  return response.data;
 };
 
 /**
- * Fetches chat history for a given session.
- * @param {string} sessionId - The chat session ID.
- * @returns {Promise<Object>} Array of chat messages.
+ * Fetches chat history for a given session (mock).
  */
 export const getHistory = async (sessionId) => {
-  const response = await apiClient.get(`/chat/history/${sessionId}`);
-  return response.data;
+  console.log('Fetching mock history for session:', sessionId);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        // Mock empty or existing history. For now, we'll return empty so the welcome state shows.
+      ]);
+    }, 500);
+  });
+};
+
+/**
+ * Fetches mock emotion history for the Dashboard Analytics.
+ */
+export const getEmotionHistory = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { date: 'Mon', happiness: 65, stress: 80 },
+        { date: 'Tue', happiness: 70, stress: 75 },
+        { date: 'Wed', happiness: 68, stress: 60 },
+        { date: 'Thu', happiness: 75, stress: 55 },
+        { date: 'Fri', happiness: 85, stress: 40 },
+        { date: 'Sat', happiness: 90, stress: 30 },
+        { date: 'Sun', happiness: 88, stress: 35 },
+      ]);
+    }, 800);
+  });
 };

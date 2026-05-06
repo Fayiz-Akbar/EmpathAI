@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
+import DashboardPage from './pages/DashboardPage';
 
 /**
  * App — Root component managing client-side routing.
@@ -14,6 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<ChatPage />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
