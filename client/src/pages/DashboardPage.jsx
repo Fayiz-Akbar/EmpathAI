@@ -55,14 +55,14 @@ const DashboardPage = () => {
       <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
         <ChatHeader onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
-        <main className="flex-1 overflow-y-auto no-scrollbar p-6 sm:p-10 bg-[#F0F4F9]">
+        <main className="flex-1 overflow-y-auto no-scrollbar p-6 sm:p-10 bg-white">
           <div className="max-w-5xl mx-auto space-y-8">
             <div>
               <h1 className="text-3xl font-medium text-gray-800 mb-2 font-[Outfit]">Emotion Dashboard</h1>
               <p className="text-gray-600">Visualize your emotion trends over time based on your conversations with EmpathAI.</p>
             </div>
 
-            <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 sm:p-8">
+            <div className="bg-white rounded-card shadow-sm border border-gray-100 p-6 sm:p-8">
               <h2 className="text-xl font-medium text-gray-800 mb-6 font-[Outfit]">Happiness vs Stress Over Time</h2>
               
               {isLoading ? (

@@ -26,7 +26,7 @@ const AuthButton = ({
         transition-all duration-300
         ${isDisabled
           ? 'opacity-60 cursor-not-allowed'
-          : 'cursor-pointer hover:bg-[#7D9587] hover:-translate-y-0.5 active:scale-[0.98]'
+          : 'cursor-pointer hover:bg-primary-hover hover:-translate-y-0.5 active:scale-[0.98]'
         }
       `}
     >

@@ -9,7 +9,7 @@ const AuthInput = ({ id, type = 'text', value, onChange, placeholder = '', error
   return (
     <div className="flex flex-col w-full mb-5">
       <div className="relative">
-        <input id={id} name={id} type={inputType} value={value} onChange={onChange} placeholder={placeholder} required={required} autoComplete={autoComplete} className={`w-full px-5 py-4 rounded-3xl border bg-white text-[#4A5568] text-[15px] placeholder-[#A0AAB2] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#8FA697] focus:border-[#8FA697] hover:border-gray-300 ${error ? 'border-red-300 bg-red-50/50' : 'border-gray-200'}`} style={{ paddingRight: isPasswordField ? '64px' : '20px' }} />
+        <input id={id} name={id} type={inputType} value={value} onChange={onChange} placeholder={placeholder} required={required} autoComplete={autoComplete} className={`w-full px-5 py-4 rounded-3xl border bg-white text-text-primary text-[15px] placeholder-[#A0AAB2] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#8FA697] focus:border-[#8FA697] hover:border-gray-300 ${error ? 'border-red-300 bg-red-50/50' : 'border-gray-200'}`} style={{ paddingRight: isPasswordField ? '64px' : '20px' }} />
         {isPasswordField && (
           <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl transition-colors duration-200 hover:bg-gray-100 focus:outline-none text-[12px] font-bold text-[#8FA697] tracking-wider uppercase" tabIndex={-1}>
             {showPassword ? "Hide" : "Show"}

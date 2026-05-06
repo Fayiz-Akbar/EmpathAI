@@ -175,7 +175,7 @@ const ChatPage = () => {
                 
                 {/* Greeting */}
                 <div className="text-left mb-8 pl-1 animate-fade-in-up">
-                  <h1 className="text-[3.5rem] font-medium text-transparent bg-clip-text bg-gradient-to-r from-[#4b90ff] to-[#ff5546] tracking-tight mb-2 font-[Outfit] leading-[1.1]">
+                  <h1 className="text-[3.5rem] font-medium text-transparent bg-clip-text bg-linear-to-r from-[#4b90ff] to-[#ff5546] tracking-tight mb-2 font-[Outfit] leading-[1.1]">
                     {userName ? `Hi ${userName}` : 'Hi there'}
                   </h1>
                   <h2 className="text-[3.5rem] font-medium text-[#c4c7c5] tracking-tight font-[Outfit] leading-[1.1]">

@@ -88,11 +88,11 @@ const Sidebar = ({
         {/* The Rest of the Sidebar */}
         <div className={`flex flex-col flex-1 overflow-hidden transition-opacity duration-300 ${isDesktopOpen || window.innerWidth < 1024 ? 'opacity-100' : 'opacity-0 lg:invisible'}`}>
           
-          <nav className="flex flex-col gap-1 px-3 py-2 shrink-0">
+          <nav className="flex flex-col gap-3 py-2 shrink-0">
             {/* New Chat Button */}
             <button
               onClick={handleNewChatClick}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-[#444746] hover:bg-[#E1E5EA] transition-colors duration-200 w-full text-left bg-[#E1E5EA]/40"
+              className="flex items-center gap-3 ml-[5px] p-[3px] rounded-xl text-[14px] font-medium text-[#444746] hover:bg-[#E1E5EA] transition-colors duration-200 w-[calc(100%-10px)] text-left bg-[#E1E5EA]/40"
             >
               <Plus size={18} />
               <span>New chat</span>
@@ -101,7 +101,7 @@ const Sidebar = ({
             {/* Dashboard */}
             <button
               onClick={handleDashboard}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium transition-colors duration-200 w-full text-left ${
+              className={`flex items-center gap-3 ml-[5px] p-[3px] rounded-xl text-[14px] font-medium transition-colors duration-200 w-[calc(100%-10px)] text-left ${
                 isDashboardActive
                   ? 'bg-[#E1E5EA] text-[#1E293B]'
                   : 'text-[#444746] hover:bg-[#E1E5EA]'
@@ -113,13 +113,13 @@ const Sidebar = ({
           </nav>
 
           {/* Sections */}
-          <div className="flex-1 overflow-y-auto no-scrollbar px-3 flex flex-col gap-1">
+          <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3">
             {/* Chats section */}
             <div className="mt-4 mb-1 px-4">
               <h3 className="text-[13px] font-semibold text-[#444746]">Chats</h3>
             </div>
             
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-2">
               {chatSessions.length > 0 ? (
                 chatSessions.map((session) => (
                   <button
@@ -128,7 +128,7 @@ const Sidebar = ({
                       if (onSelectSession) onSelectSession(session._id || session.id);
                       if (window.innerWidth < 1024) onToggleMobile();
                     }}
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] text-left truncate transition-colors duration-200 w-full ${
+                    className={`flex items-center gap-3 ml-[5px] p-[3px] rounded-lg text-[14px] text-left truncate transition-colors duration-200 w-[calc(100%-10px)] ${
                       activeSessionId === (session._id || session.id)
                         ? 'bg-[#E1E5EA] text-[#1E293B] font-medium'
                         : 'text-[#444746] hover:bg-[#E1E5EA]'
@@ -145,8 +145,8 @@ const Sidebar = ({
           </div>
 
           {/* Footer */}
-          <div className="px-3 py-3 border-t border-[#E1E5EA] shrink-0 flex flex-col gap-1">
-            <button className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] text-[#444746] hover:bg-[#E1E5EA] font-medium transition-colors duration-200 w-full text-left">
+          <div className="py-3 border-t border-[#E1E5EA] shrink-0 flex flex-col gap-2">
+            <button className="flex items-center gap-3 ml-[5px] p-[3px] rounded-lg text-[14px] text-[#444746] hover:bg-[#E1E5EA] font-medium transition-colors duration-200 w-[calc(100%-10px)] text-left">
               <Settings size={18} />
               <span>Settings & help</span>
             </button>
@@ -154,7 +154,7 @@ const Sidebar = ({
             {isAuthenticated() && (
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] text-red-600 hover:bg-red-50 font-medium transition-colors duration-200 w-full text-left"
+                className="flex items-center gap-3 ml-[5px] p-[3px] rounded-lg text-[14px] text-red-600 hover:bg-red-50 font-medium transition-colors duration-200 w-[calc(100%-10px)] text-left"
               >
                 <LogOut size={18} />
                 <span>Log out</span>

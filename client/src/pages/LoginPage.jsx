@@ -158,7 +158,7 @@ const LoginPage = () => {
         <div className="flex justify-end -mt-2 mb-8">
           <button
             type="button"
-            className="text-[13.5px] text-[#8FA697] hover:text-[#7D9587] transition-colors duration-200"
+            className="text-[13.5px] text-[#8FA697] hover:text-primary-hover transition-colors duration-200"
           >
             Forgot password?
           </button>

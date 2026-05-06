@@ -41,7 +41,7 @@ const ChatHeader = ({ onMenuClick }) => {
       {/* Right: User Avatar */}
       <div className="flex items-center gap-4">
         {/* User Avatar */}
-        <div className="w-8 h-8 rounded-full bg-[#8FA697] border-2 border-white shadow-sm flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:bg-[#7D9587] transition-all">
+        <div className="w-8 h-8 rounded-full bg-[#8FA697] border-2 border-white shadow-sm flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:bg-primary-hover transition-all">
           {userName}
         </div>
       </div>
