@@ -1,16 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * MessageInput — Gemini-style centered input box.
- * When hasMessages is false: renders as a standalone centered input (home state).
- * When hasMessages is true: renders at the bottom of the chat area.
- */
-const MessageInput = ({ onSend, isLoading, hasMessages = true }) => {
+const MessageInput = ({ onSend, isLoading }) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef(null);
 
-  // Auto-resize textarea based on content
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -24,9 +18,7 @@ const MessageInput = ({ onSend, isLoading, hasMessages = true }) => {
     if (message.trim() && !isLoading) {
       onSend(message);
       setMessage('');
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
-      }
+      if (textareaRef.current) textareaRef.current.style.height = 'auto';
     }
   };
 
@@ -38,53 +30,51 @@ const MessageInput = ({ onSend, isLoading, hasMessages = true }) => {
   };
 
   return (
-    <div className={`w-full ${hasMessages ? 'bg-[#FAF9F6]/95 backdrop-blur-sm pb-safe' : ''}`}>
-      <div className="w-full max-w-3xl mx-auto px-4 pb-6 pt-2">
-        <form onSubmit={handleSubmit} className="relative">
-          {/* Input Container — rounded box with border like Gemini */}
-          <div className="flex items-end bg-white border border-[#DDD9D0] rounded-[2rem] px-6 py-3 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] focus-within:border-[#8FA697] focus-within:shadow-[0_4px_16px_-4px_rgba(143,166,151,0.2)] transition-all duration-300">
-            {/* Textarea */}
-            <textarea
-              ref={textareaRef}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Tell EmpathAI how you feel..."
-              disabled={isLoading}
-              rows={1}
-              className="flex-1 bg-transparent text-[16px] text-[#1E293B] placeholder-[#9CA3AF] focus:outline-none resize-none py-1.5 disabled:opacity-70 overflow-hidden"
-              style={{ maxHeight: '150px' }}
-            />
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex items-end bg-gray-50 rounded-[24px] p-2 focus-within:bg-white focus-within:shadow-md focus-within:border focus-within:border-gray-200 transition-all duration-300 border border-transparent">
+        
+        {/* Attachment / Plus Icon */}
+        <button type="button" className="p-3 text-gray-500 hover:bg-gray-200 rounded-full transition-colors mb-0.5 focus:outline-none" aria-label="Add attachment">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
 
-            {/* Send Button */}
-            <button
-              type="submit"
-              disabled={!message.trim() || isLoading}
-              className="w-10 h-10 bg-[#8FA697] rounded-full flex items-center justify-center text-white shrink-0 ml-3 hover:bg-[#7D9587] transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
-              aria-label="Send message"
-            >
-              {isLoading ? (
-                <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </form>
+        {/* Textarea */}
+        <textarea
+          ref={textareaRef}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Ask EmpathAI..."
+          disabled={isLoading}
+          rows={1}
+          className="flex-1 bg-transparent text-[16px] text-gray-800 placeholder-gray-500 focus:outline-none resize-none px-2 py-3.5 overflow-hidden leading-relaxed"
+          style={{ maxHeight: '150px' }}
+        />
+
+        {/* Send / Mic Icon */}
+        <button
+          type="submit"
+          disabled={!message.trim() || isLoading}
+          className={`p-3 mb-0.5 ml-2 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 focus:outline-none ${message.trim() ? 'bg-[#8FA697] text-white hover:bg-[#7D9587] shadow-sm' : 'text-gray-500 hover:bg-gray-200'}`}
+          aria-label="Send message"
+        >
+          {isLoading ? (
+            <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+          ) : message.trim() ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+          )}
+        </button>
+
       </div>
-    </div>
+    </form>
   );
 };
 
 MessageInput.propTypes = {
   onSend: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
-  hasMessages: PropTypes.bool,
 };
 
 export default MessageInput;

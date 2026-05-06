@@ -20,17 +20,16 @@ const ChatHeader = ({ onMenuClick }) => {
   })();
 
   return (
-    <header className="w-full bg-[#FAF9F6] px-4 py-3 flex items-center justify-between shrink-0 z-20">
-      {/* Left: hamburger (mobile only) + title */}
-      <div className="flex items-center gap-2">
+    <header className="w-full bg-white pt-6 pb-4 px-8 sm:px-10 flex items-center justify-between shrink-0 z-20">
+      {/* Left: title & mobile menu */}
+      <div className="flex items-center gap-4">
         {/* Hamburger — visible only on mobile (hidden lg+) */}
         <button
-          id="chat-menu-button"
           onClick={onMenuClick}
-          className="p-2.5 -ml-1 text-[#5F6368] hover:bg-[#E8E5DE] rounded-full transition-colors duration-200 lg:hidden"
+          className="p-2 -ml-2 text-[#444746] hover:bg-[#F0F4F9] rounded-full transition-colors duration-200 lg:hidden"
           aria-label="Open menu"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <line x1="3" y1="12" x2="21" y2="12" />
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="18" x2="21" y2="18" />
@@ -38,13 +37,13 @@ const ChatHeader = ({ onMenuClick }) => {
         </button>
 
         {/* Title */}
-        <h1 className="text-[18px] font-bold text-[#4A5568] font-[Outfit] tracking-tight">
+        <h1 className="text-[22px] font-medium text-[#444746] font-[Outfit] tracking-tight">
           EmpathAI
         </h1>
       </div>
 
       {/* Right: User Avatar */}
-      <div className="w-8 h-8 rounded-full bg-[#8FA697] flex items-center justify-center text-white font-semibold text-sm cursor-pointer hover:bg-[#7D9587] transition-colors">
+      <div className="w-10 h-10 rounded-full bg-[#8FA697] flex items-center justify-center text-white font-semibold text-lg cursor-pointer hover:bg-[#7D9587] transition-colors shadow-sm">
         {userName}
       </div>
     </header>
