@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Zap, Heart, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ChatHeader from '../components/ChatHeader';
@@ -16,6 +16,9 @@ const ChatPage = () => {
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const [sessionId, setSessionId] = useState(() => localStorage.getItem('empathAI_sessionId') || '');
   
+  // State untuk menyimpan daftar riwayat obrolan di Sidebar
+  const [chatSessions, setChatSessions] = useState([]); 
+  
   const user = getCurrentUser(); // Cek status login
   const hasMessages = messages.length > 0;
   const chatEndRef = useRef(null);
@@ -32,7 +35,7 @@ const ChatPage = () => {
     if (sessionId && user) {
       loadHistory(sessionId);
     }
-  }, [sessionId]);
+  }, [sessionId, user]);
 
   const loadHistory = async (sid) => {
     try {
@@ -47,6 +50,19 @@ const ChatPage = () => {
     } catch (error) {
       console.error("Gagal memuat riwayat:", error);
     }
+  };
+
+  const handleNewChat = () => {
+    setSessionId('');
+    setMessages([]);
+    localStorage.removeItem('empathAI_sessionId');
+    setIsMobileSidebarOpen(false); // Tutup sidebar mobile setelah klik
+  };
+
+  const handleSelectSession = (id) => {
+    setSessionId(id);
+    localStorage.setItem('empathAI_sessionId', id);
+    setIsMobileSidebarOpen(false); // Tutup sidebar mobile setelah klik
   };
 
   const handleSend = async (text) => {
@@ -70,6 +86,9 @@ const ChatPage = () => {
         currentSid = res.session._id;
         setSessionId(currentSid);
         localStorage.setItem('empathAI_sessionId', currentSid);
+        
+        // PENTING: Tambahkan sesi baru ke daftar sidebar secara manual agar langsung muncul
+        setChatSessions(prev => [{ _id: currentSid, title: text.slice(0, 30) }, ...prev]);
       }
 
       const res = await sendChatMessage(currentSid, text);
@@ -88,12 +107,31 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-slate-50 font-sans text-gray-800">
-      <Sidebar 
-        isDesktopOpen={isDesktopSidebarOpen} 
-        activeSessionId={sessionId}
-        onSelectSession={(id) => setSessionId(id)}
-      />
+    <div className="h-screen w-full flex overflow-hidden bg-slate-50 font-sans text-gray-800 relative">
+      
+      {/* 1. OVERLAY MOBILE (Latar belakang gelap saat Sidebar terbuka di HP) */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* 2. SIDEBAR RESPONSIVE */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 md:static md:block
+        transform transition-transform duration-300 ease-in-out h-full
+        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <Sidebar 
+          isDesktopOpen={isDesktopSidebarOpen} 
+          onToggleDesktop={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
+          chatSessions={chatSessions} // Lempar data sesi ke Sidebar
+          activeSessionId={sessionId}
+          onSelectSession={handleSelectSession}
+          onNewChat={handleNewChat}
+        />
+      </div>
 
       <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
         <ChatHeader user={user} onMenuClick={() => setIsMobileSidebarOpen(true)} />
@@ -102,24 +140,25 @@ const ChatPage = () => {
           {!hasMessages ? (
             /* WELCOME STATE */
             <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-8 pb-10">
-              <div className="w-full max-w-3xl flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="w-full max-w-3xl flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700 mt-8 md:mt-0">
                 <div className="text-left mb-8 pl-2">
-                  <h1 className="text-5xl sm:text-6xl font-medium tracking-tight mb-2 leading-tight bg-gradient-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent font-[Outfit]">
+                  {/* Teks responsif: 4xl di HP, 6xl di Laptop */}
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight bg-gradient-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent font-[Outfit]">
                     Hi {user?.name?.split(' ')[0] || 'there'}
                   </h1>
-                  <h2 className="text-4xl sm:text-5xl font-medium text-gray-300 tracking-tight leading-tight font-[Outfit]">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-300 tracking-tight leading-tight font-[Outfit]">
                     Where should we start?
                   </h2>
                 </div>
 
                 <MessageInput onSend={handleSend} isLoading={isLoading} />
 
-                {/* Quick Actions */}
-                <div className="flex flex-wrap justify-center sm:justify-start gap-3 mt-8">
-                  <ActionButton icon={<Sparkles size={16} className="text-blue-500"/>} text="Analyze mood" onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
-                  <ActionButton icon={<Zap size={16} className="text-orange-500"/>} text="Anxiety relief" onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
-                  <ActionButton icon={<Heart size={16} className="text-red-500"/>} text="Daily motivation" onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
-                  <ActionButton icon={<Brain size={16} className="text-purple-500"/>} text="Stress management" onClick={() => handleSend("Tugas kuliah bikin stres, gimana cara mengatasinya?")} />
+                {/* Quick Actions (Bisa scroll horizontal di HP) */}
+                <div className="flex flex-wrap gap-2 sm:gap-3 mt-8 w-full px-2">
+                  <ActionButton icon={<Sparkles size={16} className="text-blue-500 shrink-0"/>} text="Analyze mood" onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
+                  <ActionButton icon={<Zap size={16} className="text-orange-500 shrink-0"/>} text="Anxiety relief" onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
+                  <ActionButton icon={<Heart size={16} className="text-red-500 shrink-0"/>} text="Daily motivation" onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
+                  <ActionButton icon={<Brain size={16} className="text-purple-500 shrink-0"/>} text="Stress management" onClick={() => handleSend("Tugas kuliah bikin stres, gimana cara mengatasinya?")} />
                 </div>
               </div>
             </div>
@@ -135,9 +174,9 @@ const ChatPage = () => {
           )}
         </main>
 
-        {/* Footer Text untuk mode Welcome (saat chat kosong) */}
+        {/* Footer Text untuk mode Welcome */}
         {!hasMessages && (
-            <div className="w-full text-center pb-4 text-xs text-gray-400">
+            <div className="w-full text-center pb-4 pt-4 text-[10px] sm:text-xs text-gray-400 px-4">
                 EmpathAI can make mistakes. Consider verifying important information.
             </div>
         )}
@@ -147,7 +186,7 @@ const ChatPage = () => {
           <div className="w-full border-t border-gray-100 bg-white p-4 shrink-0">
             <div className="max-w-4xl mx-auto">
               <MessageInput onSend={handleSend} isLoading={isLoading} />
-              <p className="text-[11px] text-gray-400 text-center mt-3 uppercase tracking-widest font-semibold">
+              <p className="text-[10px] sm:text-[11px] text-gray-400 text-center mt-3 uppercase tracking-widest font-semibold">
                 EmpathAI can make mistakes. Verify important info.
               </p>
             </div>
@@ -160,7 +199,10 @@ const ChatPage = () => {
 
 // Sub-component untuk tombol aksi cepat
 const ActionButton = ({ icon, text, onClick }) => (
-  <button onClick={onClick} className="px-4 py-2.5 bg-white border border-gray-200 rounded-full flex items-center gap-2.5 hover:bg-slate-50 hover:border-blue-200 transition-all text-sm text-gray-600 font-medium shadow-sm active:scale-95">
+  <button 
+    onClick={onClick} 
+    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-full flex items-center gap-2 hover:bg-slate-50 hover:border-blue-200 transition-all text-xs sm:text-sm text-gray-600 font-medium shadow-sm active:scale-95 whitespace-nowrap"
+  >
     {icon} <span>{text}</span>
   </button>
 );
