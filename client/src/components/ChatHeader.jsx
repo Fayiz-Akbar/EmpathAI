@@ -1,56 +1,51 @@
-import { 
-  Menu, 
-  ChevronDown 
-} from 'lucide-react';
-import PropTypes from 'prop-types';
+import { Menu, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const ChatHeader = ({ onMenuClick }) => {
-  const userName = (() => {
-    try {
-      const storedUser = localStorage.getItem('empathAI_user');
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        return user.name ? user.name.charAt(0).toUpperCase() : 'E';
-      }
-    } catch {
-      // fall back
-    }
-    return 'E';
-  })();
+const ChatHeader = ({ user, onMenuClick }) => {
+  const navigate = useNavigate();
 
   return (
-    <header className="w-full h-[64px] bg-white flex items-center justify-between shrink-0 z-20 px-4 sm:px-6">
-      {/* Left: title & mobile menu */}
+    <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white border-b border-gray-100 shrink-0">
       <div className="flex items-center gap-2">
-        {/* Hamburger — mobile only */}
-        <button
-          onClick={onMenuClick}
-          className="p-2.5 text-[#444746] hover:bg-[#F0F4F9] rounded-full transition-colors duration-200 lg:hidden"
-          aria-label="Open menu"
+        {/* Hamburger Menu (Mobile) */}
+        <button 
+          onClick={onMenuClick} 
+          className="md:hidden text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
         >
-          <Menu size={22} />
+          <Menu size={20} />
         </button>
         
-        {/* Title / Dropdown */}
-        <div className="flex items-center gap-1 px-3 py-1.5 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors group">
-          <span className="text-[18px] font-medium text-[#444746] tracking-tight font-[Outfit]">EmpathAI</span>
-          <ChevronDown size={16} className="text-[#444746] group-hover:text-black transition-colors" />
+        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors">
+          <span className="font-semibold text-xl text-gray-700 font-[Outfit]">EmpathAI</span>
+          <ChevronDown size={14} className="text-gray-400" />
         </div>
       </div>
 
-      {/* Right: User Avatar */}
       <div className="flex items-center gap-4">
-        {/* User Avatar */}
-        <div className="w-8 h-8 rounded-full bg-[#8FA697] border-2 border-white shadow-sm flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:bg-primary-hover transition-all">
-          {userName}
-        </div>
+        {/* Logic: Jika user login, tampilkan Avatar. Jika belum, tampilkan tombol Login/Register */}
+        {user ? (
+          <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-medium text-sm cursor-pointer shadow-sm hover:opacity-90 transition-opacity">
+            {user.name ? user.name.charAt(0).toUpperCase() : 'E'}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => navigate('/login')} 
+              className="px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all"
+            >
+              Login
+            </button>
+            <button 
+              onClick={() => navigate('/register')} 
+              className="px-4 py-1.5 text-sm font-medium text-white bg-[#4b90ff] hover:bg-blue-600 rounded-full transition-all shadow-sm"
+            >
+              Register
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
-};
-
-ChatHeader.propTypes = {
-  onMenuClick: PropTypes.func,
 };
 
 export default ChatHeader;
