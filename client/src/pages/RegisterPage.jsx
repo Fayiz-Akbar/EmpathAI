@@ -1,216 +1,162 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
-import AuthInput from '../components/AuthInput';
-import AuthButton from '../components/AuthButton';
-import { registerUser } from '../services/authService';
+import { useNavigate, Link } from 'react-router-dom';
+import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react'; // <-- Tambahkan Eye dan EyeOff
+import { loginUser } from '../services/authService';
 
-/**
- * RegisterPage — Handles new user registration.
- * Communicates with POST /api/auth/register and redirects to login on success.
- */
-const RegisterPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
-
-  // ── Form State ──
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  // ── UI State ──
-  const [errors, setErrors] = useState({});
-  const [apiMessage, setApiMessage] = useState({ type: '', text: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  
+  // <-- Tambahkan state untuk mengontrol visibilitas password
+  const [showPassword, setShowPassword] = useState(false); 
 
-  /**
-   * Updates a single form field and clears its associated error.
-   */
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-    if (apiMessage.text) {
-      setApiMessage({ type: '', text: '' });
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrorMsg(''); // Hilangkan error saat user mulai mengetik ulang
   };
 
-  /**
-   * Validates all form fields before submission.
-   * @returns {boolean} Whether the form is valid.
-   */
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  // <-- Tambahkan fungsi toggle mata
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
-  /**
-   * Handles form submission — validates, calls API, and processes response.
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiMessage({ type: '', text: '' });
-
-    if (!validateForm()) return;
+    if (!formData.email || !formData.password) {
+      setErrorMsg('Email dan password wajib diisi.');
+      return;
+    }
 
     setIsLoading(true);
-
     try {
-      const data = await registerUser({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-      });
-
-      setApiMessage({
-        type: 'success',
-        text: data.message || 'Registration successful! Redirecting to log in...',
-      });
-
-      // Redirect to login after a short delay for success feedback
-      setTimeout(() => {
-        navigate('/login');
-      }, 1500);
+      // Panggil API Backend
+      const response = await loginUser(formData);
+      
+      // Simpan Token dan Data User ke Local Storage sesuai nama di authService.js
+      if (response.token && response.user) {
+        localStorage.setItem('empathAI_token', response.token);
+        localStorage.setItem('empathAI_user', JSON.stringify(response.user));
+        
+        // Arahkan ke halaman utama setelah sukses
+        navigate('/chat');
+      } else {
+        setErrorMsg('Format respons dari server tidak sesuai.');
+      }
     } catch (error) {
-      const message =
-        error.response?.data?.message || 'An error occurred. Please try again.';
-      setApiMessage({ type: 'error', text: message });
+      console.error('Login Error:', error);
+      // Tangkap pesan error dari backend jika ada, atau gunakan pesan default
+      setErrorMsg(error.response?.data?.message || 'Gagal login. Periksa kembali email dan password Anda.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <AuthLayout
-      title="Create Account"
-      subtitle="Start your journey to better well-being."
-      footerText="Already have an account?"
-      footerLinkText="Log in"
-      footerLinkTo="/login"
-    >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col w-full">
-        {/* API Feedback Message */}
-        {apiMessage.text && (
-          <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium animate-fade-in mb-6 shadow-sm ${
-              apiMessage.type === 'error'
-                ? 'bg-red-50 text-red-500'
-                : 'bg-green-50 text-green-600'
-            }`}
-          >
-            {apiMessage.type === 'error' ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
-            )}
-            {apiMessage.text}
+    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 font-sans p-4 relative overflow-hidden">
+      
+      {/* Background Ornamen */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full blur-3xl opacity-50"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-red-400/10 rounded-full blur-3xl opacity-50"></div>
+
+      <div className="w-full max-w-md bg-white rounded-[2rem] shadow-xl p-8 sm:p-10 relative z-10 border border-gray-100">
+        
+        {/* Header / Logo */}
+        <div className="text-center mb-10">
+          <Link to="/" className="inline-block">
+            <h1 className="text-3xl font-semibold font-[Outfit] tracking-tight text-gray-800 mb-2">
+              Welcome to <span className="bg-gradient-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent">EmpathAI</span>
+            </h1>
+          </Link>
+          <p className="text-gray-500 text-sm">Masuk untuk melanjutkan sesi curhatmu</p>
+        </div>
+
+        {/* Error Alert */}
+        {errorMsg && (
+          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg animate-in fade-in slide-in-from-top-2">
+            {errorMsg}
           </div>
         )}
 
-        {/* Full Name Field */}
-        <AuthInput
-          id="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Full Name"
-          error={errors.name}
-          required
-          autoComplete="name"
-        />
+        {/* Form Login */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-gray-700 pl-1">Email Address</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail size={18} className="text-gray-400" />
+              </div>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-2xl pl-11 pr-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 focus:bg-white transition-all"
+                required
+              />
+            </div>
+          </div>
 
-        {/* Email Field */}
-        <AuthInput
-          id="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email address"
-          error={errors.email}
-          required
-          autoComplete="email"
-        />
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-gray-700 pl-1">Password</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Lock size={18} className="text-gray-400" />
+              </div>
+              
+              {/* <-- Modifikasi input type menjadi dinamis dan ubah pr-4 menjadi pr-12 --> */}
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-2xl pl-11 pr-12 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 focus:bg-white transition-all"
+                required
+              />
+              
+              {/* <-- Tambahkan tombol mata di sini --> */}
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                tabIndex="-1"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-        {/* Password Field */}
-        <AuthInput
-          id="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          error={errors.password}
-          required
-          autoComplete="new-password"
-        />
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-[#4b90ff] hover:bg-blue-600 text-white font-medium rounded-2xl py-3.5 px-4 transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none disabled:opacity-70 flex justify-center items-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" /> Memproses...
+                </>
+              ) : (
+                <>
+                  Login <ArrowRight size={18} />
+                </>
+              )}
+            </button>
+          </div>
+        </form>
 
-        {/* Confirm Password Field */}
-        <AuthInput
-          id="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Confirm password"
-          error={errors.confirmPassword}
-          required
-          autoComplete="new-password"
-        />
-
-        {/* Submit Button */}
-        <AuthButton
-          id="register-button"
-          type="submit"
-          isLoading={isLoading}
-        >
-          Create Account
-        </AuthButton>
-
-        {/* Terms of Service text */}
-        <p className="text-[12px] text-center text-gray-400 px-4 leading-relaxed mt-6">
-          By creating an account, you agree to our{' '}
-          <span className="font-medium text-[#8FA697] cursor-pointer hover:text-[#7D9587] transition-colors">Terms of Service</span>{' '}
-          and{' '}
-          <span className="font-medium text-[#8FA697] cursor-pointer hover:text-[#7D9587] transition-colors">Privacy Policy</span>.
-        </p>
-      </form>
-    </AuthLayout>
+        <div className="mt-8 text-center text-sm text-gray-500">
+          Belum punya akun?{' '}
+          <Link to="/register" className="text-[#4b90ff] font-semibold hover:underline transition-all">
+            Daftar sekarang
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
