@@ -4,6 +4,10 @@
 @source "./**/*.{js,ts,jsx,tsx}";
 @source "../index.html";
 
+/* Aktifkan mode gelap berbasis class untuk Tailwind v4 */
+@custom-variant dark (&:is(.dark *));
+
+
 /* ============================================
    EmpathAI — Custom Theme & Animations
    ============================================ */

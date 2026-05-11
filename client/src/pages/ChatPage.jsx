@@ -107,7 +107,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-slate-50 font-sans text-gray-800 relative">
+    <div className="h-screen w-full flex overflow-hidden bg-slate-50 dark:bg-slate-900 font-sans text-gray-800 dark:text-gray-100 relative">
       
       {/* 1. OVERLAY MOBILE (Latar belakang gelap saat Sidebar terbuka di HP) */}
       {isMobileSidebarOpen && (
@@ -133,7 +133,7 @@ const ChatPage = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
+      <div className="flex-1 flex flex-col h-full bg-white dark:bg-slate-900 relative min-w-0">
         <ChatHeader user={user} onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto no-scrollbar flex flex-col w-full">
@@ -183,7 +183,7 @@ const ChatPage = () => {
 
         {/* Footer Input untuk mode Chat */}
         {hasMessages && (
-          <div className="w-full border-t border-gray-100 bg-white p-4 shrink-0">
+          <div className="w-full border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shrink-0">
             <div className="max-w-4xl mx-auto">
               <MessageInput onSend={handleSend} isLoading={isLoading} />
               <p className="text-[10px] sm:text-[11px] text-gray-400 text-center mt-3 uppercase tracking-widest font-semibold">
@@ -201,7 +201,7 @@ const ChatPage = () => {
 const ActionButton = ({ icon, text, onClick }) => (
   <button 
     onClick={onClick} 
-    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-full flex items-center gap-2 hover:bg-slate-50 hover:border-blue-200 transition-all text-xs sm:text-sm text-gray-600 font-medium shadow-sm active:scale-95 whitespace-nowrap"
+    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-full flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-blue-200 dark:hover:border-slate-600 transition-all text-xs sm:text-sm text-gray-600 dark:text-gray-300 font-medium shadow-sm active:scale-95 whitespace-nowrap"
   >
     {icon} <span>{text}</span>
   </button>

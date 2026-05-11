@@ -63,3 +63,29 @@ export const logout = () => {
   localStorage.removeItem('empathAI_user');
   localStorage.removeItem('empathAI_sessionId');
 };
+
+/**
+ * Updates the user's theme preference on the server.
+ * @param {string} theme - 'light' or 'dark'
+ */
+export const updateTheme = async (theme) => {
+  const token = localStorage.getItem('empathAI_token');
+  if (!token) return null;
+  const response = await apiClient.put('/auth/theme', { theme }, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+/**
+ * Updates the theme in localStorage user object.
+ * @param {string} theme - 'light' or 'dark'
+ */
+export const updateLocalUserTheme = (theme) => {
+  const user = getCurrentUser();
+  if (user) {
+    user.theme = theme;
+    localStorage.setItem('empathAI_user', JSON.stringify(user));
+  }
+};
+

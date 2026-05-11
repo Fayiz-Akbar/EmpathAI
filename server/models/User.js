@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
   password: { 
     type: String, 
     required: true 
+  },
+  theme: {
+    type: String,
+    enum: ['light', 'dark', 'system'],
+    default: 'system'
   }
 }, { 
   timestamps: true // Otomatis membuat createdAt dan updatedAt

@@ -5,18 +5,18 @@ const ChatHeader = ({ user, onMenuClick }) => {
   const navigate = useNavigate();
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white border-b border-gray-100 shrink-0">
+    <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 shrink-0">
       <div className="flex items-center gap-2">
         {/* Hamburger Menu (Mobile) */}
         <button 
           onClick={onMenuClick} 
-          className="md:hidden text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
+          className="md:hidden text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-800 p-2 rounded-full transition-colors"
         >
           <Menu size={20} />
         </button>
         
-        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors">
-          <span className="font-semibold text-xl text-gray-700 font-[Outfit]">EmpathAI</span>
+        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 px-2 py-1 rounded-lg transition-colors">
+          <span className="font-semibold text-xl text-gray-700 dark:text-gray-200 font-[Outfit]">EmpathAI</span>
           <ChevronDown size={14} className="text-gray-400" />
         </div>
       </div>

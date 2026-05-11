@@ -39,8 +39,8 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
       <div className={`w-full ${isCentered ? 'max-w-3xl' : 'max-w-4xl'}`}>
         
         {/* Kotak Input Utama (Relative untuk mengunci posisi ikon) */}
-        <div className={`relative bg-gray-50 rounded-[32px] border border-gray-200 transition-all duration-300 ${
-          !isCentered ? 'focus-within:shadow-md focus-within:border-gray-300 focus-within:bg-white shadow-sm' : 'shadow-sm'
+        <div className={`relative bg-gray-50 dark:bg-slate-800/50 rounded-[32px] border border-gray-200 dark:border-slate-700 transition-all duration-300 ${
+          !isCentered ? 'focus-within:shadow-md focus-within:border-gray-300 dark:focus-within:border-slate-600 focus-within:bg-white dark:focus-within:bg-slate-900 shadow-sm' : 'shadow-sm'
         }`}>
           
           <textarea
@@ -52,7 +52,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
             disabled={isLoading}
             rows={1}
             // pb-14 memastikan teks yang diketik tidak tertutup oleh deretan tombol di bawahnya
-            className="w-full bg-transparent resize-none px-6 pt-5 pb-14 text-gray-800 placeholder-gray-400 focus:outline-none min-h-[120px] rounded-[32px] text-[16px] disabled:opacity-70 leading-relaxed font-sans"
+            className="w-full bg-transparent resize-none px-6 pt-5 pb-14 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none min-h-[120px] rounded-[32px] text-[16px] disabled:opacity-70 leading-relaxed font-sans"
             style={{ maxHeight: '200px' }}
           />
 
@@ -60,7 +60,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
           <div className="absolute bottom-3 left-4 flex gap-2">
             <button 
               type="button" 
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-full transition-colors focus:outline-none" 
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors focus:outline-none" 
               aria-label="Add attachment"
             >
               <Plus size={20} />
@@ -77,7 +77,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
                   // Gaya tombol saat ada teks (Warna Biru / Tombol Send)
                   ? 'bg-[#4b90ff] hover:bg-blue-600 text-white shadow-md transform scale-105' 
                   // Gaya tombol saat kosong (Warna Abu-abu / Tombol Mic)
-                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-200'
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-200 dark:hover:bg-slate-700'
               }`}
             >
               {isLoading ? (

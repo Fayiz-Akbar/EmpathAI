@@ -9,8 +9,8 @@ const ChatBubble = ({ isUser, message, time, isTyping, emotion }) => {
   if (isUser) {
     return (
       <div className="flex justify-end animate-fade-in">
-        <div className="bg-[#E8E5DE] px-4 py-3 rounded-2xl rounded-tr-md max-w-[75%] lg:max-w-[60%]">
-          <p className="text-[15px] text-[#1E293B] leading-relaxed">{message}</p>
+        <div className="bg-[#E8E5DE] dark:bg-slate-800 px-4 py-3 rounded-2xl rounded-tr-md max-w-[75%] lg:max-w-[60%]">
+          <p className="text-[15px] text-[#1E293B] dark:text-gray-100 leading-relaxed">{message}</p>
           {time && (
             <span className="text-[10px] text-[#9CA3AF] block text-right mt-1">{time}</span>
           )}
@@ -40,7 +40,7 @@ const ChatBubble = ({ isUser, message, time, isTyping, emotion }) => {
           </div>
         ) : (
           <>
-            <p className="text-[15px] text-[#1E293B] leading-relaxed">{message}</p>
+            <p className="text-[15px] text-[#1E293B] dark:text-gray-100 leading-relaxed">{message}</p>
             <div className="flex items-center gap-2">
               {time && (
                 <span className="text-[10px] text-[#9CA3AF]">{time}</span>

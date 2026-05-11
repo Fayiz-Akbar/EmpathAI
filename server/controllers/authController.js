@@ -49,9 +49,28 @@ exports.login = async (req, res) => {
     res.status(200).json({
       message: 'Login berhasil!',
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, email: user.email, theme: user.theme || 'light' }
     });
   } catch (error) {
     res.status(500).json({ message: 'Terjadi kesalahan server', error });
   }
 };
+
+// Fungsi Update Theme
+exports.updateTheme = async (req, res) => {
+  try {
+    const { theme } = req.body;
+    const userId = req.user.id;
+
+    if (!['light', 'dark', 'system'].includes(theme)) {
+      return res.status(400).json({ message: 'Tema tidak valid!' });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { theme }, { new: true });
+    if (!user) return res.status(404).json({ message: 'User tidak ditemukan!' });
+
+    res.status(200).json({ message: 'Tema berhasil diperbarui!', theme: user.theme });
+  } catch (error) {
+    res.status(500).json({ message: 'Terjadi kesalahan server', error });
+  }
+};
