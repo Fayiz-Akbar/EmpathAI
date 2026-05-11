@@ -43,7 +43,7 @@ const ChatPage = () => {
           setMessages(historyMessages);
         }
       } catch (error) {
-        console.error("Gagal memuat riwayat:", error);
+        console.error("Gagal memuat riwayat.:", error);
       }
     };
 
