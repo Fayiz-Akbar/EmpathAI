@@ -32,25 +32,25 @@ const ChatPage = () => {
 
   // Load history jika ada sessionId
   useEffect(() => {
+    const loadHistory = async (sid) => {
+      try {
+        const result = await getHistory(sid);
+        if (result.data) {
+          const historyMessages = result.data.flatMap(chat => [
+            { id: chat._id + '_u', isUser: true, text: chat.message, time: new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) },
+            { id: chat._id + '_a', isUser: false, text: chat.response, time: new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), emotion: chat.emotion }
+          ]);
+          setMessages(historyMessages);
+        }
+      } catch (error) {
+        console.error("Gagal memuat riwayat:", error);
+      }
+    };
+
     if (sessionId && user) {
       loadHistory(sessionId);
     }
   }, [sessionId, user]);
-
-  const loadHistory = async (sid) => {
-    try {
-      const result = await getHistory(sid);
-      if (result.data) {
-        const historyMessages = result.data.flatMap(chat => [
-          { id: chat._id + '_u', isUser: true, text: chat.message, time: new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) },
-          { id: chat._id + '_a', isUser: false, text: chat.response, time: new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), emotion: chat.emotion }
-        ]);
-        setMessages(historyMessages);
-      }
-    } catch (error) {
-      console.error("Gagal memuat riwayat:", error);
-    }
-  };
 
   const handleNewChat = () => {
     setSessionId('');
@@ -143,7 +143,7 @@ const ChatPage = () => {
               <div className="w-full max-w-3xl flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700 mt-8 md:mt-0">
                 <div className="text-left mb-8 pl-2">
                   {/* Teks responsif: 4xl di HP, 6xl di Laptop */}
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight bg-gradient-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent font-[Outfit]">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight bg-linear-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent font-[Outfit]">
                     Hi {user?.name?.split(' ')[0] || 'there'}
                   </h1>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-300 tracking-tight leading-tight font-[Outfit]">

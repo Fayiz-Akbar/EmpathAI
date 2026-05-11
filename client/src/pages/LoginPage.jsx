@@ -60,13 +60,13 @@ const LoginPage = () => {
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full blur-3xl opacity-50"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-red-400/10 rounded-full blur-3xl opacity-50"></div>
 
-      <div className="w-full max-w-md bg-white rounded-[2rem] shadow-xl p-8 sm:p-10 relative z-10 border border-gray-100">
+      <div className="w-full max-w-md bg-white rounded-4xl shadow-xl p-8 sm:p-10 relative z-10 border border-gray-100">
         
         {/* Header / Logo */}
         <div className="text-center mb-10">
           <Link to="/" className="inline-block">
             <h1 className="text-3xl font-semibold font-[Outfit] tracking-tight text-gray-800 mb-2">
-              Welcome to <span className="bg-gradient-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent">EmpathAI</span>
+              Welcome to <span className="bg-linear-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent">EmpathAI</span>
             </h1>
           </Link>
           <p className="text-gray-500 text-sm">Masuk untuk melanjutkan sesi curhatmu</p>
