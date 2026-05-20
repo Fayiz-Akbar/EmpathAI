@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* Beritahu Tailwind v4 untuk memindai semua file di folder src */
+@source "./**/*.{js,ts,jsx,tsx}";
+@source "../index.html";
+
+/* ============================================
+   EmpathAI — Custom Theme & Animations
+   ============================================ */
+@theme {
+  /* Mendaftarkan animasi yang dipakai di JSX */
+  --animate-fade-in-up: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  --animate-fade-in: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    font-family: 'Outfit', 'Inter', sans-serif;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #8FA697;
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================
+   Utilities (No Scrollbar)
+   ============================================ */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom Scrollbar Global */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
