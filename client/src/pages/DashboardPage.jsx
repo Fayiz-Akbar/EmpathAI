@@ -1,50 +1,134 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, MessageSquare, Flame, Calendar, ArrowRight, Brain } from 'lucide-react';
-// IMPORT BARU: Komponen dari Recharts
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Sidebar from '../components/Sidebar';
 import ChatHeader from '../components/ChatHeader';
 import { getCurrentUser } from '../services/authService';
-import { getUserSessions, renameSession, deleteSession } from '../services/chatService';
+import { getUserSessions, getHistory, renameSession, deleteSession } from '../services/chatService';
 
-// --- DATA SIMULASI UNTUK GRAFIK (Nanti kita ganti dari database) ---
-const mockEmotionData = [
-  { day: 'Sen', Senang: 60, Stres: 40, Sedih: 10, Marah: 5 },
-  { day: 'Sel', Senang: 50, Stres: 60, Sedih: 20, Marah: 10 },
-  { day: 'Rab', Senang: 40, Stres: 80, Sedih: 30, Marah: 15 },
-  { day: 'Kam', Senang: 70, Stres: 50, Sedih: 10, Marah: 5 },
-  { day: 'Jum', Senang: 85, Stres: 30, Sedih: 5, Marah: 0 },
-  { day: 'Sab', Senang: 90, Stres: 20, Sedih: 0, Marah: 0 },
-  { day: 'Min', Senang: 80, Stres: 25, Sedih: 10, Marah: 5 },
-];
+// Fungsi Helper: Membuat array dinamis berisi 7 hari terakhir
+const getLast7Days = () => {
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push({
+      dateStr: d.toDateString(),
+      day: d.toLocaleDateString('id-ID', { weekday: 'short' }),
+      Senang: 0, Stres: 0, Sedih: 0, Marah: 0
+    });
+  }
+  return days;
+};
 
 const DashboardPage = () => {
   const navigate = useNavigate();
   const user = getCurrentUser();
+  
+  // PERBAIKAN INFINITE LOOP: Ekstrak ID dalam bentuk teks/string yang statis
+  const userId = user ? (user._id || user.id) : null;
+  
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  
+  // State untuk Data Dinamis
   const [chatSessions, setChatSessions] = useState([]);
+  const [emotionData, setEmotionData] = useState([]);
+  const [dominantMood, setDominantMood] = useState("Menunggu Data...");
+  const [streakCount, setStreakCount] = useState(0);
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
-  // Load data sesi dari backend
+  // Tendang kembali ke halaman login jika tidak ada user
   useEffect(() => {
-    const loadSessions = async () => {
+    if (!userId) navigate('/login');
+  }, [userId, navigate]); // Bergantung pada userId (teks statis), bukan object user
+
+  // Load Data Sesi & Analisis Seluruh Pesan
+  useEffect(() => {
+    const fetchAndAnalyzeData = async () => {
+      if (!userId) return;
+      setIsLoadingData(true);
+
       try {
-        const currentUserId = user ? (user._id || user.id) : null;
-        if (currentUserId) {
-          const res = await getUserSessions(currentUserId);
-          if (res.data) {
-            setChatSessions(res.data);
+        const sessionRes = await getUserSessions(userId);
+        const sessions = sessionRes.data || [];
+        setChatSessions(sessions);
+
+        let allMessages = [];
+        // Ambil 5 sesi terakhir untuk dianalisis
+        const recentSessionsToAnalyze = sessions.slice(0, 5);
+        
+        for (const session of recentSessionsToAnalyze) {
+          const historyRes = await getHistory(session._id);
+          if (historyRes.data) {
+             allMessages = [...allMessages, ...historyRes.data];
           }
         }
+
+        processAnalytics(allMessages, sessions);
+
       } catch (error) {
-        console.error("Gagal memuat daftar sesi:", error);
+        console.error("Gagal memuat atau menganalisis data:", error);
+      } finally {
+        setIsLoadingData(false);
       }
     };
-    loadSessions();
-  }, [user]);
 
-  // Handler untuk Sidebar
+    fetchAndAnalyzeData();
+  }, [userId]); // PERBAIKAN UTAMA: Dependency diubah menjadi userId agar tidak kelap-kelip
+
+
+  const processAnalytics = (messages, sessions) => {
+    // 1. Hitung Total Sesi sebagai "Streak" sementara
+    setStreakCount(sessions.length);
+
+    if (!messages || messages.length === 0) {
+      setDominantMood("Belum Ada Data");
+      setEmotionData(getLast7Days());
+      return;
+    }
+
+    // 2. Hitung Emosi Dominan (Abaikan Netral)
+    const emotionCounts = { Senang: 0, Sedih: 0, Marah: 0, Stres: 0 };
+    messages.forEach(msg => {
+      if (msg.emotion) {
+        const em = msg.emotion.charAt(0).toUpperCase() + msg.emotion.slice(1);
+        if (emotionCounts[em] !== undefined) {
+          emotionCounts[em]++;
+        }
+      }
+    });
+
+    let maxEmotion = 'Netral';
+    let maxCount = 0;
+    Object.entries(emotionCounts).forEach(([em, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        maxEmotion = em;
+      }
+    });
+    setDominantMood(maxCount > 0 ? maxEmotion : 'Belum Ada Pola');
+
+    // 3. Masukkan Data ke Grafik 7 Hari Terakhir
+    const weekData = getLast7Days();
+
+    messages.forEach(msg => {
+      const msgDate = new Date(msg.timestamp).toDateString();
+      if (msg.emotion) {
+        const em = msg.emotion.charAt(0).toUpperCase() + msg.emotion.slice(1);
+        const dayIndex = weekData.findIndex(d => d.dateStr === msgDate);
+        
+        if (dayIndex !== -1 && weekData[dayIndex][em] !== undefined) {
+          weekData[dayIndex][em] += 1; 
+        }
+      }
+    });
+
+    setEmotionData(weekData);
+  };
+
+  // Handler Sidebar
   const handleNewChat = () => {
     localStorage.removeItem('empathAI_sessionId');
     navigate('/chat');
@@ -69,6 +153,8 @@ const DashboardPage = () => {
     try {
       await deleteSession(id);
       setChatSessions(prev => prev.filter(s => s._id !== id));
+      // Refresh layar untuk menghitung ulang grafik setelah chat dihapus
+      window.location.reload(); 
     } catch (error) {
       console.error("Gagal menghapus sesi:", error);
     }
@@ -76,7 +162,6 @@ const DashboardPage = () => {
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-slate-50 font-sans text-gray-800 relative">
-      {/* Overlay Mobile */}
       {isMobileSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity"
@@ -84,7 +169,6 @@ const DashboardPage = () => {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`
         fixed inset-y-0 left-0 z-50 md:static md:block
         transform transition-transform duration-300 ease-in-out h-full
@@ -102,7 +186,6 @@ const DashboardPage = () => {
         />
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
         <ChatHeader 
           user={user} 
@@ -136,15 +219,15 @@ const DashboardPage = () => {
               <StatCard 
                 icon={<Flame className="text-orange-500" size={24} />}
                 title="Current Streak"
-                value="3 Days"
-                subtitle="Keep it up!"
+                value={`${streakCount} Days`}
+                subtitle={streakCount > 0 ? "Keep it up!" : "Mulai curhat hari ini!"}
                 bgColor="bg-orange-50"
               />
               <StatCard 
                 icon={<Brain className="text-purple-500" size={24} />}
                 title="Dominant Mood"
-                value="Netral" 
-                subtitle="In the last 7 days"
+                value={isLoadingData ? "Menghitung..." : dominantMood}
+                subtitle="Based on your recent chats"
                 bgColor="bg-purple-50"
               />
             </div>
@@ -160,23 +243,29 @@ const DashboardPage = () => {
                   </h2>
                 </div>
                 
-                {/* GRAFIK RECHARTS */}
-                <div className="h-64 w-full">
+                {/* GRAFIK BATANG RECHARTS */}
+                <div className="h-64 w-full relative">
+                  {isLoadingData ? (
+                     <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 rounded-xl">
+                        <span className="text-sm font-medium text-blue-500 animate-pulse">Menganalisis emosi...</span>
+                     </div>
+                  ) : null}
+
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={mockEmotionData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
+                    <BarChart data={emotionData.length > 0 ? emotionData : getLast7Days()} margin={{ top: 10, right: 10, bottom: 5, left: -20 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                       <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                      <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
                       <Tooltip 
                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                        cursor={{ stroke: '#e2e8f0', strokeWidth: 2, strokeDasharray: '3 3' }}
+                        cursor={{ fill: '#f8fafc' }}
                       />
                       <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                      <Line type="monotone" dataKey="Senang" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                      <Line type="monotone" dataKey="Stres" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} />
-                      <Line type="monotone" dataKey="Sedih" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} />
-                      <Line type="monotone" dataKey="Marah" stroke="#ef4444" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} />
-                    </LineChart>
+                      <Bar dataKey="Senang" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                      <Bar dataKey="Stres" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                      <Bar dataKey="Sedih" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                      <Bar dataKey="Marah" fill="#ef4444" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
