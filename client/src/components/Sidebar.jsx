@@ -9,12 +9,12 @@ const Sidebar = ({
   activeSessionId, 
   onSelectSession,
   onNewChat,
-  onRenameSession, // Props baru
-  onDeleteSession  // Props baru
+  onRenameSession, 
+  onDeleteSession 
 }) => {
   const [isChatOpen, setIsChatOpen] = useState(true);
-  const [editingId, setEditingId] = useState(null); // Menyimpan ID sesi yang sedang diedit
-  const [editTitle, setEditTitle] = useState('');   // Menyimpan teks input
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');   
   const navigate = useNavigate();
 
   const startEditing = (e, session) => {
