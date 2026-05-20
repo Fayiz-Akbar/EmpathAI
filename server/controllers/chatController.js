@@ -62,16 +62,29 @@ exports.sendMessage = async (req, res) => {
         aiResponse = "Terima kasih sudah berbagi. Ceritakan lebih banyak agar aku bisa memahamimu dengan lebih baik.";
     }
 
-    // --- 3. SIMPAN KE DATABASE ---
-    const newChat = new ChatMessage({
-      session_id,
-      message,
-      response: aiResponse,
-      emotion: detectedEmotion
-    });
+    // --- 3. LOGIKA PENYIMPANAN DATABASE ---
+    let responseData;
 
-    await newChat.save();
-    res.status(201).json({ message: 'Pesan terkirim', data: newChat });
+    // Hanya simpan ke database jika yang mengirim adalah user terdaftar (bukan tamu)
+    if (session_id !== 'guest') {
+      const newChat = new ChatMessage({
+        session_id,
+        message,
+        response: aiResponse,
+        emotion: detectedEmotion
+      });
+      await newChat.save();
+      responseData = newChat; // Kirim data lengkap dari DB ke frontend
+    } else {
+      // Jika tamu, buat data palsu agar frontend tidak error
+      responseData = {
+        response: aiResponse,
+        emotion: detectedEmotion
+      };
+      console.log("👻 [Mode Tamu] Pesan dibalas tanpa disimpan ke database.");
+    }
+
+    res.status(201).json({ message: 'Pesan terkirim', data: responseData });
   } catch (error) {
     console.error("Error di sendMessage:", error);
     res.status(500).json({ message: 'Gagal mengirim pesan', error });
@@ -82,6 +95,12 @@ exports.sendMessage = async (req, res) => {
 exports.getHistory = async (req, res) => {
   try {
     const { sessionId } = req.params;
+
+    // Guard Clause: Tamu tidak punya riwayat di database, langsung kembalikan kosong
+    if (sessionId === 'guest') {
+      return res.status(200).json({ data: [] });
+    }
+
     // Mencari semua chat yang memiliki session_id yang sama, diurutkan dari yang terlama ke terbaru
     const history = await ChatMessage.find({ session_id: sessionId }).sort({ timestamp: 1 });
     

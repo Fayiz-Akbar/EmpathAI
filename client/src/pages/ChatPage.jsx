@@ -138,9 +138,14 @@ const ChatPage = () => {
 
     try {
       let currentSid = sessionId;
-      if (!currentSid) {
-        const userIdToUse = user ? (user._id || user.id) : `guest_${Date.now()}`;
-        
+
+      // --- LOGIKA GUEST & USER ---
+      if (!user) {
+        // Jika Tamu: Jangan buat sesi DB, pakai ID khusus
+        currentSid = 'guest'; 
+      } else if (!currentSid) {
+        // Jika User (Login) dan belum ada sesi: Buat sesi baru di DB
+        const userIdToUse = user._id || user.id;
         const res = await createSession(userIdToUse, text.slice(0, 30));
         currentSid = res.session._id;
         setSessionId(currentSid);
@@ -149,7 +154,9 @@ const ChatPage = () => {
         setChatSessions(prev => [{ _id: currentSid, title: text.slice(0, 30) }, ...prev]);
       }
 
+      // Kirim pesan (baik sebagai guest maupun user)
       const res = await sendChatMessage(currentSid, text);
+      
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
         isUser: false,

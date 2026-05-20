@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LayoutDashboard, MessageSquare, ChevronDown, Plus, Settings, Menu, Pencil, Trash2, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUser } from '../services/authService';
 
 const Sidebar = ({ 
   isDesktopOpen, 
@@ -16,6 +17,8 @@ const Sidebar = ({
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');   
   const navigate = useNavigate();
+  const user = getCurrentUser();
+
 
   const startEditing = (e, session) => {
     e.stopPropagation(); // Mencegah klik nyasar ke select session
@@ -48,9 +51,9 @@ const Sidebar = ({
       </div>
 
       <nav className="flex-1 px-3 flex flex-col gap-1 overflow-y-auto no-scrollbar">
-        <button onClick={() => navigate('/dashboard')} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-200 transition-colors focus:outline-none">
+        <button onClick={() => user ? navigate('/dashboard') : navigate('/login')} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-200 transition-colors focus:outline-none">
           <LayoutDashboard size={18} className="text-gray-500" /> Dashboard
-        </button>
+      </button>
 
         <div>
           <button onClick={() => setIsChatOpen(!isChatOpen)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-200 transition-colors focus:outline-none">
