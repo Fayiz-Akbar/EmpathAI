@@ -8,16 +8,15 @@ import traceback
 
 app = FastAPI(title="EmpathAI Emotion Engine")
 
-# --- 1. Load Model & Tokenizer (Label Encoder diganti pakai Array) ---
 try:
     print("⏳ [1/2] Mencoba memuat Model Keras...")
     model = load_model('best_model.keras')
-    print("✅ Model Keras berhasil dimuat!")
+    print(" Model Keras berhasil dimuat!")
     
     print("⏳ [2/2] Mencoba memuat Tokenizer...")
     with open('tokenizer.pkl', 'rb') as handle:
         tokenizer = pickle.load(handle)
-    print("✅ Tokenizer berhasil dimuat!")
+    print(" Tokenizer berhasil dimuat!")
     
     # KITA BYPASS LABEL ENCODER PKL DENGAN HARDCODE ARRAY (Urut Abjad)
     # 0=marah, 1=netral, 2=sedih, 3=senang, 4=stres

@@ -16,7 +16,7 @@ const chatMessageSchema = new mongoose.Schema({
   },
   emotion: { 
     type: String, 
-    enum: ['Senang', 'Sedih', 'Marah', 'Stres', 'Netral'], // Label klasifikasi AI
+    enum: ['Senang', 'Sedih', 'Marah', 'Stres', 'Netral'], 
     default: 'Netral' 
   },
   timestamp: { 
