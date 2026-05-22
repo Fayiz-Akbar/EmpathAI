@@ -5,10 +5,10 @@ const ChatBubble = ({ isUser, text, time, isTyping, emotion }) => {
     return (
       <div className="flex justify-end animate-fade-in mb-2">
         {/* Bubble User - Sudut kanan atas lancip */}
-        <div className="bg-[#E8E5DE] px-4 py-3 rounded-2xl rounded-tr-sm max-w-[75%] lg:max-w-[60%] shadow-sm">
-          <p className="text-[15px] text-[#1E293B] leading-relaxed whitespace-pre-wrap">{text}</p>
+        <div className="bg-[#E8E5DE] dark:bg-[#3a3a52] px-4 py-3 rounded-2xl rounded-tr-sm max-w-[75%] lg:max-w-[60%] shadow-sm">
+          <p className="text-[15px] text-[#1E293B] dark:text-gray-100 leading-relaxed whitespace-pre-wrap">{text}</p>
           {time && (
-            <span className="text-[10px] text-[#9CA3AF] block text-right mt-1.5">{time}</span>
+            <span className="text-[10px] text-[#9CA3AF] dark:text-gray-500 block text-right mt-1.5">{time}</span>
           )}
         </div>
       </div>
@@ -29,7 +29,7 @@ const ChatBubble = ({ isUser, text, time, isTyping, emotion }) => {
       {/* AI Message Bubble */}
       <div className="flex flex-col gap-1 w-full">
         {/* Bubble AI - Berwarna putih dengan border tipis dan bayangan, sudut kiri atas lancip */}
-        <div className="bg-white border border-gray-100 shadow-sm px-4 py-3 rounded-2xl rounded-tl-sm w-full">
+        <div className="bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-700 shadow-sm px-4 py-3 rounded-2xl rounded-tl-sm w-full">
           {isTyping ? (
             <div className="flex items-center gap-1.5 h-6 px-1">
               {/* Animasi titik mengetik yang lebih mulus */}
@@ -40,15 +40,15 @@ const ChatBubble = ({ isUser, text, time, isTyping, emotion }) => {
           ) : (
             <>
               {/* whitespace-pre-wrap ditambahkan agar jika nanti AI mengirim teks berparagraf, formatnya tidak hancur */}
-              <p className="text-[15px] text-[#1E293B] leading-relaxed whitespace-pre-wrap">{text}</p>
+              <p className="text-[15px] text-[#1E293B] dark:text-gray-100 leading-relaxed whitespace-pre-wrap">{text}</p>
               
               {/* Metadata: Waktu & Emosi (Diberi garis batas tipis agar rapi) */}
-              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-50">
+              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-50 dark:border-gray-700">
                 {time && (
-                  <span className="text-[10px] text-[#9CA3AF]">{time}</span>
+                  <span className="text-[10px] text-[#9CA3AF] dark:text-gray-500">{time}</span>
                 )}
                 {emotion && emotion !== 'Netral' && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100 font-medium">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 font-medium">
                     {emotion}
                   </span>
                 )}

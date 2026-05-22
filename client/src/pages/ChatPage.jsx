@@ -172,7 +172,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-slate-50 font-sans text-gray-800 relative">
+    <div className="h-screen w-full flex overflow-hidden bg-slate-50 dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
       
       {isMobileSidebarOpen && (
         <div 
@@ -198,7 +198,7 @@ const ChatPage = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
+      <div className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1a2e] relative min-w-0">
         <ChatHeader 
           user={user} 
           isDesktopSidebarOpen={isDesktopSidebarOpen}
@@ -216,7 +216,7 @@ const ChatPage = () => {
                   <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight bg-linear-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent font-[Outfit]">
                     Hi {user?.name?.split(' ')[0] || 'there'}
                   </h1>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-300 tracking-tight leading-tight font-[Outfit]">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-300 dark:text-gray-600 tracking-tight leading-tight font-[Outfit]">
                     Where should we start?
                   </h2>
                 </div>
@@ -236,23 +236,23 @@ const ChatPage = () => {
               {messages.map((msg) => (
                 <ChatBubble key={msg.id} {...msg} />
               ))}
-              {isLoading && <div className="text-sm text-gray-400 animate-pulse">EmpathAI sedang berpikir...</div>}
+              {isLoading && <div className="text-sm text-gray-400 dark:text-gray-500 animate-pulse">EmpathAI sedang berpikir...</div>}
               <div ref={chatEndRef} />
             </div>
           )}
         </main>
 
         {!hasMessages && (
-            <div className="w-full text-center pb-4 pt-4 text-[10px] sm:text-xs text-gray-400 px-4">
+            <div className="w-full text-center pb-4 pt-4 text-[10px] sm:text-xs text-gray-400 dark:text-gray-600 px-4">
                 EmpathAI can make mistakes. Consider verifying important information.
             </div>
         )}
 
         {hasMessages && (
-          <div className="w-full border-t border-gray-100 bg-white p-4 shrink-0">
+          <div className="w-full border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-[#1a1a2e] p-4 shrink-0">
             <div className="max-w-4xl mx-auto">
               <MessageInput onSend={handleSend} isLoading={isLoading} />
-              <p className="text-[10px] sm:text-[11px] text-gray-400 text-center mt-3 uppercase tracking-widest font-semibold">
+              <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-600 text-center mt-3 uppercase tracking-widest font-semibold">
                 EmpathAI can make mistakes. Verify important info.
               </p>
             </div>
@@ -266,7 +266,7 @@ const ChatPage = () => {
 const ActionButton = ({ icon, text, onClick }) => (
   <button 
     onClick={onClick} 
-    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-full flex items-center gap-2 hover:bg-slate-50 hover:border-blue-200 transition-all text-xs sm:text-sm text-gray-600 font-medium shadow-sm active:scale-95 whitespace-nowrap"
+    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-[#2a2a3e] border border-gray-200 dark:border-gray-600 rounded-full flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-[#33334a] hover:border-blue-200 dark:hover:border-blue-700 transition-all text-xs sm:text-sm text-gray-600 dark:text-gray-300 font-medium shadow-sm active:scale-95 whitespace-nowrap"
   >
     {icon} <span>{text}</span>
   </button>

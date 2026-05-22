@@ -161,7 +161,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-slate-50 font-sans text-gray-800 relative">
+    <div className="h-screen w-full flex overflow-hidden bg-slate-50 dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
       {isMobileSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity"
@@ -186,7 +186,7 @@ const DashboardPage = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-full bg-white relative min-w-0">
+      <div className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1a2e] relative min-w-0">
         <ChatHeader 
           user={user} 
           isDesktopSidebarOpen={isDesktopSidebarOpen}
@@ -201,10 +201,10 @@ const DashboardPage = () => {
             
             {/* Header Dashboard */}
             <div>
-              <h1 className="text-3xl font-semibold text-gray-800 font-[Outfit]">
+              <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 font-[Outfit]">
                 Welcome back, {user?.name?.split(' ')[0] || 'Guest'}
               </h1>
-              <p className="text-gray-500 mt-1">Here is a summary of your emotional journey.</p>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">Here is a summary of your emotional journey.</p>
             </div>
 
             {/* Highlight Cards */}
@@ -214,21 +214,21 @@ const DashboardPage = () => {
                 title="Total Sessions"
                 value={chatSessions.length}
                 subtitle="Conversations so far"
-                bgColor="bg-blue-50"
+                bgColor="bg-blue-50 dark:bg-blue-900/30"
               />
               <StatCard 
                 icon={<Flame className="text-orange-500" size={24} />}
                 title="Current Streak"
                 value={`${streakCount} Days`}
                 subtitle={streakCount > 0 ? "Keep it up!" : "Mulai curhat hari ini!"}
-                bgColor="bg-orange-50"
+                bgColor="bg-orange-50 dark:bg-orange-900/30"
               />
               <StatCard 
                 icon={<Brain className="text-purple-500" size={24} />}
                 title="Dominant Mood"
                 value={isLoadingData ? "Menghitung..." : dominantMood}
                 subtitle="Based on your recent chats"
-                bgColor="bg-purple-50"
+                bgColor="bg-purple-50 dark:bg-purple-900/30"
               />
             </div>
 
@@ -236,9 +236,9 @@ const DashboardPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               
               {/* Kolom Grafik Emosi */}
-              <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+              <div className="lg:col-span-2 bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <Activity size={20} className="text-blue-500"/> Mood Analytics
                   </h2>
                 </div>
@@ -246,7 +246,7 @@ const DashboardPage = () => {
                 {/* GRAFIK BATANG RECHARTS */}
                 <div className="h-64 w-full relative">
                   {isLoadingData ? (
-                     <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 rounded-xl">
+                     <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-[#2a2a3e]/80 z-10 rounded-xl">
                         <span className="text-sm font-medium text-blue-500 animate-pulse">Menganalisis emosi...</span>
                      </div>
                   ) : null}
@@ -271,9 +271,9 @@ const DashboardPage = () => {
               </div>
 
               {/* Kolom Recent Chats */}
-              <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col">
+              <div className="bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <Calendar size={20} className="text-blue-500"/> Recent Chats
                   </h2>
                 </div>
@@ -286,15 +286,15 @@ const DashboardPage = () => {
                       <button 
                         key={session._id}
                         onClick={() => handleSelectSession(session._id)}
-                        className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all text-left group"
+                        className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all text-left group"
                       >
                         <div className="overflow-hidden">
-                          <p className="text-sm font-medium text-gray-700 truncate">{session.title || 'Sesi Curhat'}</p>
-                          <p className="text-[11px] text-gray-400 mt-0.5">
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">{session.title || 'Sesi Curhat'}</p>
+                          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
                             {new Date(session.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                           </p>
                         </div>
-                        <ArrowRight size={16} className="text-gray-300 group-hover:text-blue-500 transition-colors shrink-0" />
+                        <ArrowRight size={16} className="text-gray-300 dark:text-gray-600 group-hover:text-blue-500 transition-colors shrink-0" />
                       </button>
                     ))
                   )}
@@ -302,7 +302,7 @@ const DashboardPage = () => {
 
                 <button 
                   onClick={handleNewChat}
-                  className="w-full mt-4 py-2.5 bg-[#1E293B] hover:bg-black text-white text-sm font-medium rounded-xl transition-colors"
+                  className="w-full mt-4 py-2.5 bg-[#1E293B] dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors"
                 >
                   Mulai Sesi Baru
                 </button>
@@ -317,14 +317,14 @@ const DashboardPage = () => {
 };
 
 const StatCard = ({ icon, title, value, subtitle, bgColor }) => (
-  <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex items-start gap-4">
+  <div className="bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm flex items-start gap-4">
     <div className={`p-3 rounded-xl ${bgColor}`}>
       {icon}
     </div>
     <div>
-      <p className="text-sm text-gray-500 font-medium">{title}</p>
-      <h3 className="text-2xl font-bold text-gray-800 mt-1 font-[Outfit]">{value}</h3>
-      <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{title}</p>
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-1 font-[Outfit]">{value}</h3>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{subtitle}</p>
     </div>
   </div>
 );

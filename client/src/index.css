@@ -5,6 +5,11 @@
 @source "../index.html";
 
 /* ============================================
+   Dark Mode Configuration
+   ============================================ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================
    EmpathAI — Custom Theme & Animations
    ============================================ */
 @theme {
@@ -75,4 +80,12 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Dark Mode Scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: #4a5568;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #718096;
 }

@@ -29,18 +29,18 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
   };
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white border-b border-gray-100 shrink-0">
+    <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white dark:bg-[#1a1a2e] border-b border-gray-100 dark:border-gray-700 shrink-0">
       <div className="flex items-center gap-2">
         {/* Logika Hamburger */}
         <button 
           onClick={onMenuClick} 
-          className={`text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors ${isDesktopSidebarOpen ? 'md:hidden' : ''}`}
+          className={`text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-full transition-colors ${isDesktopSidebarOpen ? 'md:hidden' : ''}`}
         >
           <Menu size={20} />
         </button>
         
-        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors">
-          <span className="font-semibold text-xl text-gray-700 font-[Outfit]">EmpathAI</span>
+        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 px-2 py-1 rounded-lg transition-colors">
+          <span className="font-semibold text-xl text-gray-700 dark:text-gray-100 font-[Outfit]">EmpathAI</span>
         </div>
       </div>
 
@@ -58,15 +58,15 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
 
             {/* Menu Dropdown Logout */}
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1 z-50 animate-fade-in">
-                <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                  <p className="text-sm font-medium text-gray-800 truncate">{user.name || 'User'}</p>
-                  <p className="text-[11px] text-gray-400 truncate">{user.email || ''}</p>
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-600 rounded-xl shadow-lg py-1 z-50 animate-fade-in">
+                <div className="px-4 py-2 border-b border-gray-50 dark:border-gray-600 mb-1">
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{user.name || 'User'}</p>
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">{user.email || ''}</p>
                 </div>
                 
                 <button 
                   onClick={handleLogout} 
-                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
+                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
                 >
                   <LogOut size={16} /> 
                   <span>Keluar Akun</span>
@@ -78,7 +78,7 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
           <div className="flex items-center gap-2">
             <button 
               onClick={() => navigate('/login')} 
-              className="px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all"
+              className="px-4 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all"
             >
               Login
             </button>
