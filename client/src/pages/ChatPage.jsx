@@ -172,7 +172,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-slate-50 dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
+    <div className="h-screen w-full flex overflow-hidden bg-[#FAF9F6] dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
       
       {isMobileSidebarOpen && (
         <div 
@@ -198,7 +198,7 @@ const ChatPage = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1a2e] relative min-w-0">
+      <div className="flex-1 flex flex-col h-full bg-[#FAF9F6] dark:bg-[#1a1a2e] relative min-w-0">
         <ChatHeader 
           user={user} 
           isDesktopSidebarOpen={isDesktopSidebarOpen}
@@ -210,24 +210,35 @@ const ChatPage = () => {
 
         <main className="flex-1 overflow-y-auto no-scrollbar flex flex-col w-full">
           {!hasMessages ? (
-            <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-8 pb-10">
-              <div className="w-full max-w-3xl flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700 mt-8 md:mt-0">
+            <div className="flex-1 flex flex-col w-full px-4 sm:px-8 pb-6 pt-10 md:pt-20">
+              <div className="w-full max-w-3xl mx-auto flex flex-col h-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {/* Top Section: Sapaan (Rata kiri, di atas) */}
                 <div className="text-left mb-8 pl-2">
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight bg-linear-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent font-[Outfit]">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight text-gray-900 dark:text-gray-100 font-sans">
                     Hi {user?.name?.split(' ')[0] || 'there'}
                   </h1>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-300 dark:text-gray-600 tracking-tight leading-tight font-[Outfit]">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-400 dark:text-gray-500 tracking-tight leading-tight font-sans">
                     Where should we start?
                   </h2>
                 </div>
 
-                <MessageInput onSend={handleSend} isLoading={isLoading} />
+                <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 w-full px-2">
+                  <ActionButton icon={<Sparkles size={16} className="text-[#8FA697] shrink-0"/>} text="Analyze mood" onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
+                  <ActionButton icon={<Zap size={16} className="text-[#8FA697] shrink-0"/>} text="Anxiety relief" onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
+                  <ActionButton icon={<Heart size={16} className="text-[#8FA697] shrink-0"/>} text="Daily motivation" onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
+                  <ActionButton icon={<Brain size={16} className="text-[#8FA697] shrink-0"/>} text="Stress management" onClick={() => handleSend("Tugas kuliah bikin stres, gimana cara mengatasinya?")} />
+                </div>
 
-                <div className="flex flex-wrap gap-2 sm:gap-3 mt-8 w-full px-2">
-                  <ActionButton icon={<Sparkles size={16} className="text-blue-500 shrink-0"/>} text="Analyze mood" onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
-                  <ActionButton icon={<Zap size={16} className="text-orange-500 shrink-0"/>} text="Anxiety relief" onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
-                  <ActionButton icon={<Heart size={16} className="text-red-500 shrink-0"/>} text="Daily motivation" onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
-                  <ActionButton icon={<Brain size={16} className="text-purple-500 shrink-0"/>} text="Stress management" onClick={() => handleSend("Tugas kuliah bikin stres, gimana cara mengatasinya?")} />
+                {/* Spacer untuk mendorong MessageInput ke bawah */}
+                <div className="flex-1 min-h-[40px]" />
+
+                {/* Bottom Section: Message Input selalu di bawah */}
+                <div className="w-full mt-auto">
+                  <MessageInput onSend={handleSend} isLoading={isLoading} isCentered={false} />
+                  
+                  <div className="w-full text-center mt-4 text-[10px] sm:text-xs text-gray-400 dark:text-gray-600 px-4">
+                    EmpathAI can make mistakes. Consider verifying important information.
+                  </div>
                 </div>
               </div>
             </div>
@@ -242,14 +253,10 @@ const ChatPage = () => {
           )}
         </main>
 
-        {!hasMessages && (
-            <div className="w-full text-center pb-4 pt-4 text-[10px] sm:text-xs text-gray-400 dark:text-gray-600 px-4">
-                EmpathAI can make mistakes. Consider verifying important information.
-            </div>
-        )}
+
 
         {hasMessages && (
-          <div className="w-full border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-[#1a1a2e] p-4 shrink-0">
+          <div className="w-full border-t border-gray-100 dark:border-gray-700 bg-[#FAF9F6] dark:bg-[#1a1a2e] p-4 shrink-0">
             <div className="max-w-4xl mx-auto">
               <MessageInput onSend={handleSend} isLoading={isLoading} />
               <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-600 text-center mt-3 uppercase tracking-widest font-semibold">

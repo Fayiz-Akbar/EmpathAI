@@ -302,7 +302,7 @@ const DashboardPage = () => {
 
                 <button 
                   onClick={handleNewChat}
-                  className="w-full mt-4 py-2.5 bg-[#1E293B] dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors"
+                  className="w-full mt-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl transition-colors"
                 >
                   Mulai Sesi Baru
                 </button>

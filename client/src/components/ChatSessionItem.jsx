@@ -23,7 +23,7 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) =>
   // Mode editing: tampilkan input rename
   if (isEditing) {
     return (
-      <div className="flex items-center gap-1 w-full bg-white dark:bg-[#2a2a3e] border border-blue-400 rounded-lg px-2 py-1.5 shadow-sm">
+      <div className="flex items-center gap-1 w-full bg-white dark:bg-[#2a2a3e] border border-[#8FA697] rounded-lg px-2 py-1.5 shadow-sm">
         <input
           autoFocus
           value={editTitle}
@@ -44,10 +44,10 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) =>
   // Mode normal: tampilkan judul sesi + tombol aksi saat hover
   return (
     <div
-      className={`flex w-full items-center justify-between rounded-lg transition-colors overflow-hidden group ${
+      className={`flex w-full items-center justify-between rounded-full transition-colors overflow-hidden group ${
         isActive
-          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium'
-          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+          ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF] font-semibold'
+          : 'text-gray-600 dark:text-gray-300 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700'
       }`}
     >
       <button
@@ -59,7 +59,7 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) =>
 
       {/* Tombol aksi: muncul saat hover */}
       <div className="hidden group-hover:flex items-center gap-1 pr-2 shrink-0">
-        <button onClick={startEditing} className="p-1 text-gray-400 hover:text-blue-500 transition-colors">
+        <button onClick={startEditing} className="p-1 text-gray-400 hover:text-[#8FA697] transition-colors">
           <Pencil size={14} />
         </button>
         <button

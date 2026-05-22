@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react'; // <-- Tambahkan Eye dan EyeOff
+import { Loader2 } from 'lucide-react';
 import { loginUser } from '../services/authService';
 
 const LoginPage = () => {
@@ -8,18 +8,10 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  
-  // <-- Tambahkan state untuk mengontrol visibilitas password
-  const [showPassword, setShowPassword] = useState(false); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrorMsg(''); // Hilangkan error saat user mulai mengetik ulang
-  };
-
-  // <-- Tambahkan fungsi toggle mata
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -31,22 +23,16 @@ const LoginPage = () => {
 
     setIsLoading(true);
     try {
-      // Panggil API Backend
       const response = await loginUser(formData);
-      
-      // Simpan Token dan Data User ke Local Storage sesuai nama di authService.js
       if (response.token && response.user) {
         localStorage.setItem('empathAI_token', response.token);
         localStorage.setItem('empathAI_user', JSON.stringify(response.user));
-        
-        // Arahkan ke halaman utama setelah sukses
         navigate('/chat');
       } else {
         setErrorMsg('Format respons dari server tidak sesuai.');
       }
     } catch (error) {
       console.error('Login Error:', error);
-      // Tangkap pesan error dari backend jika ada, atau gunakan pesan default
       setErrorMsg(error.response?.data?.message || 'Gagal login. Periksa kembali email dan password Anda.');
     } finally {
       setIsLoading(false);
@@ -54,104 +40,80 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 font-sans p-4 relative overflow-hidden">
-      
-      {/* Background Ornamen */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full blur-3xl opacity-50"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-red-400/10 rounded-full blur-3xl opacity-50"></div>
-
-      <div className="w-full max-w-md bg-white rounded-4xl shadow-xl p-8 sm:p-10 relative z-10 border border-gray-100">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#FAF9F6] font-sans p-4 relative">
+      <div className="w-full max-w-md bg-white sm:rounded-4xl sm:shadow-sm p-6 sm:p-10 relative z-10 sm:border border-gray-100 flex flex-col items-center">
         
         {/* Header / Logo */}
-        <div className="text-center mb-10">
+        <div className="w-20 h-20 bg-[#E8EDEB] rounded-full mb-6"></div>
+        <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-semibold font-[Outfit] tracking-tight text-gray-800 mb-2">
-              Welcome to <span className="bg-linear-to-r from-[#4b90ff] to-[#ff5546] bg-clip-text text-transparent">EmpathAI</span>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2 font-[Outfit]">
+              Welcome to EmpathAI
             </h1>
           </Link>
-          <p className="text-gray-500 text-sm">Masuk untuk melanjutkan sesi curhatmu</p>
+          <p className="text-gray-500 text-sm">Your safe space for mental well-being.</p>
         </div>
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg animate-in fade-in slide-in-from-top-2">
+          <div className="mb-6 w-full p-3 bg-red-50 text-red-700 text-sm rounded-lg animate-in fade-in slide-in-from-top-2 text-center">
             {errorMsg}
           </div>
         )}
 
         {/* Form Login */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700 pl-1">Email Address</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                className="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-2xl pl-11 pr-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 focus:bg-white transition-all"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <div>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email address"
+              className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-400"
+              required
+            />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700 pl-1">Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock size={18} className="text-gray-400" />
-              </div>
-              
-              {/* <-- Modifikasi input type menjadi dinamis dan ubah pr-4 menjadi pr-12 --> */}
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-2xl pl-11 pr-12 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 focus:bg-white transition-all"
-                required
-              />
-              
-              {/* <-- Tambahkan tombol mata di sini --> */}
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
-                tabIndex="-1"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
+          <div>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-400"
+              required
+            />
           </div>
 
-          <div className="pt-2">
+          <div className="flex justify-end pt-1 pb-4">
+            <Link to="#" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+              Forgot password?
+            </Link>
+          </div>
+
+          <div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#4b90ff] hover:bg-blue-600 text-white font-medium rounded-2xl py-3.5 px-4 transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none disabled:opacity-70 flex justify-center items-center gap-2"
+              className="w-full bg-[#8FA697] hover:bg-[#7A9182] text-white font-semibold rounded-full py-3.5 px-4 transition-all duration-200 focus:outline-none disabled:opacity-70 flex justify-center items-center gap-2"
             >
               {isLoading ? (
                 <>
                   <Loader2 size={20} className="animate-spin" /> Memproses...
                 </>
               ) : (
-                <>
-                  Login <ArrowRight size={18} />
-                </>
+                "Sign In"
               )}
             </button>
           </div>
         </form>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
-          Belum punya akun?{' '}
-          <Link to="/register" className="text-[#4b90ff] font-semibold hover:underline transition-all">
-            Daftar sekarang
+        <div className="mt-6 text-center text-sm text-gray-500">
+          Don't have an account?{' '}
+          <Link to="/register" className="font-semibold text-gray-700 hover:text-[#8FA697] transition-all">
+            Sign up
           </Link>
         </div>
       </div>

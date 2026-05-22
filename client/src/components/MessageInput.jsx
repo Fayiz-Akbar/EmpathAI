@@ -167,13 +167,13 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
     <div className={`w-full flex justify-center shrink-0 ${!isCentered ? 'px-0' : ''}`}>
       <div className={`w-full ${isCentered ? 'max-w-3xl' : 'max-w-4xl'}`}>
         
-        {/* Kotak Input Utama (Relative untuk mengunci posisi ikon) */}
-        <div className={`relative bg-gray-50 dark:bg-[#2a2a3e] rounded-[32px] border transition-all duration-300 ${
+        {/* Kotak Input Utama (Bentuk pil / kapsul bundar) */}
+        <div className={`relative bg-white dark:bg-[#2a2a3e] rounded-full border transition-all duration-300 ${
           isRecording 
             ? 'border-red-300 dark:border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.15)] dark:shadow-[0_0_20px_rgba(239,68,68,0.25)]' 
-            : 'border-gray-200 dark:border-gray-600'
+            : 'border-gray-100 dark:border-gray-600'
         } ${
-          !isCentered ? 'focus-within:shadow-md focus-within:border-gray-300 dark:focus-within:border-gray-500 focus-within:bg-white dark:focus-within:bg-[#33334a] shadow-sm' : 'shadow-sm'
+          !isCentered ? 'focus-within:shadow-md focus-within:border-gray-200 dark:focus-within:border-gray-500 shadow-sm' : 'shadow-sm'
         }`}>
           
           <textarea
@@ -181,16 +181,15 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isRecording ? "Sedang mendengarkan..." : "Ask EmpathAI..."}
+            placeholder={isRecording ? "Sedang mendengarkan..." : "Type your message..."}
             disabled={isLoading}
             rows={1}
-            // pb-14 memastikan teks yang diketik tidak tertutup oleh deretan tombol di bawahnya
-            className="w-full bg-transparent resize-none px-6 pt-5 pb-14 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none min-h-[120px] rounded-[32px] text-[16px] disabled:opacity-70 leading-relaxed font-sans"
+            className="w-full bg-transparent resize-none px-6 pl-14 pr-16 py-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none min-h-[56px] rounded-full text-[15px] disabled:opacity-70 leading-relaxed font-sans"
             style={{ maxHeight: '200px' }}
           />
 
           {/* Deretan Tombol Kiri (Absolute - terkunci di pojok kiri bawah) */}
-          <div className="absolute bottom-3 left-4 flex gap-2 items-center">
+          <div className="absolute top-1/2 -translate-y-1/2 left-3 flex gap-2 items-center">
             <button 
               type="button" 
               className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition-colors focus:outline-none" 
@@ -214,7 +213,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
           </div>
 
           {/* Deretan Tombol Kanan (Absolute - terkunci di pojok kanan bawah) */}
-          <div className="absolute bottom-3 right-4 flex gap-2 items-center">
+          <div className="absolute top-1/2 -translate-y-1/2 right-3 flex gap-2 items-center">
             {/* Mic button - always visible when not typing */}
             {!message.trim() && (
               <button
@@ -237,12 +236,12 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
               <button
                 onClick={handleSubmit}
                 disabled={isLoading}
-                className="p-2.5 rounded-full flex items-center justify-center transition-all duration-200 focus:outline-none bg-[#4b90ff] hover:bg-blue-600 text-white shadow-md transform scale-105"
+                className="p-2.5 rounded-full w-10 h-10 flex items-center justify-center transition-all duration-200 focus:outline-none bg-[#8FA697] hover:bg-[#7A9182] text-white shadow-sm"
               >
                 {isLoading ? (
                   <Loader2 size={18} className="animate-spin" />
                 ) : (
-                  <Send size={18} className="ml-0.5" /> // Sedikit di-margin agar posisinya seimbang secara visual
+                  <Send size={18} className="text-white" />
                 )}
               </button>
             )}
