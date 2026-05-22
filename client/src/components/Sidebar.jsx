@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
 import ChatSessionItem from './ChatSessionItem';
 import SettingsMenu from './SettingsMenu';
+import SearchBar from './SearchBar';
 
 const Sidebar = ({ 
   isDesktopOpen, 
@@ -17,18 +18,41 @@ const Sidebar = ({
 }) => {
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter sessions based on search query
+  const filteredSessions = chatSessions.filter(session => {
+    const title = session.title || 'Sesi Curhat';
+    return title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <aside className={`${isDesktopOpen ? 'w-[280px]' : 'w-0'} shrink-0 bg-[#F3F4F6] dark:bg-[#1e1e2e] border-r border-gray-100 dark:border-gray-700 flex flex-col transition-all duration-300 overflow-hidden h-full rounded-r-3xl`}>
       
       {/* Toggle Sidebar & Search */}
-      <div className="p-4 flex items-center justify-between">
-        <button onClick={onToggleDesktop} className="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-full transition-colors focus:outline-none">
-          <Menu size={20} />
-        </button>
-        <button className="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-full transition-colors focus:outline-none">
-          <Search size={18} />
-        </button>
+      <div className="p-4 flex items-center justify-between min-h-[64px]">
+        {isSearchActive ? (
+          <SearchBar 
+            value={searchQuery} 
+            onChange={setSearchQuery} 
+            onClose={() => { setIsSearchActive(false); setSearchQuery(''); }} 
+            placeholder="Cari riwayat..." 
+          />
+        ) : (
+          <>
+            <button onClick={onToggleDesktop} className="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-full transition-colors focus:outline-none">
+              <Menu size={20} />
+            </button>
+            <button 
+              onClick={() => setIsSearchActive(true)}
+              className="text-gray-500 dark:text-gray-400 hover:bg-[#8FA697]/10 hover:text-[#5B7062] p-2 rounded-full transition-colors focus:outline-none group"
+              title="Search history"
+            >
+              <Search size={18} className="group-hover:text-[#5B7062] transition-colors" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Navigation */}
@@ -55,10 +79,12 @@ const Sidebar = ({
         </h3>
         
         <div className="flex flex-col gap-1 pb-4">
-          {chatSessions.length === 0 ? (
-            <p className="text-xs text-gray-400 italic px-3 py-2">No chat history yet</p>
+          {filteredSessions.length === 0 ? (
+            <p className="text-xs text-gray-400 italic px-3 py-2">
+              {searchQuery ? "Tidak ada chat yang cocok" : "No chat history yet"}
+            </p>
           ) : (
-            chatSessions.map((session) => (
+            filteredSessions.map((session) => (
               <ChatSessionItem
                 key={session._id}
                 session={session}
