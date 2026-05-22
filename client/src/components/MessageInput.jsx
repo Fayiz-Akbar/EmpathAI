@@ -184,7 +184,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
             placeholder={isRecording ? "Sedang mendengarkan..." : "Type your message..."}
             disabled={isLoading}
             rows={1}
-            className="w-full bg-transparent resize-none px-6 pl-14 pr-16 py-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none min-h-[56px] rounded-full text-[15px] disabled:opacity-70 leading-relaxed font-sans"
+            className={`w-full bg-transparent resize-none px-6 ${isRecording ? 'pl-28' : 'pl-14'} pr-16 py-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none min-h-[56px] rounded-full text-[15px] disabled:opacity-70 leading-relaxed font-sans transition-all duration-300`}
             style={{ maxHeight: '200px' }}
           />
 
