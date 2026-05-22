@@ -161,7 +161,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-slate-50 dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
+    <div className="h-screen w-full flex overflow-hidden bg-[#FAF9F6] dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
       {isMobileSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity"
@@ -186,7 +186,7 @@ const DashboardPage = () => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1a2e] relative min-w-0">
+      <div className="flex-1 flex flex-col h-full bg-[#FAF9F6] dark:bg-[#1a1a2e] relative min-w-0">
         <ChatHeader 
           user={user} 
           isDesktopSidebarOpen={isDesktopSidebarOpen}

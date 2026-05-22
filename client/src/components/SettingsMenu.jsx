@@ -42,9 +42,9 @@ const SettingsMenu = () => {
       {/* Trigger Button */}
       <button
         onClick={toggleMenu}
-        className="flex items-center gap-3 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white w-full p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none"
+        className="flex items-center gap-3 text-gray-600 dark:text-gray-300 hover:text-[#5B7062] dark:hover:text-[#A7BDAF] w-full p-2 rounded-xl hover:bg-[#8FA697]/10 dark:hover:bg-[#8FA697]/20 transition-colors focus:outline-none group"
       >
-        <Settings size={18} />
+        <Settings size={18} className="group-hover:text-[#5B7062] transition-colors" />
         <span className="text-sm font-medium">Settings & help</span>
       </button>
 
@@ -56,10 +56,10 @@ const SettingsMenu = () => {
           <div>
             <button
               onClick={() => setIsThemeExpanded((prev) => !prev)}
-              className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+              className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
             >
               <div className="flex items-center gap-3">
-                <Palette size={16} className="text-gray-500 dark:text-gray-400" />
+                <Palette size={16} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]" />
                 <span>Theme</span>
               </div>
               <ChevronDown
@@ -80,8 +80,8 @@ const SettingsMenu = () => {
                   onClick={() => handleThemeSelect(key)}
                   className={`w-full flex items-center justify-between pl-11 pr-4 py-2 text-sm transition-colors text-left ${
                     theme === key
-                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      ? 'text-[#5B7062] dark:text-[#A7BDAF] bg-[#8FA697]/15 dark:bg-[#8FA697]/20 font-medium'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ const SettingsMenu = () => {
                     <span>{label}</span>
                   </div>
                   {theme === key && (
-                    <Check size={14} className="text-blue-600 dark:text-blue-400" />
+                    <Check size={14} className="text-[#8FA697] dark:text-[#A7BDAF]" />
                   )}
                 </button>
               ))}
@@ -99,9 +99,9 @@ const SettingsMenu = () => {
           {/* Help */}
           <button
             onClick={() => setIsOpen(false)}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
           >
-            <HelpCircle size={16} className="text-gray-500 dark:text-gray-400" />
+            <HelpCircle size={16} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]" />
             <span>Help</span>
           </button>
         </div>
