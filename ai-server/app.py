@@ -62,3 +62,7 @@ async def predict_emotion(request: ChatRequest):
     except Exception as e:
         print(f"❌ Error di predict: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app:app", port=5001, reload=True)
