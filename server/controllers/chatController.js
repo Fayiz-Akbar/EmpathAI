@@ -27,8 +27,9 @@ exports.sendMessage = async (req, res) => {
     // --- 1. KONSULTASI KE OTAK PYTHON (Model Deep Learning) ---
     let detectedEmotion = "Netral"; // Emosi default jika Python sedang down/gagal
     try {
-      // Node.js menelepon FastAPI Python di port 5001
-      const pythonResponse = await axios.post('http://127.0.0.1:5001/predict', { text: message });
+      // Menggunakan URL dinamis dari .env, jika tidak ada baru pakai localhost
+      const aiServerUrl = process.env.PYTHON_AI_URL || 'http://127.0.0.1:5001';
+      const pythonResponse = await axios.post(`${aiServerUrl}/predict`, { text: message });
       
       // Mengambil hasil prediksi ('marah', 'sedih', 'stres', dll)
       const rawEmotion = pythonResponse.data.emotion;
@@ -42,7 +43,6 @@ exports.sendMessage = async (req, res) => {
     }
 
     // --- 2. GENERATE BALASAN EMPATI ---
-    // (Ini adalah template respons sementara sebelum kamu sambungkan ke LLM)
     let aiResponse = "";
     
     switch (detectedEmotion.toLowerCase()) {
@@ -65,7 +65,6 @@ exports.sendMessage = async (req, res) => {
     // --- 3. LOGIKA PENYIMPANAN DATABASE ---
     let responseData;
 
-    // Hanya simpan ke database jika yang mengirim adalah user terdaftar (bukan tamu)
     if (session_id !== 'guest') {
       const newChat = new ChatMessage({
         session_id,
@@ -74,9 +73,8 @@ exports.sendMessage = async (req, res) => {
         emotion: detectedEmotion
       });
       await newChat.save();
-      responseData = newChat; // Kirim data lengkap dari DB ke frontend
+      responseData = newChat; 
     } else {
-      // Jika tamu, buat data palsu agar frontend tidak error
       responseData = {
         response: aiResponse,
         emotion: detectedEmotion
