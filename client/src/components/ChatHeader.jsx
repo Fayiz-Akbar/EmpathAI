@@ -43,14 +43,7 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
 
       {/* Right side: Actions and Profile */}
       <div className="flex items-center gap-2 sm:gap-4">
-        
-        <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-full transition-colors hidden sm:block">
-          <Share size={18} />
-        </button>
-        
-        <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-full transition-colors hidden sm:block">
-          <MoreVertical size={18} />
-        </button>
+
 
         {user ? (
           <div className="relative ml-2" ref={dropdownRef}>

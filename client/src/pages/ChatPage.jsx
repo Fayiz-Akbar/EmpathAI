@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Zap, Heart, Brain } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+// Remove unused useNavigate
 import ChatHeader from '../components/ChatHeader';
 import ChatBubble from '../components/ChatBubble';
 import MessageInput from '../components/MessageInput';
@@ -13,11 +13,12 @@ import {
   getHistory, 
   getUserSessions, 
   renameSession, 
-  deleteSession 
+  deleteSession,
+  pinSession
 } from '../services/chatService';
 
 const ChatPage = () => {
-  const navigate = useNavigate();
+  // useNavigate removed
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -54,7 +55,7 @@ const ChatPage = () => {
     };
 
     loadSessions();
-  }, []); 
+  }, [user?._id, user?.id]);
 
   // Load isi chat (history) dari satu sesi yang dipilih
   useEffect(() => {
@@ -127,6 +128,33 @@ const ChatPage = () => {
       console.error("Gagal menghapus sesi:", error);
     }
   };
+  
+  const handlePinSession = async (id, isPinned) => {
+    try {
+      await pinSession(id, isPinned);
+      setChatSessions(prev => {
+        const targetIdx = prev.findIndex(s => s._id === id);
+        if (targetIdx === -1) return prev;
+        const target = { ...prev[targetIdx], isPinned };
+        const others = prev.filter(s => s._id !== id);
+        
+        // Masukkan kembali dan urutkan: yang di-pin berada di atas
+        const all = [target, ...others];
+        return all.sort((a, b) => {
+          if (a.isPinned === b.isPinned) return 0;
+          return a.isPinned ? -1 : 1;
+        });
+      });
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: isPinned ? 'Sesi berhasil disematkan' : 'Sesi batal disematkan', type: 'success' } 
+      }));
+    } catch (error) {
+      console.error("Gagal menyematkan sesi:", error);
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Terjadi kesalahan sistem.', type: 'error' } 
+      }));
+    }
+  };
   // -------------------------------------------------
 
   const handleSend = async (text) => {
@@ -195,6 +223,7 @@ const ChatPage = () => {
           onNewChat={handleNewChat}
           onRenameSession={handleRenameSession} 
           onDeleteSession={handleDeleteSession} 
+          onPinSession={handlePinSession}
         />
       </div>
 

@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, MessageSquare, Flame, Calendar, ArrowRight, Brain } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Sidebar from '../components/Sidebar';
 import ChatHeader from '../components/ChatHeader';
 import { getCurrentUser } from '../services/authService';
-import { getUserSessions, getHistory, renameSession, deleteSession } from '../services/chatService';
+import { getUserSessions, getHistory, renameSession, deleteSession, pinSession } from '../services/chatService';
 
 // Fungsi Helper: Membuat array dinamis berisi 7 hari terakhir
 const getLast7Days = () => {
@@ -43,41 +43,6 @@ const DashboardPage = () => {
   useEffect(() => {
     if (!userId) navigate('/login');
   }, [userId, navigate]); // Bergantung pada userId (teks statis), bukan object user
-
-  // Load Data Sesi & Analisis Seluruh Pesan
-  useEffect(() => {
-    const fetchAndAnalyzeData = async () => {
-      if (!userId) return;
-      setIsLoadingData(true);
-
-      try {
-        const sessionRes = await getUserSessions(userId);
-        const sessions = sessionRes.data || [];
-        setChatSessions(sessions);
-
-        let allMessages = [];
-        // Ambil 5 sesi terakhir untuk dianalisis
-        const recentSessionsToAnalyze = sessions.slice(0, 5);
-        
-        for (const session of recentSessionsToAnalyze) {
-          const historyRes = await getHistory(session._id);
-          if (historyRes.data) {
-             allMessages = [...allMessages, ...historyRes.data];
-          }
-        }
-
-        processAnalytics(allMessages, sessions);
-
-      } catch (error) {
-        console.error("Gagal memuat atau menganalisis data:", error);
-      } finally {
-        setIsLoadingData(false);
-      }
-    };
-
-    fetchAndAnalyzeData();
-  }, [userId]); // PERBAIKAN UTAMA: Dependency diubah menjadi userId agar tidak kelap-kelip
-
 
   const processAnalytics = (messages, sessions) => {
     // 1. Hitung Total Sesi sebagai "Streak" sementara
@@ -128,6 +93,40 @@ const DashboardPage = () => {
     setEmotionData(weekData);
   };
 
+  // Load Data Sesi & Analisis Seluruh Pesan
+  useEffect(() => {
+    const fetchAndAnalyzeData = async () => {
+      if (!userId) return;
+      setIsLoadingData(true);
+
+      try {
+        const sessionRes = await getUserSessions(userId);
+        const sessions = sessionRes.data || [];
+        setChatSessions(sessions);
+
+        let allMessages = [];
+        // Ambil 5 sesi terakhir untuk dianalisis
+        const recentSessionsToAnalyze = sessions.slice(0, 5);
+        
+        for (const session of recentSessionsToAnalyze) {
+          const historyRes = await getHistory(session._id);
+          if (historyRes.data) {
+             allMessages = [...allMessages, ...historyRes.data];
+          }
+        }
+
+        processAnalytics(allMessages, sessions);
+
+      } catch (error) {
+        console.error("Gagal memuat atau menganalisis data:", error);
+      } finally {
+        setIsLoadingData(false);
+      }
+    };
+
+    fetchAndAnalyzeData();
+  }, [userId]); // PERBAIKAN UTAMA: Dependency diubah menjadi userId agar tidak kelap-kelip
+
   // Handler Sidebar
   const handleNewChat = () => {
     localStorage.removeItem('empathAI_sessionId');
@@ -160,6 +159,32 @@ const DashboardPage = () => {
     }
   };
 
+  const handlePinSession = async (id, isPinned) => {
+    try {
+      await pinSession(id, isPinned);
+      setChatSessions(prev => {
+        const targetIdx = prev.findIndex(s => s._id === id);
+        if (targetIdx === -1) return prev;
+        const target = { ...prev[targetIdx], isPinned };
+        const others = prev.filter(s => s._id !== id);
+        
+        const all = [target, ...others];
+        return all.sort((a, b) => {
+          if (a.isPinned === b.isPinned) return 0;
+          return a.isPinned ? -1 : 1;
+        });
+      });
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: isPinned ? 'Sesi berhasil disematkan' : 'Sesi batal disematkan', type: 'success' } 
+      }));
+    } catch (error) {
+      console.error("Gagal menyematkan sesi:", error);
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Terjadi kesalahan sistem.', type: 'error' } 
+      }));
+    }
+  };
+
   return (
     <div className="h-screen w-full flex overflow-hidden bg-[#FAF9F6] dark:bg-[#121220] font-sans text-gray-800 dark:text-gray-100 relative">
       {isMobileSidebarOpen && (
@@ -183,6 +208,7 @@ const DashboardPage = () => {
           onNewChat={handleNewChat}
           onRenameSession={handleRenameSession}
           onDeleteSession={handleDeleteSession}
+          onPinSession={handlePinSession}
         />
       </div>
 

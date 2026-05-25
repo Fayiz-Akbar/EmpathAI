@@ -14,7 +14,8 @@ const Sidebar = ({
   onSelectSession,
   onNewChat,
   onRenameSession, 
-  onDeleteSession 
+  onDeleteSession,
+  onPinSession
 }) => {
   const navigate = useNavigate();
   const user = getCurrentUser();
@@ -92,6 +93,7 @@ const Sidebar = ({
                 onSelect={() => { onSelectSession(session._id); navigate('/chat'); }}
                 onRename={onRenameSession}
                 onDelete={onDeleteSession}
+                onPin={onPinSession}
               />
             ))
           )}

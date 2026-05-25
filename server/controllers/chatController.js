@@ -115,8 +115,8 @@ exports.getUserSessions = async (req, res) => {
   try {
     const { userId } = req.params;
     
-    // Cari semua sesi milik user ini, urutkan dari yang terbaru (createdAt: -1)
-    const sessions = await ChatSession.find({ user_id: userId }).sort({ createdAt: -1 });
+    // Cari semua sesi milik user ini, urutkan dari yang di-pin dulu, baru yang terbaru (createdAt: -1)
+    const sessions = await ChatSession.find({ user_id: userId }).sort({ isPinned: -1, createdAt: -1 });
     
     res.status(200).json({ data: sessions });
   } catch (error) {
@@ -155,5 +155,22 @@ exports.deleteSession = async (req, res) => {
     res.status(200).json({ message: 'Sesi dan riwayat obrolan berhasil dihapus' });
   } catch (error) {
     res.status(500).json({ message: 'Gagal menghapus sesi', error });
+  }
+};
+
+// 7. Fungsi Menyematkan Sesi (Pin/Unpin)
+exports.pinSession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { isPinned } = req.body;
+    
+    const updatedSession = await ChatSession.findByIdAndUpdate(
+      sessionId, 
+      { isPinned }, 
+      { new: true }
+    );
+    res.status(200).json({ message: 'Status sematan berhasil diubah', session: updatedSession });
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal mengubah status sematan', error });
   }
 };

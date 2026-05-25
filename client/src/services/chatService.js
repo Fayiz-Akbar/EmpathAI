@@ -72,3 +72,9 @@ export const deleteSession = async (sessionId) => {
   const response = await apiClient.delete(`/chat/sessions/${sessionId}`);
   return response.data;
 };
+
+// 8. Menyematkan Sesi Chat (Pin/Unpin)
+export const pinSession = async (sessionId, isPinned) => {
+  const response = await apiClient.put(`/chat/sessions/${sessionId}/pin`, { isPinned });
+  return response.data;
+};

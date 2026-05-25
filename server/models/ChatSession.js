@@ -9,6 +9,10 @@ const chatSessionSchema = new mongoose.Schema({
   title: { 
     type: String, 
     default: 'Obrolan Baru' // Nanti bisa di-update otomatis berdasarkan chat pertama
+  },
+  isPinned: {
+    type: Boolean,
+    default: false
   }
 }, { 
   timestamps: true 

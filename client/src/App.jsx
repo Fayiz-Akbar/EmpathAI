@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import DashboardPage from './pages/DashboardPage';
+import Notification from './components/Notification';
 
 /**
  * App — Root component managing client-side routing.
@@ -10,8 +12,23 @@ import DashboardPage from './pages/DashboardPage';
  * Auth routes are available for users who want to sign in.
  */
 const App = () => {
+  const [notification, setNotification] = useState({ message: '', type: 'success' });
+
+  useEffect(() => {
+    const handleNotification = (e) => {
+      setNotification({ message: e.detail.message, type: e.detail.type || 'success' });
+    };
+    window.addEventListener('showNotification', handleNotification);
+    return () => window.removeEventListener('showNotification', handleNotification);
+  }, []);
+
   return (
     <BrowserRouter>
+      <Notification 
+        message={notification.message} 
+        type={notification.type} 
+        onClose={() => setNotification({ message: '', type: 'success' })} 
+      />
       <Routes>
         <Route path="/" element={<ChatPage />} />
         <Route path="/chat" element={<ChatPage />} />

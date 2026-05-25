@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Pencil, Trash2, Check, X } from 'lucide-react';
+import { Check, X, Pin } from 'lucide-react';
+import ChatActionMenu from './ChatActionMenu';
 
-const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) => {
+const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete, onPin }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
 
   const startEditing = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     setIsEditing(true);
     setEditTitle(session.title || 'Sesi Curhat');
   };
@@ -19,6 +20,31 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) =>
   };
 
   const cancelEditing = () => setIsEditing(false);
+
+  const handleShare = (e) => {
+    e?.stopPropagation();
+    const shareUrl = `${window.location.origin}/chat/${session._id}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Link chat berhasil disalin!', type: 'success' } 
+      }));
+    }).catch(err => {
+      console.error(err);
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Gagal menyalin link.', type: 'error' } 
+      }));
+    });
+  };
+
+  const handlePin = (e) => {
+    e?.stopPropagation();
+    if (onPin) onPin(session._id, !session.isPinned);
+  };
+
+  const handleDelete = (e) => {
+    e?.stopPropagation();
+    onDelete(session._id);
+  };
 
   // Mode editing: tampilkan input rename
   if (isEditing) {
@@ -44,7 +70,7 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) =>
   // Mode normal: tampilkan judul sesi + tombol aksi saat hover
   return (
     <div
-      className={`flex w-full items-center justify-between rounded-full transition-colors overflow-hidden group ${
+      className={`relative flex w-full items-center justify-between rounded-full transition-colors group ${
         isActive
           ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF] font-semibold'
           : 'text-gray-600 dark:text-gray-300 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700'
@@ -52,23 +78,19 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete }) =>
     >
       <button
         onClick={onSelect}
-        className="truncate flex-1 text-left px-3 py-2 text-sm focus:outline-none"
+        className="truncate flex-1 flex items-center gap-2 text-left px-3 py-2 text-sm focus:outline-none"
       >
-        {session.title || 'Sesi Curhat'}
+        {session.isPinned && <Pin size={12} className="text-[#8FA697] shrink-0 fill-current" />}
+        <span className="truncate">{session.title || 'Sesi Curhat'}</span>
       </button>
 
-      {/* Tombol aksi: muncul saat hover */}
-      <div className="hidden group-hover:flex items-center gap-1 pr-2 shrink-0">
-        <button onClick={startEditing} className="p-1 text-gray-400 hover:text-[#8FA697] transition-colors">
-          <Pencil size={14} />
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); onDelete(session._id); }}
-          className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-        >
-          <Trash2 size={14} />
-        </button>
-      </div>
+      <ChatActionMenu 
+        isPinned={session.isPinned}
+        onShare={handleShare}
+        onPin={handlePin}
+        onRename={startEditing}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
