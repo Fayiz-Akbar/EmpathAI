@@ -20,10 +20,12 @@ mongoose.connect(process.env.MONGODB_URI)
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const habitRoutes = require('./routes/habitRoutes');
 
 // Gunakan Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/habits', habitRoutes);
 
 
 // Route Dasar untuk Testing

@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import DashboardPage from './pages/DashboardPage';
+import SelfCarePage from './pages/SelfCarePage';
 import Notification from './components/Notification';
 
 /**
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/" element={<ChatPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/self-care" element={<SelfCarePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 

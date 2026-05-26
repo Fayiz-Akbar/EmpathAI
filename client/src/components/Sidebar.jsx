@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { LayoutDashboard, Menu, Search, Edit3 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Menu, Search, Edit3, Heart } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
 import ChatSessionItem from './ChatSessionItem';
 import SettingsMenu from './SettingsMenu';
@@ -18,6 +18,7 @@ const Sidebar = ({
   onPinSession
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = getCurrentUser();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +28,8 @@ const Sidebar = ({
     const title = session.title || 'Sesi Curhat';
     return title.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const isCurrentPath = (path) => location.pathname === path;
 
   return (
     <aside className={`${isDesktopOpen ? 'w-[280px]' : 'w-0'} shrink-0 bg-[#F3F4F6] dark:bg-[#1e1e2e] border-r border-gray-100 dark:border-gray-700 flex flex-col transition-all duration-300 overflow-hidden h-full rounded-r-3xl`}>
@@ -60,9 +63,24 @@ const Sidebar = ({
       <div className="px-4 py-2 flex flex-col gap-1">
         <button
           onClick={() => user ? navigate('/dashboard') : navigate('/login')}
-          className="w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium text-gray-700 dark:text-gray-200 rounded-xl hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20 transition-colors focus:outline-none group"
+          className={`w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium rounded-xl transition-colors focus:outline-none group ${
+            isCurrentPath('/dashboard') 
+              ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF]' 
+              : 'text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20'
+          }`}
         >
-          <LayoutDashboard size={18} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062] transition-colors" /> Dashboard
+          <LayoutDashboard size={18} className={`${isCurrentPath('/dashboard') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> Dashboard
+        </button>
+
+        <button
+          onClick={() => user ? navigate('/self-care') : navigate('/login')}
+          className={`w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium rounded-xl transition-colors focus:outline-none group ${
+            isCurrentPath('/self-care') 
+              ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF]' 
+              : 'text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20'
+          }`}
+        >
+          <Heart size={18} className={`${isCurrentPath('/self-care') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> Self-Care
         </button>
 
         <button 
