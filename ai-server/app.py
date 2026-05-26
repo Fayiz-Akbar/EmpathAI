@@ -9,13 +9,13 @@ from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 
 # ======================================================================
-# 🥷 JALUR NINJA: MONKEY PATCH UNTUK MEMBUANG PARAMETER QUANTIZATION_CONFIG
+# 🥷 SUPER JALUR NINJA: PATCH INDUK LAYER UNTUK SEMUA KOMPONEN (Dense, Embedding, dll)
 # ======================================================================
-original_embedding_init = keras.layers.Embedding.__init__
-def patched_embedding_init(self, *args, **kwargs):
-    kwargs.pop('quantization_config', None) # Buang paksa biang kerok erornya
-    original_embedding_init(self, *args, **kwargs)
-keras.layers.Embedding.__init__ = patched_embedding_init
+original_layer_init = keras.layers.Layer.__init__
+def patched_layer_init(self, *args, **kwargs):
+    kwargs.pop('quantization_config', None) # Sapu bersih parameter hantu dari Colab di tingkat induk
+    original_layer_init(self, *args, **kwargs)
+keras.layers.Layer.__init__ = patched_layer_init
 # ======================================================================
 
 app = FastAPI(title="EmpathAI Emotion Engine")
@@ -27,7 +27,7 @@ EMOTIONS = ['marah', 'netral', 'sedih', 'senang', 'stres']
 
 # --- 1. MEMUAT MODEL KERAS ---
 try:
-    print("⏳ [1/2] Mencoba memuat Model Keras dengan Jalur Ninja...")
+    print("⏳ [1/2] Mencoba memuat Model Keras dengan Super Jalur Ninja...")
     model = load_model('best_model.keras')
     print("🎯 Model Keras berhasil dimuat!")
 except Exception as e:
