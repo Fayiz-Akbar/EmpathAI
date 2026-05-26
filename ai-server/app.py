@@ -2,10 +2,21 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import numpy as np
 import pickle
-# KITA UBAH IMPORT-NYA JADI NATIVE KERAS DI SINI
+import traceback
+
+import keras
 from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
-import traceback
+
+# ======================================================================
+# 🥷 JALUR NINJA: MONKEY PATCH UNTUK MEMBUANG PARAMETER QUANTIZATION_CONFIG
+# ======================================================================
+original_embedding_init = keras.layers.Embedding.__init__
+def patched_embedding_init(self, *args, **kwargs):
+    kwargs.pop('quantization_config', None) # Buang paksa biang kerok erornya
+    original_embedding_init(self, *args, **kwargs)
+keras.layers.Embedding.__init__ = patched_embedding_init
+# ======================================================================
 
 app = FastAPI(title="EmpathAI Emotion Engine")
 
@@ -16,7 +27,7 @@ EMOTIONS = ['marah', 'netral', 'sedih', 'senang', 'stres']
 
 # --- 1. MEMUAT MODEL KERAS ---
 try:
-    print("⏳ [1/2] Mencoba memuat Model Keras...")
+    print("⏳ [1/2] Mencoba memuat Model Keras dengan Jalur Ninja...")
     model = load_model('best_model.keras')
     print("🎯 Model Keras berhasil dimuat!")
 except Exception as e:
