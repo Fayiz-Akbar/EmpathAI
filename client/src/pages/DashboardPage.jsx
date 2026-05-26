@@ -4,6 +4,7 @@ import { Activity, MessageSquare, Flame, Calendar, ArrowRight, Brain } from 'luc
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Sidebar from '../components/Sidebar';
 import ChatHeader from '../components/ChatHeader';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { getCurrentUser } from '../services/authService';
 import { getUserSessions, getHistory, renameSession, deleteSession, pinSession } from '../services/chatService';
 
@@ -38,6 +39,9 @@ const DashboardPage = () => {
   const [dominantMood, setDominantMood] = useState("Menunggu Data...");
   const [streakCount, setStreakCount] = useState(0);
   const [isLoadingData, setIsLoadingData] = useState(true);
+
+  // State untuk ConfirmDialog delete
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, sessionId: null });
 
   // Tendang kembali ke halaman login jika tidak ada user
   useEffect(() => {
@@ -147,15 +151,44 @@ const DashboardPage = () => {
     }
   };
 
-  const handleDeleteSession = async (id) => {
-    if (!window.confirm("Yakin ingin menghapus riwayat obrolan ini?")) return;
+  // Tampilkan ConfirmDialog saat user minta hapus
+  const handleDeleteSession = (id) => {
+    setDeleteConfirm({ isOpen: true, sessionId: id });
+  };
+
+  // Eksekusi hapus setelah user konfirmasi
+  const confirmDeleteSession = async () => {
+    const id = deleteConfirm.sessionId;
+    setDeleteConfirm({ isOpen: false, sessionId: null });
+
     try {
       await deleteSession(id);
-      setChatSessions(prev => prev.filter(s => s._id !== id));
-      // Refresh layar untuk menghitung ulang grafik setelah chat dihapus
-      window.location.reload(); 
+      const updatedSessions = chatSessions.filter(s => s._id !== id);
+      setChatSessions(updatedSessions);
+
+      // Hitung ulang analytics tanpa reload halaman
+      let allMessages = [];
+      const recentSessionsToAnalyze = updatedSessions.slice(0, 5);
+      for (const session of recentSessionsToAnalyze) {
+        try {
+          const historyRes = await getHistory(session._id);
+          if (historyRes.data) {
+            allMessages = [...allMessages, ...historyRes.data];
+          }
+        } catch {
+          // skip failed history loads
+        }
+      }
+      processAnalytics(allMessages, updatedSessions);
+
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Obrolan berhasil dihapus.', type: 'success' } 
+      }));
     } catch (error) {
       console.error("Gagal menghapus sesi:", error);
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Gagal menghapus obrolan.', type: 'error' } 
+      }));
     }
   };
 
@@ -338,6 +371,18 @@ const DashboardPage = () => {
           </div>
         </main>
       </div>
+
+      {/* Dialog konfirmasi hapus — menggantikan window.confirm() */}
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        title="Hapus Obrolan"
+        message="Yakin ingin menghapus riwayat obrolan ini? Tindakan ini tidak dapat dibatalkan."
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteSession}
+        onCancel={() => setDeleteConfirm({ isOpen: false, sessionId: null })}
+      />
     </div>
   );
 };

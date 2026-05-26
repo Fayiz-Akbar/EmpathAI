@@ -36,7 +36,9 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
-      alert('Maaf, browser Anda tidak mendukung fitur pengenalan suara. Silakan gunakan Chrome atau Edge.');
+      window.dispatchEvent(new CustomEvent('showNotification', {
+        detail: { message: 'Maaf, browser Anda tidak mendukung fitur pengenalan suara. Silakan gunakan Chrome atau Edge.', type: 'error' }
+      }));
       return;
     }
 
@@ -76,7 +78,9 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
       stopRecording();
       
       if (event.error === 'not-allowed') {
-        alert('Akses mikrofon ditolak. Silakan izinkan akses mikrofon di pengaturan browser Anda.');
+        window.dispatchEvent(new CustomEvent('showNotification', {
+          detail: { message: 'Akses mikrofon ditolak. Silakan izinkan akses mikrofon di pengaturan browser Anda.', type: 'error' }
+        }));
       } else if (event.error === 'no-speech') {
         // Do nothing, just stop recording silently
       }
@@ -87,7 +91,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
       if (isRecordingRef.current && recognitionRef.current) {
         try {
           recognitionRef.current.start();
-        } catch (e) {
+        } catch {
           // Ignore - recognition might have been aborted
         }
       }

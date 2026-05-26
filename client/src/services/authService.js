@@ -35,6 +35,28 @@ export const loginUser = async ({ email, password }) => {
 };
 
 /**
+ * Changes the user's password.
+ * Requires authentication (JWT token in localStorage).
+ * @param {Object} params
+ * @param {string} params.currentPassword - The user's current password.
+ * @param {string} params.newPassword - The desired new password.
+ * @returns {Promise<Object>} The server response data.
+ */
+export const changePassword = async ({ currentPassword, newPassword }) => {
+  const token = localStorage.getItem('empathAI_token');
+  const response = await apiClient.put(
+    '/auth/change-password',
+    { currentPassword, newPassword },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+/**
  * Checks if the user is currently authenticated.
  * @returns {boolean}
  */

@@ -5,6 +5,7 @@ import ChatHeader from '../components/ChatHeader';
 import ChatBubble from '../components/ChatBubble';
 import MessageInput from '../components/MessageInput';
 import Sidebar from '../components/Sidebar';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { getCurrentUser } from '../services/authService';
 // Import digabungkan dan dirapikan:
 import { 
@@ -26,6 +27,9 @@ const ChatPage = () => {
   const [sessionId, setSessionId] = useState(() => localStorage.getItem('empathAI_sessionId') || '');
   
   const [chatSessions, setChatSessions] = useState([]); 
+
+  // State untuk ConfirmDialog delete
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, sessionId: null });
   
   const user = getCurrentUser();
   const hasMessages = messages.length > 0;
@@ -111,10 +115,16 @@ const ChatPage = () => {
     }
   };
 
-  const handleDeleteSession = async (id) => {
-    // Konfirmasi sebelum menghapus agar aman
-    if (!window.confirm("Yakin ingin menghapus riwayat obrolan ini?")) return;
-    
+  // Tampilkan ConfirmDialog saat user minta hapus
+  const handleDeleteSession = (id) => {
+    setDeleteConfirm({ isOpen: true, sessionId: id });
+  };
+
+  // Eksekusi hapus setelah user konfirmasi
+  const confirmDeleteSession = async () => {
+    const id = deleteConfirm.sessionId;
+    setDeleteConfirm({ isOpen: false, sessionId: null });
+
     try {
       await deleteSession(id);
       // Hapus dari list sidebar
@@ -124,8 +134,15 @@ const ChatPage = () => {
       if (sessionId === id) {
         handleNewChat();
       }
+
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Obrolan berhasil dihapus.', type: 'success' } 
+      }));
     } catch (error) {
       console.error("Gagal menghapus sesi:", error);
+      window.dispatchEvent(new CustomEvent('showNotification', { 
+        detail: { message: 'Gagal menghapus obrolan.', type: 'error' } 
+      }));
     }
   };
   
@@ -295,6 +312,18 @@ const ChatPage = () => {
           </div>
         )}
       </div>
+
+      {/* Dialog konfirmasi hapus — menggantikan window.confirm() */}
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        title="Hapus Obrolan"
+        message="Yakin ingin menghapus riwayat obrolan ini? Tindakan ini tidak dapat dibatalkan."
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteSession}
+        onCancel={() => setDeleteConfirm({ isOpen: false, sessionId: null })}
+      />
     </div>
   );
 };
