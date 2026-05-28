@@ -46,14 +46,6 @@ const HabitItem = ({ habit, selectedDate, onDelete }) => {
     }`}>
       
       <div className="flex items-center gap-4 flex-1 cursor-pointer select-none" onClick={handleToggle}>
-        <div className={`w-6 h-6 rounded border flex items-center justify-center transition-colors ${
-          isCompleted 
-            ? 'bg-[#5B7062] border-[#5B7062] dark:bg-[#8FA697] dark:border-[#8FA697]' 
-            : 'border-gray-300 dark:border-gray-500'
-        }`}>
-          {isCompleted && <CheckCircle size={14} className="text-white" />}
-        </div>
-        
         <div className={`p-2 rounded-lg ${isCompleted ? 'bg-[#5B7062]/10 dark:bg-[#8FA697]/10' : 'bg-gray-100 dark:bg-gray-800'}`}>
           <IconComponent size={18} className={isCompleted ? 'text-[#5B7062] dark:text-[#8FA697]' : 'text-gray-500 dark:text-gray-400'} />
         </div>

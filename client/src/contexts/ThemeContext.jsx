@@ -7,36 +7,19 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('empathAI_theme') || 'system';
+    const savedTheme = localStorage.getItem('empathAI_theme');
+    return (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : 'light';
   });
 
   useEffect(() => {
     const root = document.documentElement;
 
-    const applyTheme = (resolvedTheme) => {
-      if (resolvedTheme === 'dark') {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-    };
-
-    if (theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      applyTheme(mediaQuery.matches ? 'dark' : 'light');
-
-      const handler = (e) => applyTheme(e.matches ? 'dark' : 'light');
-      mediaQuery.addEventListener('change', handler);
-      return () => mediaQuery.removeEventListener('change', handler);
+    if (theme === 'dark') {
+      root.classList.add('dark');
     } else {
-      applyTheme(theme);
+      root.classList.remove('dark');
     }
 
-    localStorage.setItem('empathAI_theme', theme);
-  }, [theme]);
-
-  // Also persist when theme changes
-  useEffect(() => {
     localStorage.setItem('empathAI_theme', theme);
   }, [theme]);
 

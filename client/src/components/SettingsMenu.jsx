@@ -5,7 +5,6 @@ import { getCurrentUser } from '../services/authService';
 import ChangePasswordModal from './ChangePasswordModal';
 
 const THEME_OPTIONS = [
-  { key: 'system', label: 'System', icon: Monitor, iconClass: 'text-gray-500 dark:text-gray-400' },
   { key: 'light',  label: 'Light',  icon: Sun,     iconClass: 'text-amber-500' },
   { key: 'dark',   label: 'Dark',   icon: Moon,    iconClass: 'text-indigo-500' },
 ];
