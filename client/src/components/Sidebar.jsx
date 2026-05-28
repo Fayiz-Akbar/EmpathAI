@@ -5,6 +5,7 @@ import { getCurrentUser } from '../services/authService';
 import ChatSessionItem from './ChatSessionItem';
 import SettingsMenu from './SettingsMenu';
 import SearchBar from './SearchBar';
+import LoginPromptModal from './LoginPromptModal';
 
 const Sidebar = ({ 
   isDesktopOpen, 
@@ -22,6 +23,7 @@ const Sidebar = ({
   const user = getCurrentUser();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   // Filter sessions based on search query
   const filteredSessions = chatSessions.filter(session => {
@@ -30,6 +32,14 @@ const Sidebar = ({
   });
 
   const isCurrentPath = (path) => location.pathname === path;
+
+  const handleProtectedNavigation = (path) => {
+    if (user) {
+      navigate(path);
+    } else {
+      setShowLoginPrompt(true);
+    }
+  };
 
   return (
     <aside className={`${isDesktopOpen ? 'w-[280px]' : 'w-0'} shrink-0 bg-[#F3F4F6] dark:bg-[#1e1e2e] border-r border-gray-100 dark:border-gray-700 flex flex-col transition-all duration-300 overflow-hidden h-full rounded-r-3xl`}>
@@ -62,7 +72,7 @@ const Sidebar = ({
       {/* Navigation */}
       <div className="px-4 py-2 flex flex-col gap-1">
         <button
-          onClick={() => user ? navigate('/dashboard') : navigate('/login')}
+          onClick={() => handleProtectedNavigation('/dashboard')}
           className={`w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium rounded-xl transition-colors focus:outline-none group ${
             isCurrentPath('/dashboard') 
               ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF]' 
@@ -73,7 +83,7 @@ const Sidebar = ({
         </button>
 
         <button
-          onClick={() => user ? navigate('/self-care') : navigate('/login')}
+          onClick={() => handleProtectedNavigation('/self-care')}
           className={`w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium rounded-xl transition-colors focus:outline-none group ${
             isCurrentPath('/self-care') 
               ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF]' 
@@ -122,6 +132,11 @@ const Sidebar = ({
       <div className="px-2 pb-2 pt-2">
         <SettingsMenu />
       </div>
+
+      <LoginPromptModal 
+        isOpen={showLoginPrompt} 
+        onClose={() => setShowLoginPrompt(false)} 
+      />
     </aside>
   );
 };
