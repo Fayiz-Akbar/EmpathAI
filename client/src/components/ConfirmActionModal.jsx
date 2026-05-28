@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ConfirmActionModal = ({ 
   isOpen, 
@@ -14,6 +15,8 @@ const ConfirmActionModal = ({
   confirmButtonClass = "bg-[#8FA697] hover:bg-[#7a8e81] text-white",
   onConfirm 
 }) => {
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -45,7 +48,7 @@ const ConfirmActionModal = ({
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-xl transition-colors focus:outline-none"
             >
               <ArrowLeft size={16} />
-              <span>Kembali</span>
+              <span>{t('auth.back')}</span>
             </button>
             <button
               onClick={() => {

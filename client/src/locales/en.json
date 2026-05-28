@@ -1,0 +1,73 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "selfCare": "Self-Care",
+    "newChat": "New chat",
+    "chats": "CHATS",
+    "noChatFound": "No chat matches",
+    "noChatHistory": "No chat history yet",
+    "searchHistory": "Search history..."
+  },
+  "settings": {
+    "title": "Settings & help",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language",
+    "changePassword": "Change Password",
+    "helpSupport": "Help & Support",
+    "about": "About EmpathAI"
+  },
+  "chat": {
+    "hi": "Hi",
+    "whereToStart": "Where should we start?",
+    "analyzeMood": "Analyze mood",
+    "anxietyRelief": "Anxiety relief",
+    "dailyMotivation": "Daily motivation",
+    "stressManagement": "Stress management",
+    "typeMessage": "Type your message...",
+    "disclaimer": "EmpathAI can make mistakes. Consider verifying important information.",
+    "newChat": "New Chat",
+    "renameChat": "Rename",
+    "deleteChat": "Delete",
+    "pinChat": "Pin",
+    "unpinChat": "Unpin"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "logoutConfirmTitle": "Confirm Logout",
+    "logoutConfirmDesc": "Are you sure you want to log out? Your session will be ended.",
+    "accessRestricted": "Access Restricted",
+    "accessRestrictedDesc": "You cannot use this feature without logging in. Please log into your account first to continue.",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "welcome": "Welcome to EmpathAI",
+    "welcomeDesc": "Your safe space for mental well-being.",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "signIn": "Sign In",
+    "processing": "Processing...",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "createAccount": "Create your account",
+    "namePlaceholder": "Full Name",
+    "createPassword": "Create a password",
+    "confirmPassword": "Confirm your password",
+    "haveAccount": "Already have an account?"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "desc": "Make sure your new password is secure",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Minimum 6 characters",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Retype new password",
+    "savePassword": "Save Password"
+  }
+}

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Plus, Mic, Send, Loader2, MicOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
   const [message, setMessage] = useState('');
@@ -10,6 +11,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
   const recognitionRef = useRef(null);
   const timerRef = useRef(null);
   const isRecordingRef = useRef(false);
+  const { t } = useTranslation();
 
   // Efek untuk membuat tinggi textarea menyesuaikan otomatis (Auto-resize)
   useEffect(() => {
@@ -185,7 +187,7 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isRecording ? "Sedang mendengarkan..." : "Type your message..."}
+            placeholder={isRecording ? "Sedang mendengarkan..." : t('chat.typeMessage')}
             disabled={isLoading}
             rows={1}
             className={`w-full bg-transparent resize-none px-6 ${isRecording ? 'pl-28' : 'pl-14'} pr-16 py-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none min-h-[56px] rounded-full text-[15px] disabled:opacity-70 leading-relaxed font-sans transition-all duration-300`}

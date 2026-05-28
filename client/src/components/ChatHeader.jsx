@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Menu, LogOut, ChevronDown, Share, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ConfirmActionModal from './ConfirmActionModal';
 
 const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
@@ -8,6 +9,7 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const dropdownRef = useRef(null);
+  const { t } = useTranslation();
 
   // Efek untuk menutup dropdown jika pengguna mengklik area di luar menu
   useEffect(() => {
@@ -70,7 +72,7 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
                 >
                   <LogOut size={16} /> 
-                  <span>Keluar Akun</span>
+                  <span>{t('auth.logout')}</span>
                 </button>
               </div>
             )}
@@ -81,13 +83,13 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
               onClick={() => navigate('/login')} 
               className="px-4 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all"
             >
-              Login
+              {t('auth.login')}
             </button>
             <button 
               onClick={() => navigate('/register')} 
               className="px-4 py-1.5 text-sm font-medium text-white bg-[#8FA697] hover:bg-[#7A9182] rounded-full transition-all shadow-sm"
             >
-              Register
+              {t('auth.register')}
             </button>
           </div>
         )}
@@ -96,12 +98,12 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
       <ConfirmActionModal 
         isOpen={showLogoutConfirm} 
         onClose={() => setShowLogoutConfirm(false)} 
-        title="Konfirmasi Logout"
-        description="Apakah Anda yakin ingin keluar dari akun ini? Sesi Anda akan diakhiri."
+        title={t('auth.logoutConfirmTitle')}
+        description={t('auth.logoutConfirmDesc')}
         icon={LogOut}
         iconColorClass="text-red-600 dark:text-red-500"
         iconBgClass="bg-red-100 dark:bg-red-900/30"
-        confirmText="Keluar"
+        confirmText={t('auth.logout')}
         confirmIcon={LogOut}
         confirmButtonClass="bg-red-500 hover:bg-red-600 text-white"
         onConfirm={handleLogout}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LayoutDashboard, Menu, Search, Edit3, Heart, ShieldAlert, LogIn } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
+import { useTranslation } from 'react-i18next';
 import ChatSessionItem from './ChatSessionItem';
 import SettingsMenu from './SettingsMenu';
 import SearchBar from './SearchBar';
@@ -24,6 +25,7 @@ const Sidebar = ({
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const { t } = useTranslation();
 
   // Filter sessions based on search query
   const filteredSessions = chatSessions.filter(session => {
@@ -51,7 +53,7 @@ const Sidebar = ({
             value={searchQuery} 
             onChange={setSearchQuery} 
             onClose={() => { setIsSearchActive(false); setSearchQuery(''); }} 
-            placeholder="Cari riwayat..." 
+            placeholder={t('sidebar.searchHistory')} 
           />
         ) : (
           <>
@@ -79,7 +81,7 @@ const Sidebar = ({
               : 'text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20'
           }`}
         >
-          <LayoutDashboard size={18} className={`${isCurrentPath('/dashboard') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> Dashboard
+          <LayoutDashboard size={18} className={`${isCurrentPath('/dashboard') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> {t('sidebar.dashboard')}
         </button>
 
         <button
@@ -90,27 +92,27 @@ const Sidebar = ({
               : 'text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20'
           }`}
         >
-          <Heart size={18} className={`${isCurrentPath('/self-care') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> Self-Care
+          <Heart size={18} className={`${isCurrentPath('/self-care') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> {t('sidebar.selfCare')}
         </button>
 
         <button 
           onClick={() => { onNewChat(); navigate('/chat'); }}
           className="w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium text-gray-700 dark:text-gray-200 rounded-xl hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20 transition-colors focus:outline-none group"
         >
-          <Edit3 size={18} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062] transition-colors" /> New chat
+          <Edit3 size={18} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062] transition-colors" /> {t('sidebar.newChat')}
         </button>
       </div>
 
       {/* Chats Section */}
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 mt-2">
         <h3 className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase px-3 mb-2">
-          Chats
+          {t('sidebar.chats')}
         </h3>
         
         <div className="flex flex-col gap-1 pb-4">
           {filteredSessions.length === 0 ? (
             <p className="text-xs text-gray-400 italic px-3 py-2">
-              {searchQuery ? "Tidak ada chat yang cocok" : "No chat history yet"}
+              {searchQuery ? t('sidebar.noChatFound') : t('sidebar.noChatHistory')}
             </p>
           ) : (
             filteredSessions.map((session) => (
@@ -136,10 +138,10 @@ const Sidebar = ({
       <ConfirmActionModal 
         isOpen={showLoginPrompt} 
         onClose={() => setShowLoginPrompt(false)} 
-        title="Akses Dibatasi"
-        description="Anda tidak dapat menggunakan fitur ini jika belum login. Silakan masuk ke akun Anda terlebih dahulu untuk melanjutkan."
+        title={t('auth.accessRestricted')}
+        description={t('auth.accessRestrictedDesc')}
         icon={ShieldAlert}
-        confirmText="Login"
+        confirmText={t('auth.login')}
         confirmIcon={LogIn}
         onConfirm={() => navigate('/login')}
       />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { registerUser } from '../services/authService';
+import { useTranslation } from 'react-i18next';
 import PasswordInput from '../components/PasswordInput';
 
 const RegisterPage = () => {
@@ -10,6 +11,7 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const { t } = useTranslation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,7 +62,7 @@ const RegisterPage = () => {
               EmpathAI
             </h1>
           </Link>
-          <p className="text-gray-500 text-sm">Start your journey to better well-being.</p>
+          <p className="text-gray-500 text-sm">{t('auth.welcomeDesc')}</p>
         </div>
 
         {/* Error / Success Alerts */}
@@ -79,7 +81,7 @@ const RegisterPage = () => {
         <form onSubmit={handleSubmit} className="w-full space-y-4">
           
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-500 pl-1">Full Name</label>
+            <label className="text-xs font-medium text-gray-500 pl-1">{t('auth.namePlaceholder')}</label>
             <input
               type="text"
               name="name"
@@ -93,7 +95,7 @@ const RegisterPage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-500 pl-1">Email Address</label>
+            <label className="text-xs font-medium text-gray-500 pl-1">{t('auth.emailPlaceholder')}</label>
             <input
               type="email"
               name="email"
@@ -107,12 +109,12 @@ const RegisterPage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-500 pl-1">Password</label>
+            <label className="text-xs font-medium text-gray-500 pl-1">{t('auth.passwordPlaceholder')}</label>
             <PasswordInput
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Create a password"
+              placeholder={t('auth.createPassword')}
               className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-300"
               required
               disabled={isLoading || successMsg}
@@ -120,12 +122,12 @@ const RegisterPage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-500 pl-1">Confirm Password</label>
+            <label className="text-xs font-medium text-gray-500 pl-1">{t('auth.confirmPassword')}</label>
             <PasswordInput
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="Confirm your password"
+              placeholder={t('auth.confirmPassword')}
               className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-300"
               required
               disabled={isLoading || successMsg}
@@ -140,10 +142,10 @@ const RegisterPage = () => {
             >
               {isLoading || successMsg ? (
                 <>
-                  <Loader2 size={20} className="animate-spin" /> Mendaftarkan...
+                  <Loader2 size={20} className="animate-spin" /> {t('auth.processing')}
                 </>
               ) : (
-                "Create Account"
+                t('auth.createAccount')
               )}
             </button>
           </div>
@@ -154,9 +156,9 @@ const RegisterPage = () => {
         </div>
 
         <div className="mt-4 text-center text-sm text-gray-500">
-          Already have an account?{' '}
+          {t('auth.haveAccount')} {' '}
           <Link to="/login" className="font-semibold text-gray-700 hover:text-[#8FA697] transition-all">
-            Log in
+            {t('auth.login')}
           </Link>
         </div>
       </div>

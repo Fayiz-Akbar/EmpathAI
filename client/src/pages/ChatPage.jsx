@@ -7,6 +7,7 @@ import MessageInput from '../components/MessageInput';
 import Sidebar from '../components/Sidebar';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { getCurrentUser } from '../services/authService';
+import { useTranslation } from 'react-i18next';
 // Import digabungkan dan dirapikan:
 import { 
   sendMessage as sendChatMessage, 
@@ -19,6 +20,7 @@ import {
 } from '../services/chatService';
 
 const ChatPage = () => {
+  const { t } = useTranslation();
   // useNavigate removed
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -261,18 +263,18 @@ const ChatPage = () => {
                 {/* Top Section: Sapaan (Rata kiri, di atas) */}
                 <div className="text-left mb-8 pl-2">
                   <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight text-gray-900 dark:text-gray-100 font-sans">
-                    Hi {user?.name?.split(' ')[0] || 'there'}
+                    {t('chat.hi')} {user?.name?.split(' ')[0] || ''}
                   </h1>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-400 dark:text-gray-500 tracking-tight leading-tight font-sans">
-                    Where should we start?
+                    {t('chat.whereToStart')}
                   </h2>
                 </div>
 
                 <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 w-full px-2">
-                  <ActionButton icon={<Sparkles size={16} className="text-[#8FA697] shrink-0"/>} text="Analyze mood" onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
-                  <ActionButton icon={<Zap size={16} className="text-[#8FA697] shrink-0"/>} text="Anxiety relief" onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
-                  <ActionButton icon={<Heart size={16} className="text-[#8FA697] shrink-0"/>} text="Daily motivation" onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
-                  <ActionButton icon={<Brain size={16} className="text-[#8FA697] shrink-0"/>} text="Stress management" onClick={() => handleSend("Banyak tugas hari ini bikin stres, gimana cara mengatasinya?")} />
+                  <ActionButton icon={<Sparkles size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.analyzeMood')} onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
+                  <ActionButton icon={<Zap size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.anxietyRelief')} onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
+                  <ActionButton icon={<Heart size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.dailyMotivation')} onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
+                  <ActionButton icon={<Brain size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.stressManagement')} onClick={() => handleSend("Banyak tugas hari ini bikin stres, gimana cara mengatasinya?")} />
                 </div>
 
                 {/* Spacer untuk mendorong MessageInput ke bawah */}
@@ -283,7 +285,7 @@ const ChatPage = () => {
                   <MessageInput onSend={handleSend} isLoading={isLoading} isCentered={false} />
                   
                   <div className="w-full text-center mt-4 text-[10px] sm:text-xs text-gray-400 dark:text-gray-600 px-4">
-                    EmpathAI can make mistakes. Consider verifying important information.
+                    {t('chat.disclaimer')}
                   </div>
                 </div>
               </div>
@@ -306,7 +308,7 @@ const ChatPage = () => {
             <div className="max-w-4xl mx-auto">
               <MessageInput onSend={handleSend} isLoading={isLoading} />
               <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-600 text-center mt-3 uppercase tracking-widest font-semibold">
-                EmpathAI can make mistakes. Verify important info.
+                {t('chat.disclaimer')}
               </p>
             </div>
           </div>
@@ -316,10 +318,10 @@ const ChatPage = () => {
       {/* Dialog konfirmasi hapus — menggantikan window.confirm() */}
       <ConfirmDialog
         isOpen={deleteConfirm.isOpen}
-        title="Hapus Obrolan"
+        title={t('chat.deleteChat')}
         message="Yakin ingin menghapus riwayat obrolan ini? Tindakan ini tidak dapat dibatalkan."
-        confirmText="Hapus"
-        cancelText="Batal"
+        confirmText={t('chat.deleteChat')}
+        cancelText={t('auth.cancel')}
         variant="danger"
         onConfirm={confirmDeleteSession}
         onCancel={() => setDeleteConfirm({ isOpen: false, sessionId: null })}

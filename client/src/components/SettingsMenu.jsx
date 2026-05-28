@@ -2,16 +2,23 @@ import { useState, useRef, useEffect } from 'react';
 import { Settings, Palette, HelpCircle, Lock, ChevronDown, Monitor, Sun, Moon, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getCurrentUser } from '../services/authService';
+import { useTranslation } from 'react-i18next';
 import ChangePasswordModal from './ChangePasswordModal';
-
 const THEME_OPTIONS = [
   { key: 'light',  label: 'Light',  icon: Sun,     iconClass: 'text-amber-500' },
   { key: 'dark',   label: 'Dark',   icon: Moon,    iconClass: 'text-indigo-500' },
 ];
 
+const LANG_OPTIONS = [
+  { key: 'id', label: 'Indonesia' },
+  { key: 'en', label: 'English' }
+];
+
 const SettingsMenu = () => {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isThemeExpanded, setIsThemeExpanded] = useState(false);
+  const [isLangExpanded, setIsLangExpanded] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const menuRef = useRef(null);
   const { theme, setTheme } = useTheme();
@@ -23,6 +30,7 @@ const SettingsMenu = () => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false);
         setIsThemeExpanded(false);
+        setIsLangExpanded(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -35,15 +43,26 @@ const SettingsMenu = () => {
     setIsThemeExpanded(false);
   };
 
+  const handleLangSelect = (selectedLang) => {
+    i18n.changeLanguage(selectedLang);
+    localStorage.setItem('empathAI_lang', selectedLang);
+    setIsOpen(false);
+    setIsLangExpanded(false);
+  };
+
   const handleOpenChangePassword = () => {
     setIsOpen(false);
     setIsThemeExpanded(false);
+    setIsLangExpanded(false);
     setIsChangePasswordOpen(true);
   };
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
-    if (isOpen) setIsThemeExpanded(false);
+    if (!isOpen) {
+      setIsThemeExpanded(false);
+      setIsLangExpanded(false);
+    }
   };
 
   return (
@@ -55,7 +74,7 @@ const SettingsMenu = () => {
           className="flex items-center gap-3 text-gray-600 dark:text-gray-300 hover:text-[#5B7062] dark:hover:text-[#A7BDAF] w-full p-2 rounded-xl hover:bg-[#8FA697]/10 dark:hover:bg-[#8FA697]/20 transition-colors focus:outline-none group"
         >
           <Settings size={18} className="group-hover:text-[#5B7062] transition-colors" />
-          <span className="text-sm font-medium">Settings & help</span>
+          <span className="text-sm font-medium">{t('settings.title')}</span>
         </button>
 
         {/* Popup Menu — posisi di atas tombol, tetap di dalam sidebar */}
@@ -65,12 +84,12 @@ const SettingsMenu = () => {
             {/* Theme — klik untuk expand/collapse pilihan di bawahnya */}
             <div>
               <button
-                onClick={() => setIsThemeExpanded((prev) => !prev)}
+                onClick={() => { setIsThemeExpanded((prev) => !prev); setIsLangExpanded(false); }}
                 className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
               >
                 <div className="flex items-center gap-3">
                   <Palette size={16} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]" />
-                  <span>Theme</span>
+                  <span>{t('settings.theme')}</span>
                 </div>
                 <ChevronDown
                   size={14}
@@ -96,9 +115,49 @@ const SettingsMenu = () => {
                   >
                     <div className="flex items-center gap-3">
                       <item.icon size={15} className={item.iconClass} />
-                      <span>{item.label}</span>
+                      <span>{t(`settings.theme${item.label}`)}</span>
                     </div>
                     {theme === item.key && (
+                      <Check size={14} className="text-[#8FA697] dark:text-[#A7BDAF]" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Language */}
+            <div>
+              <button
+                onClick={() => { setIsLangExpanded((prev) => !prev); setIsThemeExpanded(false); }}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-500 dark:text-gray-400 font-bold group-hover:text-[#5B7062]">Aa</span>
+                  <span>{t('settings.language')}</span>
+                </div>
+                <ChevronDown
+                  size={14}
+                  className={`text-gray-400 transition-transform duration-200 ${isLangExpanded ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                  isLangExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                {LANG_OPTIONS.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => handleLangSelect(item.key)}
+                    className={`w-full flex items-center justify-between pl-11 pr-4 py-2 text-sm transition-colors text-left ${
+                      i18n.language === item.key
+                        ? 'text-[#5B7062] dark:text-[#A7BDAF] bg-[#8FA697]/15 dark:bg-[#8FA697]/20 font-medium'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {i18n.language === item.key && (
                       <Check size={14} className="text-[#8FA697] dark:text-[#A7BDAF]" />
                     )}
                   </button>
@@ -113,7 +172,7 @@ const SettingsMenu = () => {
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
               >
                 <Lock size={16} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]" />
-                <span>Change Password</span>
+                <span>{t('settings.changePassword')}</span>
               </button>
             )}
 
@@ -123,7 +182,7 @@ const SettingsMenu = () => {
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
             >
               <HelpCircle size={16} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]" />
-              <span>Help</span>
+              <span>{t('settings.helpSupport')}</span>
             </button>
           </div>
         )}

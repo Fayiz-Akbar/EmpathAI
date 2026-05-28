@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { loginUser } from '../services/authService';
+import { useTranslation } from 'react-i18next';
 import PasswordInput from '../components/PasswordInput';
 
 const LoginPage = () => {
@@ -9,6 +10,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const { t } = useTranslation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,10 +51,10 @@ const LoginPage = () => {
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2 font-[Outfit]">
-              Welcome to EmpathAI
+              {t('auth.welcome')}
             </h1>
           </Link>
-          <p className="text-gray-500 text-sm">Your safe space for mental well-being.</p>
+          <p className="text-gray-500 text-sm">{t('auth.welcomeDesc')}</p>
         </div>
 
         {/* Error Alert */}
@@ -70,7 +72,7 @@ const LoginPage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email address"
+              placeholder={t('auth.emailPlaceholder')}
               className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-400"
               required
             />
@@ -81,7 +83,7 @@ const LoginPage = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Password"
+              placeholder={t('auth.passwordPlaceholder')}
               className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-400"
               required
             />
@@ -101,19 +103,19 @@ const LoginPage = () => {
             >
               {isLoading ? (
                 <>
-                  <Loader2 size={20} className="animate-spin" /> Memproses...
+                  <Loader2 size={20} className="animate-spin" /> {t('auth.processing')}
                 </>
               ) : (
-                "Sign In"
+                t('auth.signIn')
               )}
             </button>
           </div>
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
+          {t('auth.noAccount')} {' '}
           <Link to="/register" className="font-semibold text-gray-700 hover:text-[#8FA697] transition-all">
-            Sign up
+            {t('auth.signUp')}
           </Link>
         </div>
       </div>

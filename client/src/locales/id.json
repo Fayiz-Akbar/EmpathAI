@@ -1,0 +1,73 @@
+{
+  "sidebar": {
+    "dashboard": "Dasbor",
+    "selfCare": "Perawatan Diri",
+    "newChat": "Chat baru",
+    "chats": "OBROLAN",
+    "noChatFound": "Tidak ada chat yang cocok",
+    "noChatHistory": "Belum ada riwayat chat",
+    "searchHistory": "Cari riwayat..."
+  },
+  "settings": {
+    "title": "Pengaturan & Bantuan",
+    "theme": "Tema",
+    "themeLight": "Terang",
+    "themeDark": "Gelap",
+    "language": "Bahasa",
+    "changePassword": "Ubah Password",
+    "helpSupport": "Bantuan & Dukungan",
+    "about": "Tentang EmpathAI"
+  },
+  "chat": {
+    "hi": "Hai",
+    "whereToStart": "Dari mana kita harus mulai?",
+    "analyzeMood": "Analisis suasana hati",
+    "anxietyRelief": "Pereda kecemasan",
+    "dailyMotivation": "Motivasi harian",
+    "stressManagement": "Manajemen stres",
+    "typeMessage": "Ketik pesan Anda...",
+    "disclaimer": "EmpathAI bisa membuat kesalahan. Harap periksa kembali informasi penting.",
+    "newChat": "Chat Baru",
+    "renameChat": "Ganti Nama",
+    "deleteChat": "Hapus",
+    "pinChat": "Sematkan",
+    "unpinChat": "Batal Sematkan"
+  },
+  "auth": {
+    "login": "Masuk",
+    "register": "Daftar",
+    "logout": "Keluar Akun",
+    "logoutConfirmTitle": "Konfirmasi Keluar",
+    "logoutConfirmDesc": "Apakah Anda yakin ingin keluar dari akun ini? Sesi Anda akan diakhiri.",
+    "accessRestricted": "Akses Dibatasi",
+    "accessRestrictedDesc": "Anda tidak dapat menggunakan fitur ini jika belum login. Silakan masuk ke akun Anda terlebih dahulu untuk melanjutkan.",
+    "back": "Kembali",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "saving": "Menyimpan...",
+    "welcome": "Selamat datang di EmpathAI",
+    "welcomeDesc": "Ruang aman Anda untuk kesejahteraan mental.",
+    "emailPlaceholder": "Alamat email",
+    "passwordPlaceholder": "Password",
+    "signIn": "Masuk",
+    "processing": "Memproses...",
+    "noAccount": "Belum punya akun?",
+    "signUp": "Daftar",
+    "createAccount": "Buat akun Anda",
+    "namePlaceholder": "Nama Lengkap",
+    "createPassword": "Buat password",
+    "confirmPassword": "Konfirmasi password",
+    "haveAccount": "Sudah punya akun?"
+  },
+  "changePassword": {
+    "title": "Ubah Password",
+    "desc": "Pastikan password baru Anda aman",
+    "currentPassword": "Password Saat Ini",
+    "currentPasswordPlaceholder": "Masukkan password saat ini",
+    "newPassword": "Password Baru",
+    "newPasswordPlaceholder": "Minimal 6 karakter",
+    "confirmPassword": "Konfirmasi Password Baru",
+    "confirmPasswordPlaceholder": "Ketik ulang password baru",
+    "savePassword": "Simpan Password"
+  }
+}

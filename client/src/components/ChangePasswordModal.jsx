@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Lock, Loader2, ShieldCheck } from 'lucide-react';
 import { changePassword } from '../services/authService';
+import { useTranslation } from 'react-i18next';
 import PasswordInput from './PasswordInput';
 
 /**
@@ -18,6 +19,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const { t } = useTranslation();
 
   const resetForm = () => {
     setCurrentPassword('');
@@ -107,10 +109,10 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 font-[Outfit]">
-                Ubah Password
+                {t('changePassword.title')}
               </h3>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                Pastikan password baru Anda aman
+                {t('changePassword.desc')}
               </p>
             </div>
           </div>
@@ -127,7 +129,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
           {/* Current Password */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Password Saat Ini
+              {t('changePassword.currentPassword')}
             </label>
             <PasswordInput
               leftIcon={Lock}
@@ -136,7 +138,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
                 setCurrentPassword(e.target.value);
                 if (errors.currentPassword) setErrors((prev) => ({ ...prev, currentPassword: '' }));
               }}
-              placeholder="Masukkan password saat ini"
+              placeholder={t('changePassword.currentPasswordPlaceholder')}
               error={!!errors.currentPassword}
               className="bg-gray-50 dark:bg-[#1e1e2e]"
             />
@@ -148,7 +150,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
           {/* New Password */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Password Baru
+              {t('changePassword.newPassword')}
             </label>
             <PasswordInput
               leftIcon={Lock}
@@ -157,7 +159,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
                 setNewPassword(e.target.value);
                 if (errors.newPassword) setErrors((prev) => ({ ...prev, newPassword: '' }));
               }}
-              placeholder="Minimal 6 karakter"
+              placeholder={t('changePassword.newPasswordPlaceholder')}
               error={!!errors.newPassword}
               className="bg-gray-50 dark:bg-[#1e1e2e]"
             />
@@ -169,7 +171,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
           {/* Confirm New Password */}
           <div className="mb-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Konfirmasi Password Baru
+              {t('changePassword.confirmPassword')}
             </label>
             <PasswordInput
               leftIcon={Lock}
@@ -178,7 +180,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
                 setConfirmPassword(e.target.value);
                 if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
               }}
-              placeholder="Ketik ulang password baru"
+              placeholder={t('changePassword.confirmPasswordPlaceholder')}
               error={!!errors.confirmPassword}
               className="bg-gray-50 dark:bg-[#1e1e2e]"
             />
@@ -196,7 +198,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             disabled={isSubmitting}
             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#2a2a3e] border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none disabled:opacity-50"
           >
-            Batal
+            {t('auth.cancel')}
           </button>
           <button
             onClick={handleSubmit}
@@ -206,10 +208,10 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             {isSubmitting ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                Menyimpan...
+                {t('auth.saving')}
               </>
             ) : (
-              'Simpan Password'
+              t('changePassword.savePassword')
             )}
           </button>
         </div>
