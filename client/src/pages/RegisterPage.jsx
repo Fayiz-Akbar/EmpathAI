@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { registerUser } from '../services/authService';
+import PasswordInput from '../components/PasswordInput';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -107,13 +108,12 @@ const RegisterPage = () => {
 
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-500 pl-1">Password</label>
-            <input
-              type="password"
+            <PasswordInput
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Create a password"
-              className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-300"
+              className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-300"
               required
               disabled={isLoading || successMsg}
             />
@@ -121,13 +121,12 @@ const RegisterPage = () => {
 
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-500 pl-1">Confirm Password</label>
-            <input
-              type="password"
+            <PasswordInput
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm your password"
-              className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-300"
+              className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#8FA697]/20 focus:border-[#8FA697] transition-all placeholder:text-gray-300"
               required
               disabled={isLoading || successMsg}
             />

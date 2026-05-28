@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Menu, LogOut, ChevronDown, Share, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ConfirmActionModal from './ConfirmActionModal';
 
 const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const dropdownRef = useRef(null);
 
   // Efek untuk menutup dropdown jika pengguna mengklik area di luar menu
@@ -61,7 +63,10 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
                   <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">{user.email || ''}</p>
                 </div>
                 <button 
-                  onClick={handleLogout} 
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    setShowLogoutConfirm(true);
+                  }} 
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
                 >
                   <LogOut size={16} /> 
@@ -87,6 +92,20 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
           </div>
         )}
       </div>
+
+      <ConfirmActionModal 
+        isOpen={showLogoutConfirm} 
+        onClose={() => setShowLogoutConfirm(false)} 
+        title="Konfirmasi Logout"
+        description="Apakah Anda yakin ingin keluar dari akun ini? Sesi Anda akan diakhiri."
+        icon={LogOut}
+        iconColorClass="text-red-600 dark:text-red-500"
+        iconBgClass="bg-red-100 dark:bg-red-900/30"
+        confirmText="Keluar"
+        confirmIcon={LogOut}
+        confirmButtonClass="bg-red-500 hover:bg-red-600 text-white"
+        onConfirm={handleLogout}
+      />
     </header>
   );
 };

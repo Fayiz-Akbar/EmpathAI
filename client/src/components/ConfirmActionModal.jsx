@@ -1,10 +1,19 @@
 import { createPortal } from 'react-dom';
-import { LogIn, ArrowLeft, ShieldAlert } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
-const LoginPromptModal = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
-
+const ConfirmActionModal = ({ 
+  isOpen, 
+  onClose, 
+  title, 
+  description, 
+  icon: Icon,
+  iconColorClass = "text-amber-600 dark:text-amber-500",
+  iconBgClass = "bg-amber-100 dark:bg-amber-900/30",
+  confirmText = "Konfirmasi",
+  confirmIcon: ConfirmIcon,
+  confirmButtonClass = "bg-[#8FA697] hover:bg-[#7a8e81] text-white",
+  onConfirm 
+}) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -19,14 +28,14 @@ const LoginPromptModal = ({ isOpen, onClose }) => {
       <div className="relative bg-white dark:bg-[#2a2a3e] w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="p-6">
           <div className="flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-4">
-              <ShieldAlert className="text-amber-600 dark:text-amber-500" size={24} />
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${iconBgClass}`}>
+              {Icon && <Icon className={iconColorClass} size={24} />}
             </div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-              Akses Dibatasi
+              {title}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-              Anda tidak dapat menggunakan fitur ini jika belum login. Silakan masuk ke akun Anda terlebih dahulu untuk melanjutkan.
+              {description}
             </p>
           </div>
 
@@ -41,12 +50,12 @@ const LoginPromptModal = ({ isOpen, onClose }) => {
             <button
               onClick={() => {
                 onClose();
-                navigate('/login');
+                if (onConfirm) onConfirm();
               }}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#8FA697] hover:bg-[#7a8e81] text-white font-medium rounded-xl transition-colors focus:outline-none"
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 font-medium rounded-xl transition-colors focus:outline-none ${confirmButtonClass}`}
             >
-              <LogIn size={16} />
-              <span>Login</span>
+              {ConfirmIcon && <ConfirmIcon size={16} />}
+              <span>{confirmText}</span>
             </button>
           </div>
         </div>
@@ -56,4 +65,4 @@ const LoginPromptModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default LoginPromptModal;
+export default ConfirmActionModal;

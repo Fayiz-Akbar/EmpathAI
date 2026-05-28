@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { LayoutDashboard, Menu, Search, Edit3, Heart } from 'lucide-react';
+import { LayoutDashboard, Menu, Search, Edit3, Heart, ShieldAlert, LogIn } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
 import ChatSessionItem from './ChatSessionItem';
 import SettingsMenu from './SettingsMenu';
 import SearchBar from './SearchBar';
-import LoginPromptModal from './LoginPromptModal';
+import ConfirmActionModal from './ConfirmActionModal';
 
 const Sidebar = ({ 
   isDesktopOpen, 
@@ -133,9 +133,15 @@ const Sidebar = ({
         <SettingsMenu />
       </div>
 
-      <LoginPromptModal 
+      <ConfirmActionModal 
         isOpen={showLoginPrompt} 
         onClose={() => setShowLoginPrompt(false)} 
+        title="Akses Dibatasi"
+        description="Anda tidak dapat menggunakan fitur ini jika belum login. Silakan masuk ke akun Anda terlebih dahulu untuk melanjutkan."
+        icon={ShieldAlert}
+        confirmText="Login"
+        confirmIcon={LogIn}
+        onConfirm={() => navigate('/login')}
       />
     </aside>
   );

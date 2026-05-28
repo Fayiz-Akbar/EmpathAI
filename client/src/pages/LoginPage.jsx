@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { loginUser } from '../services/authService';
+import PasswordInput from '../components/PasswordInput';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -76,8 +77,7 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <input
-              type="password"
+            <PasswordInput
               name="password"
               value={formData.password}
               onChange={handleChange}
