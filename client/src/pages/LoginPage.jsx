@@ -89,10 +89,14 @@ const LoginPage = () => {
             />
           </div>
 
-          <div className="flex justify-end pt-1 pb-4">
-            <Link to="#" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
-              Forgot password?
-            </Link>
+          {/* Forgot Password */}
+          <div className="flex items-center justify-end mb-6">
+            <a 
+              href="#" 
+              className="text-xs font-medium text-gray-500 hover:text-[#5B7062] dark:text-gray-400 dark:hover:text-[#A7BDAF] transition-colors"
+            >
+              {t('auth.forgotPassword')}
+            </a>
           </div>
 
           <div>

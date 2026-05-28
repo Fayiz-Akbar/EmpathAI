@@ -7,6 +7,7 @@ import HabitList from '../components/HabitList';
 import { getCurrentUser } from '../services/authService';
 import { getHabits } from '../services/habitService';
 import { getUserSessions, renameSession, deleteSession, pinSession } from '../services/chatService';
+import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '../components/ConfirmDialog';
 
 const getLocalDateString = (dateObj) => {
@@ -24,6 +25,7 @@ const SelfCarePage = () => {
   
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const { t } = useTranslation();
   
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -170,9 +172,9 @@ const SelfCarePage = () => {
               <div>
                 <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 font-[Outfit] flex items-center gap-3">
                   <Heart className="text-[#5B7062] dark:text-[#A7BDAF]" size={32} />
-                  Self-Care Checklist
+                  {t('selfCare.title')}
                 </h1>
-                <p className="text-gray-500 dark:text-gray-400 mt-2">Track your daily wellness habits and routines.</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">{t('selfCare.desc')}</p>
               </div>
               
               {/* Date Navigator */}
@@ -197,7 +199,7 @@ const SelfCarePage = () => {
                 </button>
                 {!isToday && (
                   <button onClick={handleToday} className="ml-2 p-2 bg-[#8FA697]/15 text-[#5B7062] dark:bg-[#8FA697]/20 dark:text-[#A7BDAF] hover:bg-[#8FA697]/25 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium">
-                    <Calendar size={16} /> Today
+                    <Calendar size={16} /> {t('selfCare.today')}
                   </button>
                 )}
               </div>

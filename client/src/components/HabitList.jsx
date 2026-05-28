@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import HabitItem from './HabitItem';
 import { Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { createHabit, deleteHabit } from '../services/habitService';
 
 const AVAILABLE_ICONS = [
@@ -15,6 +16,7 @@ const AVAILABLE_ICONS = [
 const HabitList = ({ habits, setHabits, selectedDate }) => {
   const [newTitle, setNewTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
 
   const handleAddHabit = async (e) => {
     e.preventDefault();
@@ -62,8 +64,8 @@ const HabitList = ({ habits, setHabits, selectedDate }) => {
       <div className="mb-8">
         <div className="flex justify-between items-end mb-2">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Daily Progress</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{completedCount} of {habits.length} completed</p>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('selfCare.dailyProgress')}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{completedCount} {t('selfCare.of')} {habits.length} {t('selfCare.completed')}</p>
           </div>
           <span className="text-2xl font-bold text-[#5B7062] dark:text-[#A7BDAF] font-[Outfit]">
             {progressPercent}%
@@ -84,7 +86,7 @@ const HabitList = ({ habits, setHabits, selectedDate }) => {
           type="text" 
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="New daily habit..."
+          placeholder={t('selfCare.newHabitPlaceholder')}
           className="flex-1 bg-gray-50 dark:bg-[#1a1a2e] border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:border-[#8FA697]"
         />
         
@@ -101,7 +103,7 @@ const HabitList = ({ habits, setHabits, selectedDate }) => {
       <div className="flex flex-col gap-3">
         {habits.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-400 dark:text-gray-500 text-sm">Belum ada habit yang ditambahkan.</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm">{t('selfCare.noHabitsYet')}</p>
           </div>
         ) : (
           habits.map(habit => (

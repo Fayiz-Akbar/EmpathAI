@@ -87,7 +87,7 @@ const RegisterPage = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="e.g. Jane Doe"
+              placeholder={t('auth.nameExample')}
               className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-300"
               required
               disabled={isLoading || successMsg}
@@ -101,7 +101,7 @@ const RegisterPage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="you@example.com"
+              placeholder={t('auth.emailExample')}
               className="w-full bg-white border border-gray-200 text-gray-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-300"
               required
               disabled={isLoading || successMsg}
@@ -152,7 +152,7 @@ const RegisterPage = () => {
         </form>
 
         <div className="mt-6 text-center text-[10px] text-gray-400 max-w-xs">
-          By creating an account, you agree to our Terms of Service and Privacy Policy.
+          {t('auth.terms')}
         </div>
 
         <div className="mt-4 text-center text-sm text-gray-500">

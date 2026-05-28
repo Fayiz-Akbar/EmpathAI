@@ -4,8 +4,8 @@ import { initReactI18next } from 'react-i18next';
 import translationEN from './locales/en.json';
 import translationID from './locales/id.json';
 
-// Get saved language from localStorage, default to 'id'
-const savedLanguage = localStorage.getItem('empathAI_lang') || 'id';
+// Get saved language from localStorage, default to 'en'
+const savedLanguage = localStorage.getItem('empathAI_lang') || 'en';
 
 // the translations
 const resources = {

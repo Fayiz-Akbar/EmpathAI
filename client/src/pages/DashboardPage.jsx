@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, MessageSquare, Flame, Calendar, ArrowRight, Brain } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import Sidebar from '../components/Sidebar';
 import ChatHeader from '../components/ChatHeader';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -26,6 +27,7 @@ const getLast7Days = () => {
 const DashboardPage = () => {
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const { t } = useTranslation();
   
   // PERBAIKAN INFINITE LOOP: Ekstrak ID dalam bentuk teks/string yang statis
   const userId = user ? (user._id || user.id) : null;
@@ -36,7 +38,7 @@ const DashboardPage = () => {
   // State untuk Data Dinamis
   const [chatSessions, setChatSessions] = useState([]);
   const [emotionData, setEmotionData] = useState([]);
-  const [dominantMood, setDominantMood] = useState("Menunggu Data...");
+  const [dominantMood, setDominantMood] = useState(t('dashboard.calculating'));
   const [streakCount, setStreakCount] = useState(0);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
@@ -53,7 +55,7 @@ const DashboardPage = () => {
     setStreakCount(sessions.length);
 
     if (!messages || messages.length === 0) {
-      setDominantMood("Belum Ada Data");
+      setDominantMood(t('dashboard.noDataYet'));
       setEmotionData(getLast7Days());
       return;
     }
@@ -77,7 +79,7 @@ const DashboardPage = () => {
         maxEmotion = em;
       }
     });
-    setDominantMood(maxCount > 0 ? maxEmotion : 'Belum Ada Pola');
+    setDominantMood(maxCount > 0 ? maxEmotion : t('dashboard.noPatternYet'));
 
     // 3. Masukkan Data ke Grafik 7 Hari Terakhir
     const weekData = getLast7Days();
@@ -261,32 +263,32 @@ const DashboardPage = () => {
             {/* Header Dashboard */}
             <div>
               <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 font-[Outfit]">
-                Welcome back, {user?.name?.split(' ')[0] || 'Guest'}
+                {t('dashboard.welcomeBack')}, {user?.name?.split(' ')[0] || t('dashboard.guest')}
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">Here is a summary of your emotional journey.</p>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">{t('dashboard.summary')}</p>
             </div>
 
             {/* Highlight Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <StatCard 
                 icon={<MessageSquare className="text-blue-500" size={24} />}
-                title="Total Sessions"
+                title={t('dashboard.totalSessions')}
                 value={chatSessions.length}
-                subtitle="Conversations so far"
+                subtitle={t('dashboard.conversationsSoFar')}
                 bgColor="bg-blue-50 dark:bg-blue-900/30"
               />
               <StatCard 
                 icon={<Flame className="text-orange-500" size={24} />}
-                title="Current Streak"
-                value={`${streakCount} Days`}
-                subtitle={streakCount > 0 ? "Keep it up!" : "Mulai curhat hari ini!"}
+                title={t('dashboard.currentStreak')}
+                value={`${streakCount} ${t('dashboard.days')}`}
+                subtitle={streakCount > 0 ? t('dashboard.keepItUp') : t('dashboard.startChatting')}
                 bgColor="bg-orange-50 dark:bg-orange-900/30"
               />
               <StatCard 
                 icon={<Brain className="text-purple-500" size={24} />}
-                title="Dominant Mood"
-                value={isLoadingData ? "Menghitung..." : dominantMood}
-                subtitle="Based on your recent chats"
+                title={t('dashboard.dominantMood')}
+                value={isLoadingData ? t('dashboard.calculating') : dominantMood}
+                subtitle={t('dashboard.basedOnRecentChats')}
                 bgColor="bg-purple-50 dark:bg-purple-900/30"
               />
             </div>
@@ -298,7 +300,7 @@ const DashboardPage = () => {
               <div className="lg:col-span-2 bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                    <Activity size={20} className="text-blue-500"/> Mood Analytics
+                    <Activity size={20} className="text-blue-500"/> {t('dashboard.moodAnalytics')}
                   </h2>
                 </div>
                 
@@ -306,7 +308,7 @@ const DashboardPage = () => {
                 <div className="h-64 w-full relative">
                   {isLoadingData ? (
                      <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-[#2a2a3e]/80 z-10 rounded-xl">
-                        <span className="text-sm font-medium text-blue-500 animate-pulse">Menganalisis emosi...</span>
+                        <span className="text-sm font-medium text-blue-500 animate-pulse">{t('dashboard.analyzingEmotions')}</span>
                      </div>
                   ) : null}
 
@@ -333,13 +335,13 @@ const DashboardPage = () => {
               <div className="bg-white dark:bg-[#2a2a3e] border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                    <Calendar size={20} className="text-blue-500"/> Recent Chats
+                    <Calendar size={20} className="text-blue-500"/> {t('dashboard.recentChats')}
                   </h2>
                 </div>
 
                 <div className="flex flex-col gap-3 flex-1">
                   {chatSessions.length === 0 ? (
-                    <p className="text-gray-400 text-sm italic text-center mt-10">Belum ada obrolan.</p>
+                    <p className="text-gray-400 text-sm italic text-center mt-10">{t('dashboard.noChatsYet')}</p>
                   ) : (
                     chatSessions.slice(0, 4).map(session => (
                       <button 
@@ -348,7 +350,7 @@ const DashboardPage = () => {
                         className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all text-left group"
                       >
                         <div className="overflow-hidden">
-                          <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">{session.title || 'Sesi Curhat'}</p>
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">{session.title || t('dashboard.chatSession')}</p>
                           <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
                             {new Date(session.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                           </p>
@@ -363,7 +365,7 @@ const DashboardPage = () => {
                   onClick={handleNewChat}
                   className="w-full mt-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl transition-colors"
                 >
-                  Mulai Sesi Baru
+                  {t('dashboard.startNewSession')}
                 </button>
               </div>
 

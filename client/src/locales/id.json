@@ -49,15 +49,19 @@
     "welcomeDesc": "Ruang aman Anda untuk kesejahteraan mental.",
     "emailPlaceholder": "Alamat email",
     "passwordPlaceholder": "Password",
+    "forgotPassword": "Lupa password?",
     "signIn": "Masuk",
     "processing": "Memproses...",
     "noAccount": "Belum punya akun?",
     "signUp": "Daftar",
     "createAccount": "Buat akun Anda",
     "namePlaceholder": "Nama Lengkap",
+    "nameExample": "contoh: Jane Doe",
+    "emailExample": "anda@example.com",
     "createPassword": "Buat password",
     "confirmPassword": "Konfirmasi password",
-    "haveAccount": "Sudah punya akun?"
+    "haveAccount": "Sudah punya akun?",
+    "terms": "Dengan membuat akun, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi kami."
   },
   "changePassword": {
     "title": "Ubah Password",
@@ -69,5 +73,37 @@
     "confirmPassword": "Konfirmasi Password Baru",
     "confirmPasswordPlaceholder": "Ketik ulang password baru",
     "savePassword": "Simpan Password"
+  },
+  "dashboard": {
+    "welcomeBack": "Selamat datang kembali",
+    "guest": "Tamu",
+    "summary": "Berikut adalah ringkasan perjalanan emosional Anda.",
+    "totalSessions": "Total Sesi",
+    "conversationsSoFar": "Percakapan sejauh ini",
+    "currentStreak": "Runtun Saat Ini",
+    "days": "Hari",
+    "keepItUp": "Pertahankan!",
+    "startChatting": "Mulai curhat hari ini!",
+    "dominantMood": "Emosi Dominan",
+    "calculating": "Menghitung...",
+    "noDataYet": "Belum Ada Data",
+    "noPatternYet": "Belum Ada Pola",
+    "basedOnRecentChats": "Berdasarkan chat terakhir",
+    "moodAnalytics": "Analisis Emosi",
+    "analyzingEmotions": "Menganalisis emosi...",
+    "recentChats": "Chat Terakhir",
+    "noChatsYet": "Belum ada obrolan.",
+    "chatSession": "Sesi Curhat",
+    "startNewSession": "Mulai Sesi Baru"
+  },
+  "selfCare": {
+    "title": "Ceklis Perawatan Diri",
+    "desc": "Lacak kebiasaan dan rutinitas harian Anda.",
+    "today": "Hari ini",
+    "dailyProgress": "Kemajuan Harian",
+    "of": "dari",
+    "completed": "selesai",
+    "newHabitPlaceholder": "Kebiasaan baru...",
+    "noHabitsYet": "Belum ada kebiasaan yang ditambahkan."
   }
 }

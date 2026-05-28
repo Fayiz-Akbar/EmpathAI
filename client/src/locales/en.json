@@ -49,15 +49,19 @@
     "welcomeDesc": "Your safe space for mental well-being.",
     "emailPlaceholder": "Email address",
     "passwordPlaceholder": "Password",
+    "forgotPassword": "Forgot password?",
     "signIn": "Sign In",
     "processing": "Processing...",
     "noAccount": "Don't have an account?",
     "signUp": "Sign up",
     "createAccount": "Create your account",
     "namePlaceholder": "Full Name",
+    "nameExample": "e.g. Jane Doe",
+    "emailExample": "you@example.com",
     "createPassword": "Create a password",
     "confirmPassword": "Confirm your password",
-    "haveAccount": "Already have an account?"
+    "haveAccount": "Already have an account?",
+    "terms": "By creating an account, you agree to our Terms of Service and Privacy Policy."
   },
   "changePassword": {
     "title": "Change Password",
@@ -69,5 +73,37 @@
     "confirmPassword": "Confirm New Password",
     "confirmPasswordPlaceholder": "Retype new password",
     "savePassword": "Save Password"
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome back",
+    "guest": "Guest",
+    "summary": "Here is a summary of your emotional journey.",
+    "totalSessions": "Total Sessions",
+    "conversationsSoFar": "Conversations so far",
+    "currentStreak": "Current Streak",
+    "days": "Days",
+    "keepItUp": "Keep it up!",
+    "startChatting": "Start chatting today!",
+    "dominantMood": "Dominant Mood",
+    "calculating": "Calculating...",
+    "noDataYet": "No Data Yet",
+    "noPatternYet": "No Pattern Yet",
+    "basedOnRecentChats": "Based on your recent chats",
+    "moodAnalytics": "Mood Analytics",
+    "analyzingEmotions": "Analyzing emotions...",
+    "recentChats": "Recent Chats",
+    "noChatsYet": "No chats yet.",
+    "chatSession": "Chat Session",
+    "startNewSession": "Start New Session"
+  },
+  "selfCare": {
+    "title": "Self-Care Checklist",
+    "desc": "Track your daily wellness habits and routines.",
+    "today": "Today",
+    "dailyProgress": "Daily Progress",
+    "of": "of",
+    "completed": "completed",
+    "newHabitPlaceholder": "New daily habit...",
+    "noHabitsYet": "No habits added yet."
   }
 }
