@@ -19,6 +19,18 @@ apiClient.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+// Interceptor untuk merespons jika token kedaluwarsa/tidak valid (400/401)
+apiClient.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  if (error.response && (error.response.status === 401 || error.response.status === 400) && error.response.data.message.includes('Token')) {
+    localStorage.removeItem('empathAI_token');
+    localStorage.removeItem('empathAI_user');
+    window.location.href = '/login';
+  }
+  return Promise.reject(error);
+});
+
 // 1. Membuat Sesi Chat ke Node.js
 export const createSession = async (userId, title) => {
   // Asumsi endpoint-nya /chat/session, sesuaikan dengan chatRoutes.js milikmu

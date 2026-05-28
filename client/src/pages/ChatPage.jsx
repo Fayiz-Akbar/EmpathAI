@@ -272,7 +272,7 @@ const ChatPage = () => {
                   <ActionButton icon={<Sparkles size={16} className="text-[#8FA697] shrink-0"/>} text="Analyze mood" onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
                   <ActionButton icon={<Zap size={16} className="text-[#8FA697] shrink-0"/>} text="Anxiety relief" onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
                   <ActionButton icon={<Heart size={16} className="text-[#8FA697] shrink-0"/>} text="Daily motivation" onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
-                  <ActionButton icon={<Brain size={16} className="text-[#8FA697] shrink-0"/>} text="Stress management" onClick={() => handleSend("Tugas kuliah bikin stres, gimana cara mengatasinya?")} />
+                  <ActionButton icon={<Brain size={16} className="text-[#8FA697] shrink-0"/>} text="Stress management" onClick={() => handleSend("Banyak tugas hari ini bikin stres, gimana cara mengatasinya?")} />
                 </div>
 
                 {/* Spacer untuk mendorong MessageInput ke bawah */}
