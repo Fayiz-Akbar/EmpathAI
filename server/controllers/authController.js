@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const sendEmail = require('../utils/sendEmail');
 
 // Fungsi Register
 exports.register = async (req, res) => {
@@ -93,6 +95,96 @@ exports.changePassword = async (req, res) => {
     res.status(200).json({ message: 'Password berhasil diubah!' });
   } catch (error) {
     console.error('Change password error:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan server.', error });
+  }
+};
+
+// Fungsi Forgot Password
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'Tidak ada akun dengan email tersebut.' });
+    }
+
+    // Generate token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    
+    // Hash token untuk disimpan di database
+    user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 menit
+
+    await user.save();
+
+    // Buat URL reset password. Halaman frontend untuk reset password
+    const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
+
+    const message = `Anda menerima email ini karena Anda (atau orang lain) telah meminta pengaturan ulang password akun Anda.\n\nSilakan klik tautan berikut, atau tempel di browser Anda untuk menyelesaikan proses:\n\n${resetUrl}\n\nJika Anda tidak memintanya, abaikan email ini dan password Anda tidak akan berubah. Tautan ini akan kedaluwarsa dalam 15 menit.\n`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Permintaan Reset Password EmpathAI',
+        message
+      });
+
+      res.status(200).json({ message: 'Email reset password telah dikirim.' });
+    } catch (error) {
+      // Jika gagal kirim email, bersihkan field reset
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      return res.status(500).json({ message: 'Gagal mengirim email.' });
+    }
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan server.', error });
+  }
+};
+
+// Fungsi Reset Password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ message: 'Token dan password baru wajib diisi.' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'Password baru minimal 6 karakter.' });
+    }
+
+    // Hash token yang diterima dari parameter/body
+    const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token tidak valid atau sudah kedaluwarsa.' });
+    }
+
+    // Set password baru
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    // Hapus field reset password
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Password berhasil diatur ulang.' });
+
+  } catch (error) {
+    console.error('Reset password error:', error);
     res.status(500).json({ message: 'Terjadi kesalahan server.', error });
   }
 };
