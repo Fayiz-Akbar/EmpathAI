@@ -12,9 +12,11 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('empathAI_token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.set('Authorization', `Bearer ${token}`);
   }
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 // 1. Membuat Sesi Chat ke Node.js
