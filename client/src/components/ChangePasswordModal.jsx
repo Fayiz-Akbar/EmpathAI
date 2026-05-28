@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Lock, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react';
 import { changePassword } from '../services/authService';
 
@@ -88,7 +89,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
@@ -277,7 +278,8 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
           }
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 };
 
