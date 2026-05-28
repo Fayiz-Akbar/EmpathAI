@@ -9,12 +9,12 @@ const AVAILABLE_ICONS = [
   { name: 'Heart', label: 'Health' },
   { name: 'Coffee', label: 'Morning' },
   { name: 'Sun', label: 'Day' },
-  { name: 'CheckCircle', label: 'Task' }
+  { name: 'Target', label: 'Task' }
 ];
 
 const HabitList = ({ habits, setHabits, selectedDate }) => {
   const [newTitle, setNewTitle] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState('CheckCircle');
+  const [selectedIcon, setSelectedIcon] = useState('Target');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddHabit = async (e) => {

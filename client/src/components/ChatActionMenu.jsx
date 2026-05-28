@@ -25,7 +25,7 @@ const ChatActionMenu = ({ isPinned, onShare, onPin, onRename, onDelete }) => {
     <div className="hidden group-hover:flex items-center pr-2 shrink-0 relative" ref={menuRef}>
       <button 
         onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
-        className="p-1 text-gray-400 hover:text-[#8FA697] transition-colors focus:outline-none"
+        className="p-1 text-gray-400 hover:text-[#8FA697] hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors focus:outline-none"
       >
         <MoreVertical size={16} />
       </button>

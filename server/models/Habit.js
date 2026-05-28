@@ -13,7 +13,7 @@ const habitSchema = new mongoose.Schema({
   },
   icon: {
     type: String,
-    default: 'CheckCircle'
+    default: 'Target'
   },
   // We store dates as exact local date strings (e.g., "YYYY-MM-DD")
   // to prevent timezone offset bugs when a user completes a habit late at night.
