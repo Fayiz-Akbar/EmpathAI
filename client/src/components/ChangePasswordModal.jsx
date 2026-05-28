@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Lock, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react';
+import { X, Lock, Loader2, ShieldCheck } from 'lucide-react';
 import { changePassword } from '../services/authService';
+import PasswordInput from './PasswordInput';
 
 /**
  * ChangePasswordModal — Modal form for changing user password.
@@ -15,9 +16,6 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -25,9 +23,6 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
-    setShowCurrent(false);
-    setShowNew(false);
-    setShowConfirm(false);
     setErrors({});
   };
 
@@ -134,32 +129,17 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
               Password Saat Ini
             </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Lock size={16} />
-              </div>
-              <input
-                type={showCurrent ? 'text' : 'password'}
-                value={currentPassword}
-                onChange={(e) => {
-                  setCurrentPassword(e.target.value);
-                  if (errors.currentPassword) setErrors((prev) => ({ ...prev, currentPassword: '' }));
-                }}
-                placeholder="Masukkan password saat ini"
-                className={`w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-[#1e1e2e] border rounded-xl focus:outline-none focus:ring-2 transition-all text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                  errors.currentPassword
-                    ? 'border-red-300 dark:border-red-500 focus:ring-red-200 dark:focus:ring-red-800'
-                    : 'border-gray-200 dark:border-gray-600 focus:ring-[#8FA697]/30 focus:border-[#8FA697]'
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
+            <PasswordInput
+              leftIcon={Lock}
+              value={currentPassword}
+              onChange={(e) => {
+                setCurrentPassword(e.target.value);
+                if (errors.currentPassword) setErrors((prev) => ({ ...prev, currentPassword: '' }));
+              }}
+              placeholder="Masukkan password saat ini"
+              error={!!errors.currentPassword}
+              className="bg-gray-50 dark:bg-[#1e1e2e]"
+            />
             {errors.currentPassword && (
               <p className="text-xs text-red-500 mt-1">{errors.currentPassword}</p>
             )}
@@ -170,32 +150,17 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
               Password Baru
             </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Lock size={16} />
-              </div>
-              <input
-                type={showNew ? 'text' : 'password'}
-                value={newPassword}
-                onChange={(e) => {
-                  setNewPassword(e.target.value);
-                  if (errors.newPassword) setErrors((prev) => ({ ...prev, newPassword: '' }));
-                }}
-                placeholder="Minimal 6 karakter"
-                className={`w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-[#1e1e2e] border rounded-xl focus:outline-none focus:ring-2 transition-all text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                  errors.newPassword
-                    ? 'border-red-300 dark:border-red-500 focus:ring-red-200 dark:focus:ring-red-800'
-                    : 'border-gray-200 dark:border-gray-600 focus:ring-[#8FA697]/30 focus:border-[#8FA697]'
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowNew(!showNew)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
+            <PasswordInput
+              leftIcon={Lock}
+              value={newPassword}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                if (errors.newPassword) setErrors((prev) => ({ ...prev, newPassword: '' }));
+              }}
+              placeholder="Minimal 6 karakter"
+              error={!!errors.newPassword}
+              className="bg-gray-50 dark:bg-[#1e1e2e]"
+            />
             {errors.newPassword && (
               <p className="text-xs text-red-500 mt-1">{errors.newPassword}</p>
             )}
@@ -206,32 +171,17 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
               Konfirmasi Password Baru
             </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Lock size={16} />
-              </div>
-              <input
-                type={showConfirm ? 'text' : 'password'}
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
-                }}
-                placeholder="Ketik ulang password baru"
-                className={`w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-[#1e1e2e] border rounded-xl focus:outline-none focus:ring-2 transition-all text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                  errors.confirmPassword
-                    ? 'border-red-300 dark:border-red-500 focus:ring-red-200 dark:focus:ring-red-800'
-                    : 'border-gray-200 dark:border-gray-600 focus:ring-[#8FA697]/30 focus:border-[#8FA697]'
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
+            <PasswordInput
+              leftIcon={Lock}
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+              }}
+              placeholder="Ketik ulang password baru"
+              error={!!errors.confirmPassword}
+              className="bg-gray-50 dark:bg-[#1e1e2e]"
+            />
             {errors.confirmPassword && (
               <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>
             )}
