@@ -14,7 +14,6 @@ const AVAILABLE_ICONS = [
 
 const HabitList = ({ habits, setHabits, selectedDate }) => {
   const [newTitle, setNewTitle] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState('Target');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddHabit = async (e) => {
@@ -23,7 +22,7 @@ const HabitList = ({ habits, setHabits, selectedDate }) => {
 
     setIsSubmitting(true);
     try {
-      const res = await createHabit({ title: newTitle, icon: selectedIcon });
+      const res = await createHabit({ title: newTitle });
       setHabits(prev => [res.data, ...prev]);
       setNewTitle('');
       window.dispatchEvent(new CustomEvent('showNotification', { 
@@ -80,15 +79,6 @@ const HabitList = ({ habits, setHabits, selectedDate }) => {
 
       {/* Add New Habit Form */}
       <form onSubmit={handleAddHabit} className="flex gap-2 mb-8">
-        <select 
-          value={selectedIcon} 
-          onChange={(e) => setSelectedIcon(e.target.value)}
-          className="bg-gray-50 dark:bg-[#1a1a2e] border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:border-[#8FA697]"
-        >
-          {AVAILABLE_ICONS.map(icon => (
-            <option key={icon.name} value={icon.name}>{icon.label}</option>
-          ))}
-        </select>
         
         <input 
           type="text" 

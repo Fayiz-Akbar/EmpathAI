@@ -1,19 +1,12 @@
 import { useState } from 'react';
-import { Trash2, Droplet, Moon, Heart, Coffee, Sun, CheckCircle, Target } from 'lucide-react';
+import { Trash2, CheckCircle } from 'lucide-react';
 import { toggleHabit } from '../services/habitService';
-
-const iconMap = {
-  Droplet, Moon, Heart, Coffee, Sun, Target
-};
 
 const HabitItem = ({ habit, selectedDate, onDelete }) => {
   // Optimistic UI state
   const isInitiallyCompleted = habit.completedDates.includes(selectedDate);
   const [isCompleted, setIsCompleted] = useState(isInitiallyCompleted);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  // Use the mapped icon, fallback to Target
-  const IconComponent = iconMap[habit.icon] || Target;
 
   const handleToggle = async () => {
     // 1. Optimistic Update (Instantly update UI)
@@ -52,10 +45,6 @@ const HabitItem = ({ habit, selectedDate, onDelete }) => {
             : 'border-gray-300 dark:border-gray-500'
         }`}>
           {isCompleted && <CheckCircle size={14} className="text-white" />}
-        </div>
-        
-        <div className={`p-2 rounded-lg ${isCompleted ? 'bg-[#5B7062]/10 dark:bg-[#8FA697]/10' : 'bg-gray-100 dark:bg-gray-800'}`}>
-          <IconComponent size={18} className={isCompleted ? 'text-[#5B7062] dark:text-[#8FA697]' : 'text-gray-500 dark:text-gray-400'} />
         </div>
         
         <span className={`text-[15px] font-medium transition-colors ${
