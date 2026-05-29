@@ -7,7 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import SelfCarePage from './pages/SelfCarePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import AboutPage from './pages/AboutPage';
+import SettingsPage from './pages/SettingsPage';
 import Notification from './components/Notification';
 
 /**
@@ -42,7 +42,7 @@ const App = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/about" element={<AboutPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
 
         {/* Default: redirect to chat */}
         <Route path="*" element={<Navigate to="/" replace />} />
