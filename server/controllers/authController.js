@@ -119,7 +119,8 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
 
     // Buat URL reset password. Halaman frontend untuk reset password
-    const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
+    const clientUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${clientUrl}/reset-password?token=${resetToken}`;
 
     const message = `Anda menerima email ini karena Anda (atau orang lain) telah meminta pengaturan ulang password akun Anda.\n\nSilakan klik tautan berikut, atau tempel di browser Anda untuk menyelesaikan proses:\n\n${resetUrl}\n\nJika Anda tidak memintanya, abaikan email ini dan password Anda tidak akan berubah. Tautan ini akan kedaluwarsa dalam 15 menit.\n`;
 
