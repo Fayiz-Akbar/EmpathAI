@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getCurrentUser } from '../services/authService';
 import { useTranslation } from 'react-i18next';
 import ChangePasswordModal from './ChangePasswordModal';
-import AboutModal from './AboutModal';
+import { useNavigate } from 'react-router-dom';
 const THEME_OPTIONS = [
   { key: 'light',  label: 'Light',  icon: Sun,     iconClass: 'text-amber-500' },
   { key: 'dark',   label: 'Dark',   icon: Moon,    iconClass: 'text-indigo-500' },
@@ -21,8 +21,8 @@ const SettingsMenu = () => {
   const [isThemeExpanded, setIsThemeExpanded] = useState(false);
   const [isLangExpanded, setIsLangExpanded] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const user = getCurrentUser();
 
@@ -63,7 +63,7 @@ const SettingsMenu = () => {
     setIsOpen(false);
     setIsThemeExpanded(false);
     setIsLangExpanded(false);
-    setIsAboutOpen(true);
+    navigate('/about');
   };
 
   const toggleMenu = () => {
@@ -210,12 +210,6 @@ const SettingsMenu = () => {
       <ChangePasswordModal
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
-      />
-
-      {/* About Modal */}
-      <AboutModal
-        isOpen={isAboutOpen}
-        onClose={() => setIsAboutOpen(false)}
       />
     </>
   );
