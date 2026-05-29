@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
     // Cari user berdasarkan email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User tidak ditemukan!' });
+      return res.status(401).json({ message: 'Email atau password salah' });
     }
 
     // Cek apakah akun sedang dikunci
@@ -129,7 +129,8 @@ exports.forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Tidak ada akun dengan email tersebut.' });
+      // Pencegahan enumerasi email: selalu kirim status 200 dengan pesan generik meski user tidak ada
+      return res.status(200).json({ message: 'Jika email Anda terdaftar di sistem kami, tautan pemulihan telah dikirim ke kotak masuk Anda.' });
     }
 
     // Generate token
@@ -154,7 +155,8 @@ exports.forgotPassword = async (req, res) => {
         message
       });
 
-      res.status(200).json({ message: 'Email reset password telah dikirim.' });
+      // Pesan yang sama persis seperti ketika user tidak ditemukan (pencegahan enumerasi)
+      res.status(200).json({ message: 'Jika email Anda terdaftar di sistem kami, tautan pemulihan telah dikirim ke kotak masuk Anda.' });
     } catch (error) {
       // Jika gagal kirim email, bersihkan field reset
       user.resetPasswordToken = undefined;
