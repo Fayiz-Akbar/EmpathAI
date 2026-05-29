@@ -16,7 +16,9 @@
     "language": "Bahasa",
     "changePassword": "Ubah Password",
     "helpSupport": "Bantuan & Dukungan",
-    "about": "Tentang EmpathAI"
+    "about": "Tentang EmpathAI",
+    "faq": "FAQ",
+    "feedback": "Umpan Balik"
   },
   "chat": {
     "hi": "Hai",

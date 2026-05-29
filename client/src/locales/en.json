@@ -16,7 +16,9 @@
     "language": "Language",
     "changePassword": "Change Password",
     "helpSupport": "Help & Support",
-    "about": "About EmpathAI"
+    "about": "About EmpathAI",
+    "faq": "FAQ",
+    "feedback": "Feedback"
   },
   "chat": {
     "hi": "Hi",

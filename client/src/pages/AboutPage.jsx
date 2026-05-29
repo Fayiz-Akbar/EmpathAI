@@ -6,9 +6,11 @@ import ChatHeader from '../components/ChatHeader';
 import { getCurrentUser } from '../services/authService';
 import { getUserSessions, renameSession, deleteSession, pinSession } from '../services/chatService';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { useTranslation } from 'react-i18next';
 
 const AboutPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const user = getCurrentUser();
   const userId = user ? (user._id || user.id) : null;
   
@@ -106,7 +108,7 @@ const AboutPage = () => {
                   <div className="w-12 h-12 bg-[#8FA697]/15 rounded-full flex items-center justify-center">
                     <Info className="text-[#5B7062] dark:text-[#A7BDAF]" size={28} />
                   </div>
-                  About EmpathAI
+                  {t('settings.about')}
                 </h1>
               </div>
             </div>
