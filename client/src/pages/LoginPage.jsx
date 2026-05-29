@@ -91,12 +91,12 @@ const LoginPage = () => {
 
           {/* Forgot Password */}
           <div className="flex items-center justify-end mb-6">
-            <a 
-              href="#" 
+            <Link 
+              to="/forgot-password" 
               className="text-xs font-medium text-gray-500 hover:text-[#5B7062] dark:text-gray-400 dark:hover:text-[#A7BDAF] transition-colors"
             >
               {t('auth.forgotPassword')}
-            </a>
+            </Link>
           </div>
 
           <div>

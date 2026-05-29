@@ -57,6 +57,29 @@ export const changePassword = async ({ currentPassword, newPassword }) => {
 };
 
 /**
+ * Requests a password reset email.
+ * @param {Object} data
+ * @param {string} data.email - The user's email address.
+ * @returns {Promise<Object>} The server response data.
+ */
+export const forgotPassword = async ({ email }) => {
+  const response = await apiClient.post('/auth/forgot-password', { email });
+  return response.data;
+};
+
+/**
+ * Resets the password using a token.
+ * @param {Object} data
+ * @param {string} data.token - The token from the URL.
+ * @param {string} data.newPassword - The user's new password.
+ * @returns {Promise<Object>} The server response data.
+ */
+export const resetPassword = async ({ token, newPassword }) => {
+  const response = await apiClient.post('/auth/reset-password', { token, newPassword });
+  return response.data;
+};
+
+/**
  * Checks if the user is currently authenticated.
  * @returns {boolean}
  */

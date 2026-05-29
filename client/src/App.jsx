@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import DashboardPage from './pages/DashboardPage';
 import SelfCarePage from './pages/SelfCarePage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import Notification from './components/Notification';
 
 /**
@@ -37,6 +39,8 @@ const App = () => {
         <Route path="/self-care" element={<SelfCarePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Default: redirect to chat */}
         <Route path="*" element={<Navigate to="/" replace />} />
