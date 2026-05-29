@@ -69,7 +69,11 @@ exports.login = async (req, res) => {
       await user.save();
     }
 
-    const token = jwt.sign({ id: user._id }, 'RAHASIA_NEGARA', { expiresIn: '1d' });
+    const token = jwt.sign(
+        { id: user._id }, 
+        process.env.JWT_SECRET || 'RAHASIA_NEGARA', 
+        { expiresIn: '1d' }
+    );
 
     res.status(200).json({
       message: 'Login berhasil!',
