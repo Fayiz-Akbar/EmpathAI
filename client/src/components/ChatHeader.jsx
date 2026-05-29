@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Menu, LogOut, ChevronDown, Share, MoreVertical } from 'lucide-react';
+import { Menu, LogOut, Share, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ConfirmActionModal from './ConfirmActionModal';
@@ -41,7 +41,6 @@ const ChatHeader = ({ user, onMenuClick, isDesktopSidebarOpen }) => {
         
         <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 px-2 py-1 rounded-lg transition-colors">
           <span className="font-bold text-lg text-gray-800 dark:text-gray-100 font-[Outfit]">EmpathAI</span>
-          <ChevronDown size={16} className="text-gray-400 mt-0.5" />
         </div>
       </div>
 
