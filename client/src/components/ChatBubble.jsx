@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const ChatBubble = ({ isUser, text, time, isTyping, emotion }) => {
+const ChatBubble = ({ isUser, text, time, isTyping }) => {
   if (isUser) {
     return (
       <div className="flex justify-end animate-fade-in mb-4">
@@ -50,7 +50,6 @@ ChatBubble.propTypes = {
   text: PropTypes.string,
   time: PropTypes.string,
   isTyping: PropTypes.bool,
-  emotion: PropTypes.string,
 };
 
 export default ChatBubble;
