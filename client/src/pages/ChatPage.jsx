@@ -260,9 +260,9 @@ const ChatPage = () => {
           {!hasMessages ? (
             <div className="flex-1 flex flex-col w-full px-4 sm:px-8 pb-6 pt-10 md:pt-20 relative">
               {/* Background Ambient Blobs */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center z-0">
-                <div className="absolute w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-teal-100 dark:bg-emerald-900/30 rounded-full blur-[80px] md:blur-[120px] opacity-60 animate-breathing -translate-x-1/3 -translate-y-1/4"></div>
-                <div className="absolute w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-indigo-50 dark:bg-indigo-900/30 rounded-full blur-[80px] md:blur-[120px] opacity-60 animate-breathing translate-x-1/3 translate-y-1/4" style={{ animationDelay: '2s' }}></div>
+              <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-1/2 left-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-teal-100 dark:bg-emerald-900/30 rounded-full blur-[80px] md:blur-[120px] opacity-60 animate-breathing -translate-x-[60%] -translate-y-[60%]"></div>
+                <div className="absolute top-1/2 left-1/2 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-indigo-50 dark:bg-indigo-900/30 rounded-full blur-[80px] md:blur-[120px] opacity-60 animate-breathing -translate-x-[40%] -translate-y-[40%]" style={{ animationDelay: '2s' }}></div>
               </div>
 
               <div className="w-full max-w-3xl mx-auto flex flex-col h-full animate-in fade-in slide-in-from-bottom-4 duration-700 relative z-10">
