@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { LayoutDashboard, Menu, Search, Edit3, Heart, ShieldAlert, LogIn, Settings } from 'lucide-react';
+import { LayoutDashboard, Menu, Search, Edit3, Heart, ShieldAlert, LogIn } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
 import { useTranslation } from 'react-i18next';
 import ChatSessionItem from './ChatSessionItem';
+import SettingsMenu from './SettingsMenu';
 import SearchBar from './SearchBar';
 import ConfirmActionModal from './ConfirmActionModal';
 
@@ -130,17 +131,8 @@ const Sidebar = ({
       </div>
 
       {/* Settings & Help */}
-      <div className="px-4 pb-4 pt-2">
-        <button
-          onClick={() => handleProtectedNavigation('/settings')}
-          className={`w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium rounded-xl transition-colors focus:outline-none group ${
-            isCurrentPath('/settings') 
-              ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF]' 
-              : 'text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20'
-          }`}
-        >
-          <Settings size={18} className={`${isCurrentPath('/settings') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> {t('settings.title')}
-        </button>
+      <div className="px-2 pb-2 pt-2">
+        <SettingsMenu />
       </div>
 
       <ConfirmActionModal 
