@@ -82,8 +82,7 @@
     "newPassword": "Password Baru",
     "newPasswordPlaceholder": "Masukkan password baru",
     "confirmNewPassword": "Konfirmasi Password Baru",
-    "confirmNewPasswordPlaceholder": "Ketik ulang password baru",
-    "login": "Masuk"
+    "confirmNewPasswordPlaceholder": "Ketik ulang password baru"
   },
   "changePassword": {
     "title": "Ubah Password",
@@ -127,5 +126,36 @@
     "completed": "selesai",
     "newHabitPlaceholder": "Kebiasaan baru...",
     "noHabitsYet": "Belum ada kebiasaan yang ditambahkan."
+  },
+  "aboutPage": {
+    "desc": "EmpathAI adalah asisten virtual kesehatan mental yang ditenagai oleh kecerdasan buatan (NLP & Machine Learning). Sistem ini dirancang untuk mendeteksi emosi dari teks percakapan Anda dan memberikan dukungan afirmatif, serta rekomendasi aktivitas self-care harian.",
+    "warningTitle": "Peringatan Medis (Medical Disclaimer)",
+    "warningDesc": "EmpathAI BUKAN pengganti tenaga medis, psikolog, atau psikiater profesional. Sistem AI dapat berhalusinasi atau memberikan respons yang tidak akurat.\n\nJangan gunakan aplikasi ini untuk diagnosis medis atau saat Anda berada dalam situasi krisis/darurat.",
+    "emergencyTitle": "Kontak Darurat",
+    "emergencyDesc": "Jika Anda atau orang terdekat sedang mengalami krisis psikologis berat atau memiliki pikiran untuk menyakiti diri sendiri, segera hubungi profesional. Anda bisa menghubungi layanan berikut:",
+    "emergencyContactName": "Layanan Sejiwa (Kemenkes RI)",
+    "emergencyContactDesc": "Layanan Psikologi untuk Kesehatan Jiwa",
+    "emergencyAction": "Hubungi: 119 ekstensi 8"
+  },
+  "faqPage": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Punya pertanyaan? Berikut adalah beberapa pertanyaan yang paling sering ditanyakan oleh pengguna kami.",
+    "q1": "Bagaimana cara kerja EmpathAI?",
+    "a1": "Sistem kami menggunakan Natural Language Processing (NLP) untuk menganalisis teks Anda dan memberikan respons afirmatif yang relevan.",
+    "q2": "Apakah percakapan saya aman?",
+    "a2": "Ya, data Anda dienkripsi dan kami sangat menjaga privasi pengguna.",
+    "q3": "Apakah aplikasi ini bisa mendiagnosis kondisi mental saya?",
+    "a3": "Tidak. EmpathAI adalah alat pendukung (wellness tool) dan BUKAN pengganti psikolog, psikiater, atau tenaga medis profesional.",
+    "q4": "Bagaimana cara mereset password?",
+    "a4": "Gunakan fitur \"Forgot Password\" di halaman login, dan sistem akan mengirimkan link pemulihan ke email Anda."
+  },
+  "feedbackPage": {
+    "subtitle": "Bantu kami meningkatkan EmpathAI dengan membagikan pemikiran Anda.",
+    "subject": "Subjek",
+    "subjectPlaceholder": "Mengenai apa ini?",
+    "message": "Pesan",
+    "messagePlaceholder": "Ketik umpan balik Anda di sini...",
+    "send": "Kirim Umpan Balik",
+    "success": "Terima kasih atas tanggapan Anda!"
   }
 }

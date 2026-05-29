@@ -114,19 +114,19 @@ const FeedbackPage = () => {
             </div>
 
             <div className="bg-white dark:bg-[#2a2a3e] p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 max-w-2xl">
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Help us improve EmpathAI by sharing your thoughts.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{t('feedbackPage.subtitle')}</p>
               
-              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Terima kasih atas tanggapan Anda!"); }}>
+              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert(t('feedbackPage.success')); }}>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subject</label>
-                  <input type="text" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a2a3e] rounded-xl px-4 py-2.5 focus:ring-[#8FA697] focus:border-transparent outline-none" placeholder="What is this regarding?" required />
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('feedbackPage.subject')}</label>
+                  <input type="text" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a2a3e] rounded-xl px-4 py-2.5 focus:ring-[#8FA697] focus:border-transparent outline-none" placeholder={t('feedbackPage.subjectPlaceholder')} required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
-                  <textarea rows="5" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a2a3e] rounded-xl px-4 py-2.5 focus:ring-[#8FA697] focus:border-transparent outline-none resize-none" placeholder="Type your feedback here..." required></textarea>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('feedbackPage.message')}</label>
+                  <textarea rows="5" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a2a3e] rounded-xl px-4 py-2.5 focus:ring-[#8FA697] focus:border-transparent outline-none resize-none" placeholder={t('feedbackPage.messagePlaceholder')} required></textarea>
                 </div>
                 <button type="submit" className="bg-[#8FA697] hover:bg-[#7A9182] text-white font-medium py-2.5 px-6 rounded-xl transition-colors">
-                  Send Feedback
+                  {t('feedbackPage.send')}
                 </button>
               </form>
             </div>

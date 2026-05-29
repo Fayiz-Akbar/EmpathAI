@@ -36,7 +36,7 @@
     "unpinChat": "Unpin"
   },
   "auth": {
-    "login": "Login",
+    "login": "Sign in",
     "register": "Register",
     "logout": "Logout",
     "logoutConfirmTitle": "Confirm Logout",
@@ -82,8 +82,7 @@
     "newPassword": "New Password",
     "newPasswordPlaceholder": "Enter your new password",
     "confirmNewPassword": "Confirm New Password",
-    "confirmNewPasswordPlaceholder": "Re-enter your new password",
-    "login": "Sign in"
+    "confirmNewPasswordPlaceholder": "Re-enter your new password"
   },
   "changePassword": {
     "title": "Change Password",
@@ -127,5 +126,36 @@
     "completed": "completed",
     "newHabitPlaceholder": "New daily habit...",
     "noHabitsYet": "No habits added yet."
+  },
+  "aboutPage": {
+    "desc": "EmpathAI is a mental health virtual assistant powered by artificial intelligence (NLP & Machine Learning). This system is designed to detect emotions from your conversation text and provide affirmative support, as well as daily self-care activity recommendations.",
+    "warningTitle": "Medical Disclaimer",
+    "warningDesc": "EmpathAI is NOT a substitute for professional medical personnel, psychologists, or psychiatrists. AI systems can hallucinate or provide inaccurate responses.\n\nDo not use this application for medical diagnosis or when you are in a crisis/emergency situation.",
+    "emergencyTitle": "Emergency Contact",
+    "emergencyDesc": "If you or someone close to you is experiencing a severe psychological crisis or has thoughts of self-harm, please contact a professional immediately. You can contact the following services:",
+    "emergencyContactName": "Sejiwa Service (Ministry of Health RI)",
+    "emergencyContactDesc": "Psychological Service for Mental Health",
+    "emergencyAction": "Call: 119 extension 8"
+  },
+  "faqPage": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Have questions? Here are some of the most frequently asked questions by our users.",
+    "q1": "How does EmpathAI work?",
+    "a1": "Our system uses Natural Language Processing (NLP) to analyze your text and provide relevant affirmative responses.",
+    "q2": "Are my conversations safe?",
+    "a2": "Yes, your data is encrypted and we strictly maintain user privacy.",
+    "q3": "Can this app diagnose my mental condition?",
+    "a3": "No. EmpathAI is a wellness support tool and NOT a substitute for a psychologist, psychiatrist, or professional medical personnel.",
+    "q4": "How do I reset my password?",
+    "a4": "Use the \"Forgot Password\" feature on the login page, and the system will send a recovery link to your email."
+  },
+  "feedbackPage": {
+    "subtitle": "Help us improve EmpathAI by sharing your thoughts.",
+    "subject": "Subject",
+    "subjectPlaceholder": "What is this regarding?",
+    "message": "Message",
+    "messagePlaceholder": "Type your feedback here...",
+    "send": "Send Feedback",
+    "success": "Thank you for your feedback!"
   }
 }

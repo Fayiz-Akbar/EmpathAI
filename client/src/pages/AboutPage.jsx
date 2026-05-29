@@ -116,18 +116,16 @@ const AboutPage = () => {
             <div className="flex flex-col gap-8 text-base text-gray-600 dark:text-gray-300">
               <section className="bg-white dark:bg-[#2a2a3e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <p className="leading-relaxed">
-                  <strong className="text-gray-800 dark:text-gray-100 text-lg">EmpathAI</strong> adalah asisten virtual kesehatan mental yang ditenagai oleh kecerdasan buatan (NLP & Machine Learning). Sistem ini dirancang untuk mendeteksi emosi dari teks percakapan Anda dan memberikan dukungan afirmatif, serta rekomendasi aktivitas <em>self-care</em> harian.
+                  <strong className="text-gray-800 dark:text-gray-100 text-lg">EmpathAI</strong> {t('aboutPage.desc').replace('EmpathAI', '').trim()}
                 </p>
               </section>
 
               <section className="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 rounded-r-2xl p-6 flex flex-col sm:flex-row gap-4 items-start">
                 <AlertTriangle className="text-amber-500 shrink-0 mt-1" size={28} />
                 <div className="flex flex-col gap-2">
-                  <h3 className="font-bold text-lg text-amber-800 dark:text-amber-400">Peringatan Medis (Medical Disclaimer)</h3>
-                  <p className="text-amber-700 dark:text-amber-200 leading-relaxed">
-                    EmpathAI <strong>BUKAN</strong> pengganti tenaga medis, psikolog, atau psikiater profesional. Sistem AI dapat berhalusinasi atau memberikan respons yang tidak akurat. 
-                    <br /><br />
-                    <strong>Jangan gunakan aplikasi ini untuk diagnosis medis atau saat Anda berada dalam situasi krisis/darurat.</strong>
+                  <h3 className="font-bold text-lg text-amber-800 dark:text-amber-400">{t('aboutPage.warningTitle')}</h3>
+                  <p className="text-amber-700 dark:text-amber-200 leading-relaxed whitespace-pre-line">
+                    {t('aboutPage.warningDesc')}
                   </p>
                 </div>
               </section>
@@ -137,18 +135,18 @@ const AboutPage = () => {
                   <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
                     <Phone className="text-red-500" size={20} />
                   </div>
-                  <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100">Kontak Darurat</h3>
+                  <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100">{t('aboutPage.emergencyTitle')}</h3>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Jika Anda atau orang terdekat sedang mengalami krisis psikologis berat atau memiliki pikiran untuk menyakiti diri sendiri, segera hubungi profesional. Anda bisa menghubungi layanan berikut:
+                  {t('aboutPage.emergencyDesc')}
                 </p>
                 <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
-                    <p className="font-semibold text-gray-800 dark:text-gray-100 text-lg">Layanan Sejiwa (Kemenkes RI)</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Layanan Psikologi untuk Kesehatan Jiwa</p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100 text-lg">{t('aboutPage.emergencyContactName')}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('aboutPage.emergencyContactDesc')}</p>
                   </div>
                   <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold py-2 px-5 rounded-xl border border-red-100 dark:border-red-800/50">
-                    Hubungi: 119 ekstensi 8
+                    {t('aboutPage.emergencyAction')}
                   </div>
                 </div>
               </section>

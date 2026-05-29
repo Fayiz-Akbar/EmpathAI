@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const FAQItem = ({ question, answer, isOpen, onClick }) => {
   return (
@@ -32,22 +33,24 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => {
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
 
+  const { t } = useTranslation();
+
   const faqs = [
     {
-      question: "Bagaimana cara kerja EmpathAI?",
-      answer: "Sistem kami menggunakan Natural Language Processing (NLP) untuk menganalisis teks Anda dan memberikan respons afirmatif yang relevan."
+      question: t('faqPage.q1'),
+      answer: t('faqPage.a1')
     },
     {
-      question: "Apakah percakapan saya aman?",
-      answer: "Ya, data Anda dienkripsi dan kami sangat menjaga privasi pengguna."
+      question: t('faqPage.q2'),
+      answer: t('faqPage.a2')
     },
     {
-      question: "Apakah aplikasi ini bisa mendiagnosis kondisi mental saya?",
-      answer: "Tidak. EmpathAI adalah alat pendukung (wellness tool) dan BUKAN pengganti psikolog, psikiater, atau tenaga medis profesional."
+      question: t('faqPage.q3'),
+      answer: t('faqPage.a3')
     },
     {
-      question: "Bagaimana cara mereset password?",
-      answer: "Gunakan fitur \"Forgot Password\" di halaman login, dan sistem akan mengirimkan link pemulihan ke email Anda."
+      question: t('faqPage.q4'),
+      answer: t('faqPage.a4')
     }
   ];
 
@@ -58,8 +61,8 @@ const FAQ = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Frequently Asked Questions</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Punya pertanyaan? Berikut adalah beberapa pertanyaan yang paling sering ditanyakan oleh pengguna kami.</p>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('faqPage.title')}</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{t('faqPage.subtitle')}</p>
       </div>
 
       <div className="flex flex-col gap-4">
