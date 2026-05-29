@@ -18,7 +18,7 @@ const getLast7Days = () => {
     days.push({
       dateStr: d.toDateString(),
       day: d.toLocaleDateString('id-ID', { weekday: 'short' }),
-      Senang: 0, Stres: 0, Sedih: 0, Marah: 0
+      Senang: 0, Stres: 0, Sedih: 0, Marah: 0, Netral: 0 // <-- Tambahkan Netral
     });
   }
   return days;
@@ -39,7 +39,7 @@ const DashboardPage = () => {
   const [chatSessions, setChatSessions] = useState([]);
   const [emotionData, setEmotionData] = useState([]);
   const [dominantMood, setDominantMood] = useState(t('dashboard.calculating'));
-  const [streakCount, setStreakCount] = useState(0);
+  const [totalEmotions, setTotalEmotions] = useState(0);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
   // State untuk ConfirmDialog delete
@@ -51,26 +51,32 @@ const DashboardPage = () => {
   }, [userId, navigate]); // Bergantung pada userId (teks statis), bukan object user
 
   const processAnalytics = (messages, sessions) => {
-    // 1. Hitung Total Sesi sebagai "Streak" sementara
-    setStreakCount(sessions.length);
-
     if (!messages || messages.length === 0) {
       setDominantMood(t('dashboard.noDataYet'));
+      setTotalEmotions(0);
       setEmotionData(getLast7Days());
       return;
     }
 
-    // 2. Hitung Emosi Dominan (Abaikan Netral)
-    const emotionCounts = { Senang: 0, Sedih: 0, Marah: 0, Stres: 0 };
+    // Hitung Emosi Dominan (Memasukkan Netral kali ini) dan Total Emosi
+    const emotionCounts = { Senang: 0, Sedih: 0, Marah: 0, Stres: 0, Netral: 0 };
+    let calculatedEmotions = 0;
+
     messages.forEach(msg => {
+      // Ambil field emotion jika terdeteksi dari backend AI
       if (msg.emotion) {
         const em = msg.emotion.charAt(0).toUpperCase() + msg.emotion.slice(1);
         if (emotionCounts[em] !== undefined) {
           emotionCounts[em]++;
+          calculatedEmotions++; // Tambah counter ke Total Emosi
         }
       }
     });
 
+    // 1. Set Jumlah Total Emosi
+    setTotalEmotions(calculatedEmotions);
+
+    // 2. Algoritma mencari Emosi Paling Dominan
     let maxEmotion = 'Netral';
     let maxCount = 0;
     Object.entries(emotionCounts).forEach(([em, count]) => {
@@ -277,11 +283,12 @@ const DashboardPage = () => {
                 subtitle={t('dashboard.conversationsSoFar')}
                 bgColor="bg-blue-50 dark:bg-blue-900/30"
               />
+              {/* UBAH BAGIAN INI MENJADI TOTAL EMOSI */}
               <StatCard 
-                icon={<Flame className="text-orange-500" size={24} />}
-                title={t('dashboard.currentStreak')}
-                value={`${streakCount} ${t('dashboard.days')}`}
-                subtitle={streakCount > 0 ? t('dashboard.keepItUp') : t('dashboard.startChatting')}
+                icon={<Activity className="text-orange-500" size={24} />} 
+                title={t('dashboard.totalEmotions', 'Total Emosi')} 
+                value={totalEmotions}
+                subtitle={totalEmotions > 0 ? t('dashboard.keepSpeaking', 'Teruslah bercerita') : t('dashboard.startChatting')}
                 bgColor="bg-orange-50 dark:bg-orange-900/30"
               />
               <StatCard 
@@ -323,6 +330,8 @@ const DashboardPage = () => {
                       />
                       <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                       <Bar dataKey="Senang" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                      {/* TAMBAHKAN BAR NETRAL DI SINI */}
+                      <Bar dataKey="Netral" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
                       <Bar dataKey="Stres" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={40} />
                       <Bar dataKey="Sedih" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={40} />
                       <Bar dataKey="Marah" fill="#ef4444" radius={[4, 4, 0, 0]} maxBarSize={40} />
