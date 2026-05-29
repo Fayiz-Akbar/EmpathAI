@@ -19,6 +19,15 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordExpires: {
     type: Date
+  },
+  loginAttempts: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  lockUntil: {
+    type: Date,
+    default: null
   }
 }, { 
   timestamps: true // Otomatis membuat createdAt dan updatedAt

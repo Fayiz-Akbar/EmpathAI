@@ -40,10 +40,33 @@ exports.login = async (req, res) => {
       return res.status(404).json({ message: 'User tidak ditemukan!' });
     }
 
+    // Cek apakah akun sedang dikunci
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+      const remainingSeconds = Math.ceil((user.lockUntil - Date.now()) / 1000);
+      return res.status(403).json({ 
+        message: `Akun terkunci sementara, coba lagi dalam ${remainingSeconds} detik.`,
+        isLocked: true
+      });
+    }
+
     // Cek kecocokan password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      user.loginAttempts = (user.loginAttempts || 0) + 1;
+      
+      if (user.loginAttempts >= 3) {
+        user.lockUntil = Date.now() + 60 * 1000; // Kunci selama 1 menit (60000ms)
+      }
+      
+      await user.save();
       return res.status(400).json({ message: 'Password salah!' });
+    }
+
+    // Jika password benar dan akun tidak terkunci, reset status lockout
+    if (user.loginAttempts > 0 || user.lockUntil) {
+      user.loginAttempts = 0;
+      user.lockUntil = null;
+      await user.save();
     }
 
     const token = jwt.sign({ id: user._id }, 'RAHASIA_NEGARA', { expiresIn: '1d' });

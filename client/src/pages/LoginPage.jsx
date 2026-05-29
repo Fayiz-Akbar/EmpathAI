@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { loginUser } from '../services/authService';
 import { useTranslation } from 'react-i18next';
 import PasswordInput from '../components/PasswordInput';
@@ -10,11 +10,13 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isLocked, setIsLocked] = useState(false);
   const { t } = useTranslation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrorMsg(''); // Hilangkan error saat user mulai mengetik ulang
+    setIsLocked(false);
   };
 
   const handleSubmit = async (e) => {
@@ -36,7 +38,11 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Login Error:', error);
-      setErrorMsg(error.response?.data?.message || 'Gagal login. Periksa kembali email dan password Anda.');
+      const errData = error.response?.data;
+      if (errData?.isLocked) {
+        setIsLocked(true);
+      }
+      setErrorMsg(errData?.message || 'Gagal login. Periksa kembali email dan password Anda.');
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +65,12 @@ const LoginPage = () => {
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="mb-6 w-full p-3 bg-red-50 text-red-700 text-sm rounded-lg animate-in fade-in slide-in-from-top-2 text-center">
+          <div className={`mb-6 w-full p-4 text-sm rounded-xl animate-in fade-in slide-in-from-top-2 text-center flex items-center justify-center gap-2 font-medium border ${
+            isLocked 
+              ? 'bg-amber-50 text-amber-800 border-amber-200 shadow-sm' 
+              : 'bg-red-50 text-red-700 border-red-100'
+          }`}>
+            {isLocked && <AlertTriangle size={18} className="text-amber-600" />}
             {errorMsg}
           </div>
         )}
