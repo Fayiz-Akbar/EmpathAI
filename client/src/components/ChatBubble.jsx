@@ -16,7 +16,6 @@ const ChatBubble = ({ isUser, text, time, isTyping }) => {
   }
 
   return (
-  return (
     <div className="flex animate-fade-in mb-8">
       {/* AI Bubble - Plain text, no background box, better typography */}
       <div className="flex flex-col gap-1 w-full max-w-[95%] lg:max-w-[85%]">
