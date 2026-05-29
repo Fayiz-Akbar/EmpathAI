@@ -116,7 +116,11 @@ const FeedbackPage = () => {
             <div className="bg-white dark:bg-[#2a2a3e] p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 max-w-2xl">
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{t('feedbackPage.subtitle')}</p>
               
-              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert(t('feedbackPage.success')); }}>
+              <form className="space-y-4" onSubmit={(e) => { 
+                e.preventDefault(); 
+                window.dispatchEvent(new CustomEvent('showNotification', { detail: { message: t('feedbackPage.success'), type: 'success' } }));
+                e.target.reset();
+              }}>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('feedbackPage.subject')}</label>
                   <input type="text" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a2a3e] rounded-xl px-4 py-2.5 focus:ring-[#8FA697] focus:border-transparent outline-none" placeholder={t('feedbackPage.subjectPlaceholder')} required />
