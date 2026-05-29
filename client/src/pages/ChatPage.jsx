@@ -258,19 +258,25 @@ const ChatPage = () => {
 
         <main className="flex-1 overflow-y-auto no-scrollbar flex flex-col w-full">
           {!hasMessages ? (
-            <div className="flex-1 flex flex-col w-full px-4 sm:px-8 pb-6 pt-10 md:pt-20">
-              <div className="w-full max-w-3xl mx-auto flex flex-col h-full animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {/* Top Section: Sapaan (Rata kiri, di atas) */}
-                <div className="text-left mb-8 pl-2">
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-2 leading-tight text-gray-900 dark:text-gray-100 font-sans">
-                    {t('chat.hi')} {user?.name?.split(' ')[0] || ''}
+            <div className="flex-1 flex flex-col w-full px-4 sm:px-8 pb-6 pt-10 md:pt-20 relative">
+              {/* Background Ambient Blobs */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center -z-10">
+                <div className="absolute w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-teal-100 dark:bg-emerald-900/30 rounded-full blur-[80px] md:blur-[120px] opacity-60 animate-breathing -translate-x-1/3 -translate-y-1/4"></div>
+                <div className="absolute w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-indigo-50 dark:bg-indigo-900/30 rounded-full blur-[80px] md:blur-[120px] opacity-60 animate-breathing translate-x-1/3 translate-y-1/4" style={{ animationDelay: '2s' }}></div>
+              </div>
+
+              <div className="w-full max-w-3xl mx-auto flex flex-col h-full animate-in fade-in slide-in-from-bottom-4 duration-700 relative z-10">
+                {/* Top Section: Sapaan (Centered) */}
+                <div className="text-center mb-12 mt-8 md:mt-12">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight mb-3 leading-tight text-gray-700 dark:text-gray-200 font-sans">
+                    {t('chat.hi')}, {user?.name?.split(' ')[0] || ''}
                   </h1>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-400 dark:text-gray-500 tracking-tight leading-tight font-sans">
                     {t('chat.whereToStart')}
                   </h2>
                 </div>
 
-                <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 w-full px-2">
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 w-full px-2">
                   <ActionButton icon={<Sparkles size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.analyzeMood')} onClick={() => handleSend("Bantu aku menganalisis suasana hatiku hari ini.")} />
                   <ActionButton icon={<Zap size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.anxietyRelief')} onClick={() => handleSend("Aku merasa cemas, bisa bantu tenangkan?")} />
                   <ActionButton icon={<Heart size={16} className="text-[#8FA697] shrink-0"/>} text={t('chat.dailyMotivation')} onClick={() => handleSend("Berikan aku motivasi untuk hari ini.")} />
@@ -333,7 +339,7 @@ const ChatPage = () => {
 const ActionButton = ({ icon, text, onClick }) => (
   <button 
     onClick={onClick} 
-    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-[#2a2a3e] border border-gray-200 dark:border-gray-600 rounded-full flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-[#33334a] hover:border-blue-200 dark:hover:border-blue-700 transition-all text-xs sm:text-sm text-gray-600 dark:text-gray-300 font-medium shadow-sm active:scale-95 whitespace-nowrap"
+    className="px-4 py-2.5 bg-white/60 dark:bg-[#2a2a3e]/60 backdrop-blur-md border border-white/50 dark:border-gray-600/50 rounded-full flex items-center gap-2 hover:bg-white/80 dark:hover:bg-[#33334a]/80 transition-all text-xs sm:text-sm text-gray-600 dark:text-gray-300 font-medium shadow-sm active:scale-95 whitespace-nowrap"
   >
     {icon} <span>{text}</span>
   </button>

@@ -174,12 +174,12 @@ const MessageInput = ({ onSend, isLoading, isCentered = false }) => {
       <div className={`w-full ${isCentered ? 'max-w-3xl' : 'max-w-4xl'}`}>
         
         {/* Kotak Input Utama (Bentuk pil / kapsul bundar) */}
-        <div className={`relative bg-white dark:bg-[#2a2a3e] rounded-full border transition-all duration-300 ${
+        <div className={`relative bg-white/60 dark:bg-[#2a2a3e]/60 backdrop-blur-md rounded-full border transition-all duration-300 ${
           isRecording 
             ? 'border-red-300 dark:border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.15)] dark:shadow-[0_0_20px_rgba(239,68,68,0.25)]' 
-            : 'border-gray-100 dark:border-gray-600'
+            : 'border-white/50 dark:border-gray-600/50'
         } ${
-          !isCentered ? 'focus-within:shadow-md focus-within:border-gray-200 dark:focus-within:border-gray-500 shadow-sm' : 'shadow-sm'
+          !isCentered ? 'focus-within:shadow-md focus-within:border-white/80 dark:focus-within:border-gray-500/80 shadow-sm' : 'shadow-sm'
         }`}>
           
           <textarea
