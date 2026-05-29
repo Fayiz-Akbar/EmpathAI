@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Settings, Palette, HelpCircle, Lock, ChevronDown, Monitor, Sun, Moon, Check } from 'lucide-react';
+import { Settings, Palette, HelpCircle, Lock, ChevronDown, Monitor, Sun, Moon, Check, Info } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getCurrentUser } from '../services/authService';
 import { useTranslation } from 'react-i18next';
 import ChangePasswordModal from './ChangePasswordModal';
+import AboutModal from './AboutModal';
 const THEME_OPTIONS = [
   { key: 'light',  label: 'Light',  icon: Sun,     iconClass: 'text-amber-500' },
   { key: 'dark',   label: 'Dark',   icon: Moon,    iconClass: 'text-indigo-500' },
@@ -20,6 +21,7 @@ const SettingsMenu = () => {
   const [isThemeExpanded, setIsThemeExpanded] = useState(false);
   const [isLangExpanded, setIsLangExpanded] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const menuRef = useRef(null);
   const { theme, setTheme } = useTheme();
   const user = getCurrentUser();
@@ -55,6 +57,13 @@ const SettingsMenu = () => {
     setIsThemeExpanded(false);
     setIsLangExpanded(false);
     setIsChangePasswordOpen(true);
+  };
+
+  const handleOpenAbout = () => {
+    setIsOpen(false);
+    setIsThemeExpanded(false);
+    setIsLangExpanded(false);
+    setIsAboutOpen(true);
   };
 
   const toggleMenu = () => {
@@ -176,6 +185,15 @@ const SettingsMenu = () => {
               </button>
             )}
 
+            {/* About EmpathAI */}
+            <button
+              onClick={handleOpenAbout}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-gray-700 transition-colors text-left group"
+            >
+              <Info size={16} className="text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]" />
+              <span>About EmpathAI</span>
+            </button>
+
             {/* Help */}
             <button
               onClick={() => setIsOpen(false)}
@@ -192,6 +210,12 @@ const SettingsMenu = () => {
       <ChangePasswordModal
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
+      />
+
+      {/* About Modal */}
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
       />
     </>
   );
