@@ -24,16 +24,43 @@ const ChatSessionItem = ({ session, isActive, onSelect, onRename, onDelete, onPi
   const handleShare = (e) => {
     e?.stopPropagation();
     const shareUrl = `${window.location.origin}/chat/${session._id}`;
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      window.dispatchEvent(new CustomEvent('showNotification', { 
-        detail: { message: 'Link chat berhasil disalin!', type: 'success' } 
-      }));
-    }).catch(err => {
-      console.error(err);
-      window.dispatchEvent(new CustomEvent('showNotification', { 
-        detail: { message: 'Gagal menyalin link.', type: 'error' } 
-      }));
-    });
+
+    // Cek apakah browser mendukung fitur clipboard & sedang dalam Security Context (HTTPS/localhost)
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        window.dispatchEvent(new CustomEvent('showNotification', { 
+          detail: { message: 'Link chat berhasil disalin!', type: 'success' } 
+        }));
+      }).catch(err => {
+        console.error("Gagal menyalin link:", err);
+        window.dispatchEvent(new CustomEvent('showNotification', { 
+          detail: { message: 'Gagal menyalin link.', type: 'error' } 
+        }));
+      });
+    } else {
+      // Fallback untuk HTTP biasa / tidak didukung HTTPS
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        document.execCommand('copy');
+        textArea.remove();
+        
+        window.dispatchEvent(new CustomEvent('showNotification', { 
+          detail: { message: 'Link chat berhasil disalin! (Fallback mode)', type: 'success' } 
+        }));
+      } catch (err) {
+        console.error("Lebih parah lagi, fallback copy gagal:", err);
+        window.dispatchEvent(new CustomEvent('showNotification', { 
+          detail: { message: 'Browser Anda tidak mengizinkan aksi menyalin otomatis.', type: 'error' } 
+        }));
+      }
+    }
   };
 
   const handlePin = (e) => {
