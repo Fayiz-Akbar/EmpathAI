@@ -10,6 +10,10 @@ const sendEmail = async (options) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
+      // Tambahkan instruksi ini untuk menghindari IPv6 Error: `ENETUNREACH`
+      // family: 4 akan memaksa penggunaan IPv4
+      family: 4,
+      
       // Tambahkan opsi TLS untuk mem-bypass beberapa blokir IP lokal server
       tls: {
         rejectUnauthorized: false
