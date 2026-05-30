@@ -161,13 +161,15 @@ exports.forgotPassword = async (req, res) => {
 
       // Pesan yang sama persis seperti ketika user tidak ditemukan (pencegahan enumerasi)
       res.status(200).json({ message: 'Jika email Anda terdaftar di sistem kami, tautan pemulihan telah dikirim ke kotak masuk Anda.' });
-    } catch (error) {
+    } catch (emailError) {
       // Jika gagal kirim email, bersihkan field reset
+      console.error('❌ Gagal Mengirim Email lewat Nodemailer:', emailError.message); // <-- Tambahkan log ini
+      
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
       await user.save();
 
-      return res.status(500).json({ message: 'Gagal mengirim email.' });
+      return res.status(500).json({ message: 'Gagal mengirim email. Pastikan konfigurasi SMTP benar.' });
     }
 
   } catch (error) {
