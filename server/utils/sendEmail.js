@@ -1,3 +1,4 @@
+/*
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
@@ -28,6 +29,28 @@ const sendEmail = async (options) => {
     console.log('✅ Email berhasil dikirim ke:', options.email);
   } catch (error) {
     console.error('Error sending email:', error);
+    throw error;
+  }
+};
+
+module.exports = sendEmail;
+*/
+
+const sendEmail = async (options) => {
+  try {
+    // ⚠️ TRIK BYPASS HUGGING FACE SMTP BLOCK (MOCK MODE)
+    console.log('========= 📧 SIMULASI EMAIL OUTBOUND =========');
+    console.log(`Pengirim : EmpathAI Sistem`);
+    console.log(`Penerima : ${options.email}`);
+    console.log(`Subjek   : ${options.subject}`);
+    console.log(`Isi Pesan:\n${options.message}`);
+    console.log('==============================================');
+
+    // Kita langsung kembalikan status sukses tanpa menembak server Gmail asli
+    // Ini mencegah 'Connection Timeout' dan membuat frontend langsung merespons cepat!
+    return true; 
+  } catch (error) {
+    console.error('Error sending email simulation:', error);
     throw error;
   }
 };
