@@ -2,10 +2,8 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
   try {
-    // Kita gunakan format service 'gmail' lagi tapi dengan port 587 (TLS)
-    // dan menghindari penggunaan 'secure: true' untuk mencegah blokir SSL Tunnel
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      // 🛑 HAPUS 'service: gmail' agar properti host dan family di bawah tidak ditimpa
       host: 'smtp.gmail.com',
       port: 587, 
       secure: false, // Karena port 587, ini harus false
@@ -13,10 +11,10 @@ const sendEmail = async (options) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
-      // Penting: Abaikan error TLS jika provider hosting memodifikasi sertifikat
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      family: 4 // 🔥 INI KUNCINYA: Memaksa Nodemailer menggunakan IPv4 (Bypass error ENETUNREACH IPv6)
     });
 
     const mailOptions = {
@@ -27,6 +25,7 @@ const sendEmail = async (options) => {
     };
 
     await transporter.sendMail(mailOptions);
+    console.log('✅ Email berhasil dikirim ke:', options.email);
   } catch (error) {
     console.error('Error sending email:', error);
     throw error;
