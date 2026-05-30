@@ -3,11 +3,17 @@ const nodemailer = require('nodemailer');
 const sendEmail = async (options) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // You can change this if using another service
+      host: 'smtp.gmail.com',
+      port: 465, // Menggunakan jalur aman SSL
+      secure: true, 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
+      // Tambahkan opsi TLS untuk mem-bypass beberapa blokir IP lokal server
+      tls: {
+        rejectUnauthorized: false
+      }
     });
 
     const mailOptions = {
