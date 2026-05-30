@@ -39,7 +39,7 @@ exports.sendMessage = async (req, res) => {
     // --- TAHAP 2: GENERATE BALASAN EMPATI MENGGUNAKAN GEMINI GEN AI ---
     let aiResponse = "";
     try {
-      // ✅ PERBAIKAN 1: Menambahkan temperature agar variasi jawaban lebih natural & tidak monoton (beo)
+      //  PERBAIKAN 1: Menambahkan temperature agar variasi jawaban lebih natural & tidak monoton (beo)
       const model = genAI.getGenerativeModel({ 
         model: 'gemini-2.5-flash',
         generationConfig: {
@@ -59,9 +59,8 @@ Sesuaikan gaya jawaban Anda secara dinamis berdasarkan label emosi pengguna beri
 - Senang -> Ikut merayakan kebahagiaan mereka, berikan apresiasi, dan tularkan energi positif.
 - Netral -> Berikan respons yang santai, bersahabat, ramah, dan mengalir natural.
 
-{/* ✅ PERBAIKAN 2: Instruksi tambahan jika model Python terkecoh kata kunci */}
 [CATATAN UNTUK AKURASI EMOSI (SANGAT PENTING)]
-Hasil analisis emosi dari model Machine Learning di bawah adalah panduan dasar. Namun, jika Anda (EmpathAI) mendeteksi adanya pergeseran emosi atau kontradiksi di dalam "Pesan Pengguna" (misalnya pengguna merasa cemas/stres/sedih meskipun model mendeteksi 'Senang' hanya karena ada kata 'terima kasih' atau 'antusias'), Anda WAJIB mengutamakan emosi yang tersirat dari pesan terbaru pengguna tersebut dan memberikan respons empati yang sesuai dengan kondisi psikologis aslinya.
+Anda WAJIB mengikuti, mempercayai, dan menggunakan hasil emosi yang dideteksi oleh model Machine Learning di bawah ini sebagai SATU-SATUNYA acuan utama. Jangan pernah mengganti, menebak ulang, atau mengabaikan label emosi dari model tersebut. Respons empati Anda harus 100% selaras dengan hasil deteksi model secara mutlak.
 
 [GAYA BAHASA & FORMAT]
 - Gunakan Bahasa Indonesia yang santai, hangat, natural, dan tidak terlalu formal (hindari kesan kaku seperti robot).
