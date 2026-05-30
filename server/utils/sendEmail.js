@@ -3,18 +3,18 @@ const nodemailer = require('nodemailer');
 const sendEmail = async (options) => {
   try {
     const transporter = nodemailer.createTransport({
-      // 🛑 HAPUS 'service: gmail' agar properti host dan family di bawah tidak ditimpa
-      host: 'smtp.gmail.com',
-      port: 587, 
-      secure: false, // Karena port 587, ini harus false
+      // Bypass DNS dengan menggunakan salah satu IP IPv4 server SMTP Gmail langsung.
+      host: '142.251.10.108', 
+      port: 587,
+      secure: false, 
+      requireTLS: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
       tls: {
         rejectUnauthorized: false
-      },
-      family: 4 // 🔥 INI KUNCINYA: Memaksa Nodemailer menggunakan IPv4 (Bypass error ENETUNREACH IPv6)
+      }
     });
 
     const mailOptions = {
