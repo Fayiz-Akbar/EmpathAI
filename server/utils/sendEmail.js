@@ -2,19 +2,18 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
   try {
+    // Kita gunakan format service 'gmail' lagi tapi dengan port 587 (TLS)
+    // dan menghindari penggunaan 'secure: true' untuk mencegah blokir SSL Tunnel
     const transporter = nodemailer.createTransport({
+      service: 'gmail',
       host: 'smtp.gmail.com',
-      port: 465, // Menggunakan jalur aman SSL
-      secure: true, 
+      port: 587, 
+      secure: false, // Karena port 587, ini harus false
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
-      // Tambahkan instruksi ini untuk menghindari IPv6 Error: `ENETUNREACH`
-      // family: 4 akan memaksa penggunaan IPv4
-      family: 4,
-      
-      // Tambahkan opsi TLS untuk mem-bypass beberapa blokir IP lokal server
+      // Penting: Abaikan error TLS jika provider hosting memodifikasi sertifikat
       tls: {
         rejectUnauthorized: false
       }
