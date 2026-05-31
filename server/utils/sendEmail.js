@@ -5,7 +5,7 @@ const sendEmail = async (options) => {
     const data = {
       sender: { 
         name: "EmpathAI Sistem", 
-        email: "dhnahmad32@gmail.com" // Email resmi kelompokmu
+        email: "fayizakbar26@gmail.com" 
       },
       to: [
         { email: options.email }
