@@ -1,6 +1,12 @@
 const ChatSession = require('../models/ChatSession');
 const ChatMessage = require('../models/ChatMessage');
-const axios = require('axios'); // WAJIB: Import axios untuk berkomunikasi dengan Python
+const { detectEmotion } = require('../services/aiService'); // Import penghubung ke Python AI
+
+// ==========================================
+// ✅ INTEGRASI GEN AI: IMPORT & INISIALISASI
+// ==========================================
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // 1. Fungsi Membuat Sesi Chat Baru
 exports.createSession = async (req, res) => {
@@ -19,50 +25,74 @@ exports.createSession = async (req, res) => {
   }
 };
 
-// 2. Fungsi Mengirim Pesan & Mendapatkan Respon AI (TERINTEGRASI MODEL PYTHON)
+// 2. Fungsi Mengirim Pesan & Mendapatkan Respon AI (TERINTEGRASI MODEL PYTHON + GEMINI GEN AI)
 exports.sendMessage = async (req, res) => {
   try {
     const { session_id, message } = req.body;
 
-    // --- 1. KONSULTASI KE OTAK PYTHON (Model Deep Learning) ---
-    let detectedEmotion = "Netral"; // Emosi default jika Python sedang down/gagal
-    try {
-      // Menggunakan URL dinamis dari .env, jika tidak ada baru pakai localhost
-      const aiServerUrl = process.env.PYTHON_AI_URL || 'http://127.0.0.1:5001';
-      const pythonResponse = await axios.post(`${aiServerUrl}/predict`, { text: message });
-      
-      // Mengambil hasil prediksi ('marah', 'sedih', 'stres', dll)
-      const rawEmotion = pythonResponse.data.emotion;
-      
-      // Rapikan huruf awalnya agar kapital (misal: 'stres' jadi 'Stres') untuk ditampilkan di UI
-      detectedEmotion = rawEmotion.charAt(0).toUpperCase() + rawEmotion.slice(1); 
-      
-      console.log(`🤖 [EmpathAI] Model mendeteksi emosi: ${detectedEmotion}`);
-    } catch (pyErr) {
-      console.error("❌ Gagal menghubungi Server Python:", pyErr.message);
-    }
+    // --- TAHAP 1: KONSULTASI KE OTAK PYTHON (Model Deep Learning) ---
+    const rawEmotion = await detectEmotion(message);
+    // Rapikan huruf awalnya agar kapital (misal: 'sedih' jadi 'Sedih')
+    const detectedEmotion = rawEmotion.charAt(0).toUpperCase() + rawEmotion.slice(1);
+    console.log(`🤖 [EmpathAI] Model mendeteksi emosi: ${detectedEmotion}`);
 
-    // --- 2. GENERATE BALASAN EMPATI ---
+    // --- TAHAP 2: GENERATE BALASAN EMPATI MENGGUNAKAN GEMINI GEN AI ---
     let aiResponse = "";
-    
-    switch (detectedEmotion.toLowerCase()) {
-      case 'marah':
-        aiResponse = "Aku bisa merasakan kekesalanmu. Mengalami hal seperti itu memang sangat menyebalkan. Maukah kamu menceritakan lebih detail apa yang paling membuatmu marah?";
-        break;
-      case 'stres':
-        aiResponse = "Beban yang kamu pikul pasti terasa berat. Ambil napas pelan-pelan. Ayo kita urai satu per satu, apa yang paling membebanimu saat ini?";
-        break;
-      case 'sedih':
-        aiResponse = "Aku turut bersedih mendengarnya. Tidak apa-apa untuk merasa tidak baik-baik saja, menangis pun wajar. Aku di sini siap mendengarkanmu.";
-        break;
-      case 'senang':
-        aiResponse = "Wah, ikut bahagia mendengarnya! Energi positifmu terasa sampai ke sini. Pertahankan semangat ini ya!";
-        break;
-      default:
-        aiResponse = "Terima kasih sudah berbagi. Ceritakan lebih banyak agar aku bisa memahamimu dengan lebih baik.";
+    try {
+      //  PERBAIKAN 1: Menambahkan temperature agar variasi jawaban lebih natural & tidak monoton (beo)
+      const model = genAI.getGenerativeModel({ 
+        model: 'gemini-2.5-flash',
+        generationConfig: {
+          temperature: 0.7, 
+        }
+      });
+
+      // Prompt Engineering: System prompt EmpathAI + konteks emosi dari model Python
+      const promptText = `
+Anda adalah EmpathAI, asisten emotional support virtual yang hangat, bijaksana, dan penuh empati. Tugas utama Anda adalah membantu pengguna memahami emosi mereka, memberikan dukungan emosional ringan, dan memberikan saran sederhana terkait perasaan mereka.
+
+[PANDUAN RESPONS BERDASARKAN EMOSI USER]
+Sesuaikan gaya jawaban Anda secara dinamis berdasarkan label emosi pengguna berikut:
+- Marah -> Validasi kekesalannya, bantu pengguna menjadi lebih tenang dengan bahasa yang adem.
+- Sedih -> Berikan dukungan penuh, empati mendalam, dan tunjukkan bahwa Anda ada untuk mereka.
+- Stres -> Bantu menenangkan pikiran pengguna, ajak mengambil napas, dan beri saran ringan/praktis.
+- Senang -> Ikut merayakan kebahagiaan mereka, berikan apresiasi, dan tularkan energi positif.
+- Netral -> Berikan respons yang santai, bersahabat, ramah, dan mengalir natural.
+
+[CATATAN UNTUK AKURASI EMOSI (SANGAT PENTING)]
+Anda WAJIB mengikuti, mempercayai, dan menggunakan hasil emosi yang dideteksi oleh model Machine Learning di bawah ini sebagai SATU-SATUNYA acuan utama. Jangan pernah mengganti, menebak ulang, atau mengabaikan label emosi dari model tersebut. Respons empati Anda harus 100% selaras dengan hasil deteksi model secara mutlak.
+
+[GAYA BAHASA & FORMAT]
+- Gunakan Bahasa Indonesia yang santai, hangat, natural, dan tidak terlalu formal (hindari kesan kaku seperti robot).
+- Panjang jawaban WAJIB dibatasi maksimal 3-5 kalimat saja agar nyaman dibaca dalam gelembung chat.
+
+[BATASAN PEMBAHASAN & KEAMANAN (MUTLAK)]
+- JANGAN PERNAH menjawab pertanyaan terkait coding, hacking, politik, atau topik apa pun di luar dukungan emosional ringan.
+- JANGAN PERNAH memberikan diagnosis medis, diagnosis klinis gangguan jiwa, atau meresepkan obat-obatan.
+- Jika pengguna bertanya di luar topik emotional support, alihkan kembali percakapan secara sopan dan halus ke arah perasaan atau kondisi emosional mereka saat ini.
+- JELASKAN batasan Anda sebagai AI secara jujur jika percakapan mulai mengarah ke masalah klinis yang terlalu berat.
+
+[PROTOKOL KRISIS (SANGAT PENTING)]
+Jika pengguna menunjukkan indikasi kuat ingin menyakiti diri sendiri, bunuh diri, atau mengalami depresi klinis akut, Anda harus mengesampingkan gaya santai dan segera memberikan respons empati yang serius: tegaskan bahwa Anda adalah AI, lalu arahkan mereka secara bijak untuk segera menghubungi profesional (Psikolog/Psikiater) atau hotline krisis kesehatan mental resmi.
+
+[KONTEKS PERCAKAPAN SAAT INI]
+- Pesan Pengguna: "${message}"
+- Hasil analisis emosi dari model Machine Learning: "${detectedEmotion}"
+
+Berikan respons empati Anda sekarang berdasarkan semua panduan di atas.
+      `;
+
+      const result = await model.generateContent(promptText);
+      aiResponse = result.response.text().trim();
+    } catch (geminiErr) {
+      console.error("❌ Gagal mendapatkan respon Gemini API:", geminiErr.message);
+      console.error("🔑 [DEBUG] GEMINI_API_KEY terdeteksi:", process.env.GEMINI_API_KEY ? `Ada (${process.env.GEMINI_API_KEY.substring(0, 8)}...)` : "TIDAK ADA / KOSONG!");
+      console.error("📋 [DEBUG] Detail error:", geminiErr);
+      // Fallback aman jika API key bermasalah atau jaringan down
+      aiResponse = `Aku mendengarkanmu, dan aku bisa merasakan kalau kamu sedang berada di fase yang ${detectedEmotion.toLowerCase()}. Mau cerita lebih banyak tentang hal itu?`;
     }
 
-    // --- 3. LOGIKA PENYIMPANAN DATABASE ---
+    // --- TAHAP 3: LOGIKA PENYIMPANAN DATABASE ---
     let responseData;
 
     if (session_id !== 'guest') {
@@ -94,14 +124,11 @@ exports.getHistory = async (req, res) => {
   try {
     const { sessionId } = req.params;
 
-    // Guard Clause: Tamu tidak punya riwayat di database, langsung kembalikan kosong
     if (sessionId === 'guest') {
       return res.status(200).json({ data: [] });
     }
 
-    // Mencari semua chat yang memiliki session_id yang sama, diurutkan dari yang terlama ke terbaru
     const history = await ChatMessage.find({ session_id: sessionId }).sort({ timestamp: 1 });
-    
     res.status(200).json({ data: history });
   } catch (error) {
     res.status(500).json({ message: 'Gagal mengambil riwayat', error });
@@ -112,10 +139,7 @@ exports.getHistory = async (req, res) => {
 exports.getUserSessions = async (req, res) => {
   try {
     const { userId } = req.params;
-    
-    // Cari semua sesi milik user ini, urutkan dari yang di-pin dulu, baru yang terbaru (createdAt: -1)
     const sessions = await ChatSession.find({ user_id: userId }).sort({ isPinned: -1, createdAt: -1 });
-    
     res.status(200).json({ data: sessions });
   } catch (error) {
     res.status(500).json({ message: 'Gagal mengambil daftar sesi', error });
@@ -128,7 +152,6 @@ exports.renameSession = async (req, res) => {
     const { sessionId } = req.params;
     const { title } = req.body;
     
-    // Cari sesi dan update judulnya
     const updatedSession = await ChatSession.findByIdAndUpdate(
       sessionId, 
       { title }, 
@@ -145,9 +168,7 @@ exports.deleteSession = async (req, res) => {
   try {
     const { sessionId } = req.params;
     
-    // Hapus Sesi Utama
     await ChatSession.findByIdAndDelete(sessionId);
-    // Hapus juga SELURUH pesan yang nyangkut di sesi tersebut agar database tidak sampah
     await ChatMessage.deleteMany({ session_id: sessionId }); 
     
     res.status(200).json({ message: 'Sesi dan riwayat obrolan berhasil dihapus' });

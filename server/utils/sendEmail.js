@@ -1,25 +1,34 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 const sendEmail = async (options) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // You can change this if using another service
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_APP_PASSWORD,
+    const data = {
+      sender: { 
+        name: "EmpathAI Sistem", 
+        email: "fayizakbar26@gmail.com" 
       },
-    });
-
-    const mailOptions = {
-      from: `EmpathAI <${process.env.EMAIL_USER}>`,
-      to: options.email,
+      to: [
+        { email: options.email }
+      ],
       subject: options.subject,
-      text: options.message,
+      textContent: options.message
     };
 
-    await transporter.sendMail(mailOptions);
+    const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY, // Membaca dari Secret Hugging Face
+        'content-type': 'application/json'
+      }
+    });
+
+    console.log('✅ Email asli berhasil dikirim lewat Brevo! ID:', response.data.messageId);
   } catch (error) {
-    console.error('Error sending email:', error);
+    if (error.response) {
+      console.error('❌ Eror HTTP API Brevo:', error.response.data);
+    } else {
+      console.error('❌ Gagal mengirim email:', error.message);
+    }
     throw error;
   }
 };

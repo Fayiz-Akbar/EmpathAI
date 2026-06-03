@@ -3,17 +3,16 @@ from pydantic import BaseModel
 import numpy as np
 import pickle
 import traceback
-
 import keras
 from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 
 # ======================================================================
-# 🥷 SUPER JALUR NINJA: PATCH INDUK LAYER UNTUK SEMUA KOMPONEN (Dense, Embedding, dll)
+# 🥷 SUPER JALUR NINJA: PATCH INDUK LAYER UNTUK SEMUA KOMPONEN
 # ======================================================================
 original_layer_init = keras.layers.Layer.__init__
 def patched_layer_init(self, *args, **kwargs):
-    kwargs.pop('quantization_config', None) # Sapu bersih parameter hantu dari Colab di tingkat induk
+    kwargs.pop('quantization_config', None) # Sapu bersih parameter hantu dari Colab
     original_layer_init(self, *args, **kwargs)
 keras.layers.Layer.__init__ = patched_layer_init
 # ======================================================================
@@ -71,7 +70,6 @@ async def predict_emotion(request: ChatRequest):
         padded = pad_sequences(seq, maxlen=100, padding='post', truncating='post')
         
         pred = model.predict(padded, verbose=0)
-        
         formatted_pred = [f"{p:.4f}" for p in pred[0]]
         print(f"📊 [DEBUG] Skor Probabilitas: {formatted_pred}")
         
@@ -82,11 +80,12 @@ async def predict_emotion(request: ChatRequest):
         print(f"🧠 [DEBUG] Keputusan Final: {emotion}")
         
         return {"emotion": emotion}
-    
+        
     except Exception as e:
         print(f"❌ Error di predict: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=7860, reload=True)
+    # reload diatur ke False agar tidak membuat server freeze di Hugging Face
+    uvicorn.run("app:app", host="0.0.0.0", port=7860, reload=False)
