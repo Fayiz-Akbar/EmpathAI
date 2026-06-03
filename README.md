@@ -80,75 +80,105 @@ Proyek ini dikembangkan menggunakan tumpukan teknologi modern skala industri:
 
 ## 🚀 Panduan Instalasi Lokal (Local Setup)
 
-Ikuti langkah-langkah di bawah ini untuk menjalankan EmpathAI di lingkungan pengembangan (komputer lokal) Anda.
+Ikuti langkah-langkah di bawah ini untuk menjalankan EmpathAI di lingkungan pengembangan (komputer lokal) Anda. Arsitektur proyek ini dipisah menjadi tiga layanan utama: Klien (Frontend), Server (Backend Node.js), dan AI Server (Python FastAPI).
 
 ### 📋 Prerequisites (Prasyarat)
 Pastikan sistem Anda sudah terinstal perangkat lunak berikut:
 - [Node.js](https://nodejs.org/en/) (Versi 16.x atau terbaru)
+- [Python](https://www.python.org/) (Versi 3.8 atau terbaru)
 - [Git](https://git-scm.com/)
 - [MongoDB](https://www.mongodb.com/) (Lokal atau menggunakan akun MongoDB Atlas)
 
 ### 1️⃣ Clone Repository
 Buka terminal dan jalankan perintah berikut untuk mengunduh source code proyek:
 ```bash
-git clone https://github.com/username-anda/EmpathAI.git
+git clone https://github.com/Fayiz-Akbar/EmpathAI.git
 cd EmpathAI
 ```
 
-### 2️⃣ Install Dependencies (Backend & Frontend)
-Proyek ini menggunakan struktur folder terpisah untuk `client` (frontend) dan `server` (backend). Anda perlu menginstal dependensi pada kedua direktori tersebut.
+### 2️⃣ Install Dependencies (Frontend, Backend, dan AI Server)
+Proyek ini menggunakan struktur folder terpisah. Anda perlu menginstal dependensi pada ketiga direktori tersebut (`client`, `server`, dan `ai-server`).
 
-**Untuk Backend:**
+**Untuk AI Server (Python):**
 ```bash
-cd server
+cd ai-server
+# Sangat disarankan membuat Virtual Environment
+python -m venv venv
+
+# Aktivasi venv di Windows:
+venv\Scripts\activate
+# Aktivasi venv di macOS/Linux:
+# source venv/bin/activate
+
+# Install library
+pip install -r requirements.txt
+```
+
+**Untuk Backend (Node.js):**
+```bash
+cd ../server
 npm install
 ```
 
-**Untuk Frontend:**
+**Untuk Frontend (React):**
 ```bash
 cd ../client
 npm install
 ```
 
 ### 3️⃣ Pengaturan Environment Variables (.env)
-Anda perlu mengatur *environment variables* untuk keamanan kredensial API, token rahasia, dan konfigurasi database.
+Anda perlu mengatur *environment variables* untuk keamanan kredensial API, token rahasia, dan konfigurasi layanan.
 
-**Di folder `server/`**, salin file `.env.example` menjadi `.env` (jika ada), atau buat file bernama `.env` dan tambahkan variabel berikut:
+**Di folder `ai-server/`**, buat file `.env` dan konfigurasikan variabel untuk model AI:
+```env
+PORT=8000
+HUGGINGFACE_API_KEY=kunci_api_huggingface_anda  # Jika model private
+```
+
+**Di folder `server/`**, salin file `.env.example` menjadi `.env` (jika ada), atau buat file `.env` dan tambahkan:
 ```env
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/empathai  # Atau URI dari MongoDB Atlas Anda
 JWT_SECRET=rahasia_jwt_super_aman_anda
 EMAIL_USER=email_anda@gmail.com               # Email untuk fitur Forgot Password (Nodemailer)
 EMAIL_PASS=password_aplikasi_email_anda      # App Password untuk Nodemailer
-AI_SERVICE_URL=http://localhost:8000         # URL FastAPI atau Hugging Face Endpoint
+AI_SERVICE_URL=http://localhost:8000         # URL ke instance AI Server (FastAPI)
 ```
 
-**Di folder `client/`**, buat file bernama `.env` dan tambahkan variabel yang menghubungkan aplikasi ke backend:
+**Di folder `client/`**, buat file `.env` dan tambahkan variabel yang menghubungkan frontend ke backend Node.js:
 ```env
-VITE_API_URL=http://localhost:5000/api       # Jika menggunakan Vite, gunakan VITE_
+VITE_API_URL=http://localhost:5000/api       # Jika menggunakan Vite, gunakan awalan VITE_
 # atau
 REACT_APP_API_URL=http://localhost:5000/api  # Jika menggunakan Create React App (CRA)
 ```
 
-### 4️⃣ Menjalankan Server & Aplikasi
+### 4️⃣ Menjalankan Sistem Secara Keseluruhan
 
-Buka dua tab atau jendela terminal yang berbeda, satu untuk backend dan satu lagi untuk frontend.
+Untuk menjalankan aplikasi dengan fungsionalitas penuh, buka **tiga** tab atau jendela terminal terpisah dan jalankan ketiga layanan.
 
-**Terminal 1 (Menjalankan Backend Node.js/Express):**
+**Terminal 1 (Menjalankan AI Server - FastAPI):**
+```bash
+cd ai-server
+# Pastikan virtual environment (venv) sedang aktif
+uvicorn main:app --reload --port 8000
+# AI Server berjalan dan siap menerima request di http://localhost:8000
+```
+
+**Terminal 2 (Menjalankan Backend Node.js/Express):**
 ```bash
 cd server
 npm run dev
 # Server backend biasanya akan berjalan di http://localhost:5000
 ```
 
-**Terminal 2 (Menjalankan Frontend React):**
+**Terminal 3 (Menjalankan Frontend React):**
 ```bash
 cd client
 npm run dev # atau `npm start` (sesuaikan dengan package.json)
 # Aplikasi web klien bisa diakses di browser, biasanya http://localhost:5173 atau http://localhost:3000
 ```
 
-Aplikasi **EmpathAI** kini dapat diakses dan digunakan di browser lokal Anda! 🎉
+Setelah ketiga layanan di atas berstatus aktif/running, aplikasi **EmpathAI** kini dapat diakses dan berfungsi sepenuhnya di komputer lokal Anda! 🎉
 
 ---
 
