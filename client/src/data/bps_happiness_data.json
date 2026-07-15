@@ -1,0 +1,13 @@
+[
+  { "id": 1, "lat": 1.5709, "lng": 127.8087, "province": "Maluku Utara", "index": 76.34, "status": "Tertinggi", "insight": "Faktor keharmonisan sosial dan alam sangat mendukung." },
+  { "id": 2, "lat": 3.0730, "lng": 116.0413, "province": "Kalimantan Utara", "index": 76.33, "status": "Tertinggi", "insight": "Kestabilan ekonomi lokal mendongkrak kepuasan hidup." },
+  { "id": 3, "lat": -3.2384, "lng": 130.1452, "province": "Maluku", "index": 76.28, "status": "Tertinggi", "insight": "Indeks makna hidup yang tinggi dari interaksi sosial." },
+  { "id": 4, "lat": -1.6101, "lng": 103.6131, "province": "Jambi", "index": 75.17, "status": "Tertinggi", "insight": "Rendahnya tingkat stres karena kepadatan penduduk yang seimbang." },
+  { "id": 5, "lat": 0.6246, "lng": 123.9750, "province": "Sulawesi Utara", "index": 74.96, "status": "Tertinggi", "insight": "Kerukunan warga menjadi faktor utama kebahagiaan." },
+  
+  { "id": 6, "lat": -6.4058, "lng": 106.0640, "province": "Banten", "index": 68.08, "status": "Terendah", "insight": "Tekanan urbanisasi dan pengangguran memicu stres." },
+  { "id": 7, "lat": -3.7928, "lng": 102.2607, "province": "Bengkulu", "index": 69.74, "status": "Terendah", "insight": "Kesenjangan akses fasilitas publik mempengaruhi kepuasan." },
+  { "id": 8, "lat": -4.2699, "lng": 138.0804, "province": "Papua", "index": 69.87, "status": "Terendah", "insight": "Kebutuhan pemerataan akses infrastruktur & kesehatan dasar." },
+  { "id": 9, "lat": -8.6529, "lng": 117.3616, "province": "Nusa Tenggara Barat", "index": 69.98, "status": "Terendah", "insight": "Kerentanan ekonomi berdampak langsung pada emosi." },
+  { "id": 10, "lat": -6.9147, "lng": 107.6098, "province": "Jawa Barat", "index": 70.23, "status": "Terendah", "insight": "Populasi tinggi & kompetisi lapangan kerja menambah kecemasan." }
+]

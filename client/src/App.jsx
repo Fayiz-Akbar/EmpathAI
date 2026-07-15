@@ -10,6 +10,8 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AboutPage from './pages/AboutPage';
 import FAQPage from './pages/FAQPage';
 import FeedbackPage from './pages/FeedbackPage';
+import GeoMapPage from './pages/GeoMapPage';
+import EduPage from './pages/EduPage';
 import Notification from './components/Notification';
 
 /**
@@ -40,6 +42,8 @@ const App = () => {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/self-care" element={<SelfCarePage />} />
+        <Route path="/wawasan" element={<EduPage />} />
+        <Route path="/sig-map" element={<GeoMapPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
