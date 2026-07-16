@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Search, Loader2, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Loader2, X, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
 import FacilityCard from './FacilityCard';
 
 const FILTER_OPTIONS = [
@@ -24,25 +24,35 @@ const SearchPanel = ({
   onSearch,
   onSelectFacility,
   onClear,
+  locationLabel,
 }) => {
-  const [query, setQuery] = useState('');
+  const [inputValue, setInputValue] = useState(locationLabel || '');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Sync with parent's location label (e.g. when geolocation succeeds)
+  useEffect(() => {
+    if (locationLabel && !inputValue) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInputValue(locationLabel);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locationLabel]);
 
   const hasResults = facilities.length > 0;
   const hasSearched = hasResults || error;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      onSearch(query.trim());
+    if (inputValue.trim()) {
+      onSearch(inputValue.trim());
       setActiveFilter('all');
       setIsCollapsed(false);
     }
   };
 
   const handleClear = () => {
-    setQuery('');
+    setInputValue('');
     setActiveFilter('all');
     setIsCollapsed(false);
     if (onClear) onClear();
@@ -54,35 +64,38 @@ const SearchPanel = ({
     : facilities.filter((f) => f.typeKey === activeFilter);
 
   return (
-    <div className="absolute top-4 left-4 z-[1000] w-[calc(100%-2rem)] sm:w-[380px]">
+    <div className="absolute top-4 left-4 z-[1000] w-[calc(100%-2rem)] sm:w-[420px]">
 
-      {/* Search Bar */}
+      {/* Location Bar */}
       <form onSubmit={handleSubmit} className="relative">
-        <div className="flex items-center bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-          <div className="pl-3.5 text-gray-400">
-            {isLoading ? (
-              <Loader2 size={18} className="animate-spin text-[#8FA697]" />
-            ) : (
-              <Search size={18} />
-            )}
+        <div className="flex items-center bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden p-1.5 gap-2">
+          <div className="pl-2 text-[#8FA697]">
+            <MapPin size={20} />
           </div>
           <input
-            
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Cari klinik, psikolog, rumah sakit..."
-            className="flex-1 px-3 py-3 text-sm bg-transparent focus:outline-none placeholder:text-gray-400"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Pilih lokasi (Kota/Daerah)..."
+            className="flex-1 px-2 py-2.5 text-sm bg-transparent focus:outline-none placeholder:text-gray-400 font-medium text-gray-700"
           />
-          {(query || hasSearched) && (
+          {inputValue && (
             <button
               type="button"
               onClick={handleClear}
-              className="pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+              className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
             >
               <X size={16} />
             </button>
           )}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="bg-[#5B7062] hover:bg-[#4a5c50] text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+          >
+            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+            Pindai
+          </button>
         </div>
       </form>
 

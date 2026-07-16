@@ -1,5 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Marker, Popup, useMap, ZoomControl } from 'react-leaflet';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import { ShieldAlert, LogIn, MapPin, LocateFixed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +18,15 @@ import { searchFacilitiesByPlace, searchFacilitiesByCoord } from '../services/ov
 /** Default center: Jakarta (fallback when geolocation is denied) */
 const DEFAULT_CENTER = { lat: -6.2088, lng: 106.8456 };
 const DEFAULT_ZOOM = 13;
+
+/** Default marker icon for user location */
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
 
 /** Marker color per facility type */
 const MARKER_COLORS = {
@@ -56,6 +68,7 @@ const CounselingMapPage = () => {
   // Map & search
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [userLocation, setUserLocation] = useState(null);
+  const [locationName, setLocationName] = useState('');
   const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
   const [facilities, setFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
@@ -82,6 +95,7 @@ const CounselingMapPage = () => {
         setUserLocation(loc);
         setMapCenter(loc);
         setCurrentZoom(13);
+        setLocationName('Lokasi Anda');
       },
       () => {
         // Geolocation denied — keep Jakarta as default
@@ -102,6 +116,7 @@ const CounselingMapPage = () => {
         setUserLocation(loc);
         setMapCenter(loc);
         setCurrentZoom(13);
+        setLocationName('Lokasi Anda');
         setIsLoading(false);
       },
       (err) => {
@@ -113,35 +128,32 @@ const CounselingMapPage = () => {
   }, []);
 
   /**
-   * Search by city/place name OR by category.
+   * Scan area based on chosen location.
    */
-  const handleSearch = useCallback(async (query) => {
+  const handleSearch = useCallback(async (inputValue) => {
     setIsLoading(true);
     setError(null);
     setSelectedFacility(null);
 
-    const queryLower = query.toLowerCase();
-    const isCategory = ['rumah sakit', 'rs', 'klinik', 'psikolog', 'psikoterapis', 'konseling'].some(k => queryLower.includes(k));
-
     try {
       let results;
-      if (isCategory) {
-        // If searching for a category, search around current map center instead of geocoding
-        // Radius 25000m (25km) to cover kabupaten/provinsi scale
+      if (!inputValue || inputValue === 'Lokasi Anda') {
+        // Scan current map center (regency scale ~25km)
         results = await searchFacilitiesByCoord(mapCenter.lat, mapCenter.lng, 25000);
-        setCurrentZoom(11); // Zoom out to show the regency scale
+        setCurrentZoom(11);
       } else {
-        // Geocode as a place name
-        const { center, facilities: placeResults } = await searchFacilitiesByPlace(query);
+        // Scan new place
+        const { center, facilities: placeResults } = await searchFacilitiesByPlace(inputValue);
         setMapCenter(center);
-        setCurrentZoom(12);
+        setCurrentZoom(11);
         results = placeResults;
+        setLocationName(inputValue);
       }
       
       setFacilities(results);
     } catch (err) {
       console.error('Pencarian gagal:', err);
-      setError(err.message || 'Terjadi kesalahan saat mencari. Coba kata kunci lain.');
+      setError(err.message || 'Terjadi kesalahan saat mencari. Coba pilih lokasi lain.');
       setFacilities([]);
     } finally {
       setIsLoading(false);
@@ -227,22 +239,13 @@ const CounselingMapPage = () => {
 
             {/* User location indicator */}
             {userLocation && (
-              <CircleMarker
-                center={[userLocation.lat, userLocation.lng]}
-                pathOptions={{
-                  fillColor: '#3b82f6',
-                  color: '#1d4ed8',
-                  fillOpacity: 0.9,
-                  weight: 2,
-                }}
-                radius={8}
-              >
+              <Marker position={[userLocation.lat, userLocation.lng]} icon={DefaultIcon}>
                 <Popup>
                   <div className="p-1">
                     <p className="text-sm font-medium text-gray-800">📍 Lokasi Anda</p>
                   </div>
                 </Popup>
-              </CircleMarker>
+              </Marker>
             )}
 
             {/* Facility markers */}
@@ -285,12 +288,13 @@ const CounselingMapPage = () => {
             </button>
           </div>
 
-          {/* Floating Search Panel (Google Maps-style) */}
+          {/* Floating Search Panel (Scanner UI) */}
           <SearchPanel
             facilities={facilities}
             isLoading={isLoading}
             error={error}
             selectedFacility={selectedFacility}
+            locationLabel={locationName}
             onSearch={handleSearch}
             onSelectFacility={handleSelectFacility}
             onClear={handleClear}
