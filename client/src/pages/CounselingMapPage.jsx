@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { ShieldAlert, LogIn, MapPin } from 'lucide-react';
+import { ShieldAlert, LogIn, MapPin, LocateFixed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getCurrentUser } from '../services/authService';
@@ -15,7 +15,6 @@ import { searchFacilitiesByPlace, searchFacilitiesByCoord } from '../services/ov
 /** Default center: Jakarta (fallback when geolocation is denied) */
 const DEFAULT_CENTER = { lat: -6.2088, lng: 106.8456 };
 const DEFAULT_ZOOM = 13;
-const SEARCH_ZOOM = 13;
 
 /** Marker color per facility type */
 const MARKER_COLORS = {
@@ -57,6 +56,7 @@ const CounselingMapPage = () => {
   // Map & search
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [userLocation, setUserLocation] = useState(null);
+  const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
   const [facilities, setFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -81,9 +81,32 @@ const CounselingMapPage = () => {
         const loc = { lat: position.coords.latitude, lng: position.coords.longitude };
         setUserLocation(loc);
         setMapCenter(loc);
+        setCurrentZoom(13);
       },
       () => {
         // Geolocation denied — keep Jakarta as default
+      },
+      { timeout: 8000 }
+    );
+  }, []);
+
+  /**
+   * Manually trigger geolocation to find user's current location.
+   */
+  const handleLocateMe = useCallback(() => {
+    if (!('geolocation' in navigator)) return;
+    setIsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const loc = { lat: position.coords.latitude, lng: position.coords.longitude };
+        setUserLocation(loc);
+        setMapCenter(loc);
+        setCurrentZoom(13);
+        setIsLoading(false);
+      },
+      (err) => {
+        console.error('Geolocation error:', err);
+        setIsLoading(false);
       },
       { timeout: 8000 }
     );
@@ -104,12 +127,14 @@ const CounselingMapPage = () => {
       let results;
       if (isCategory) {
         // If searching for a category, search around current map center instead of geocoding
-        results = await searchFacilitiesByCoord(mapCenter.lat, mapCenter.lng);
-        // We keep the center as is
+        // Radius 25000m (25km) to cover kabupaten/provinsi scale
+        results = await searchFacilitiesByCoord(mapCenter.lat, mapCenter.lng, 25000);
+        setCurrentZoom(11); // Zoom out to show the regency scale
       } else {
         // Geocode as a place name
         const { center, facilities: placeResults } = await searchFacilitiesByPlace(query);
         setMapCenter(center);
+        setCurrentZoom(12);
         results = placeResults;
       }
       
@@ -132,6 +157,7 @@ const CounselingMapPage = () => {
     setError(null);
     if (userLocation) {
       setMapCenter(userLocation);
+      setCurrentZoom(13);
     }
   }, [userLocation]);
 
@@ -141,6 +167,7 @@ const CounselingMapPage = () => {
   const handleSelectFacility = useCallback((facility) => {
     setSelectedFacility(facility);
     setMapCenter({ lat: facility.lat, lng: facility.lng });
+    setCurrentZoom(14); // Zoom in closer to the selected facility
 
     setTimeout(() => {
       const ref = markerRefs.current[facility.id];
@@ -186,14 +213,17 @@ const CounselingMapPage = () => {
           <MapContainer
             center={[mapCenter.lat, mapCenter.lng]}
             zoom={DEFAULT_ZOOM}
+            zoomControl={false}
             style={{ height: '100%', width: '100%', zIndex: 0 }}
           >
+            <ZoomControl position="topright" />
+            
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <MapFlyTo center={mapCenter} zoom={SEARCH_ZOOM} />
+            <MapFlyTo center={mapCenter} zoom={currentZoom} />
 
             {/* User location indicator */}
             {userLocation && (
@@ -243,6 +273,17 @@ const CounselingMapPage = () => {
               );
             })}
           </MapContainer>
+
+          {/* Locate Me Button - positioned right below the top-right ZoomControls */}
+          <div className="absolute top-[85px] right-[10px] z-[1000]">
+            <button
+              onClick={handleLocateMe}
+              className="bg-white w-[34px] h-[34px] flex items-center justify-center rounded-[4px] shadow-[0_1px_5px_rgba(0,0,0,0.65)] hover:bg-gray-50 focus:outline-none"
+              title="Lokasi Saya"
+            >
+              <LocateFixed size={18} className="text-[#464646]" />
+            </button>
+          </div>
 
           {/* Floating Search Panel (Google Maps-style) */}
           <SearchPanel
