@@ -23,20 +23,18 @@ const SearchPanel = ({
   selectedFacility,
   onSearch,
   onSelectFacility,
-  onClear,
   locationLabel,
 }) => {
   const [inputValue, setInputValue] = useState(locationLabel || '');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Sync with parent's location label (e.g. when geolocation succeeds)
+  // Sync with parent's location label (e.g. when geolocation succeeds or 'Lokasi Saya' is clicked)
   useEffect(() => {
-    if (locationLabel && !inputValue) {
+    if (locationLabel) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputValue(locationLabel);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locationLabel]);
 
   const hasResults = facilities.length > 0;
@@ -49,13 +47,6 @@ const SearchPanel = ({
       setActiveFilter('all');
       setIsCollapsed(false);
     }
-  };
-
-  const handleClear = () => {
-    setInputValue('');
-    setActiveFilter('all');
-    setIsCollapsed(false);
-    if (onClear) onClear();
   };
 
   // Filter results by type
@@ -72,22 +63,91 @@ const SearchPanel = ({
           <div className="pl-2 text-[#8FA697]">
             <MapPin size={20} />
           </div>
-          <input
-            type="text"
+          <select
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Pilih lokasi (Kota/Daerah)..."
-            className="flex-1 px-2 py-2.5 text-sm bg-transparent focus:outline-none placeholder:text-gray-400 font-medium text-gray-700"
-          />
-          {inputValue && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X size={16} />
-            </button>
-          )}
+            className="flex-1 px-2 py-2.5 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
+            style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+          >
+            <option value="Lokasi Anda">📍 Lokasi Anda Saat Ini</option>
+            <optgroup label="Pulau Sumatera">
+              <option value="Aceh">Aceh</option>
+              <option value="Sumatera Utara">Sumatera Utara</option>
+              <option value="Sumatera Barat">Sumatera Barat</option>
+              <option value="Riau">Riau</option>
+              <option value="Jambi">Jambi</option>
+              <option value="Sumatera Selatan">Sumatera Selatan</option>
+              <option value="Bengkulu">Bengkulu</option>
+              <option value="Lampung">Lampung</option>
+              <option value="Kepulauan Bangka Belitung">Kepulauan Bangka Belitung</option>
+              <option value="Kepulauan Riau">Kepulauan Riau</option>
+              <option value="Medan">Medan</option>
+              <option value="Palembang">Palembang</option>
+              <option value="Batam">Batam</option>
+              <option value="Pekanbaru">Pekanbaru</option>
+              <option value="Bandar Lampung">Bandar Lampung</option>
+              <option value="Padang">Padang</option>
+            </optgroup>
+            <optgroup label="Pulau Jawa & Bali">
+              <option value="DKI Jakarta">DKI Jakarta</option>
+              <option value="Jawa Barat">Jawa Barat</option>
+              <option value="Jawa Tengah">Jawa Tengah</option>
+              <option value="DI Yogyakarta">DI Yogyakarta</option>
+              <option value="Jawa Timur">Jawa Timur</option>
+              <option value="Banten">Banten</option>
+              <option value="Bali">Bali</option>
+              <option value="Surabaya">Surabaya</option>
+              <option value="Bandung">Bandung</option>
+              <option value="Semarang">Semarang</option>
+              <option value="Malang">Malang</option>
+              <option value="Surakarta">Surakarta</option>
+              <option value="Denpasar">Denpasar</option>
+            </optgroup>
+            <optgroup label="Nusa Tenggara">
+              <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+              <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+              <option value="Mataram">Mataram</option>
+              <option value="Kupang">Kupang</option>
+            </optgroup>
+            <optgroup label="Pulau Kalimantan">
+              <option value="Kalimantan Barat">Kalimantan Barat</option>
+              <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+              <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+              <option value="Kalimantan Timur">Kalimantan Timur</option>
+              <option value="Kalimantan Utara">Kalimantan Utara</option>
+              <option value="Samarinda">Samarinda</option>
+              <option value="Pontianak">Pontianak</option>
+              <option value="Banjarmasin">Banjarmasin</option>
+              <option value="Balikpapan">Balikpapan</option>
+            </optgroup>
+            <optgroup label="Pulau Sulawesi">
+              <option value="Sulawesi Utara">Sulawesi Utara</option>
+              <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+              <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+              <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+              <option value="Gorontalo">Gorontalo</option>
+              <option value="Sulawesi Barat">Sulawesi Barat</option>
+              <option value="Makassar">Makassar</option>
+              <option value="Manado">Manado</option>
+            </optgroup>
+            <optgroup label="Kepulauan Maluku & Papua">
+              <option value="Maluku">Maluku</option>
+              <option value="Maluku Utara">Maluku Utara</option>
+              <option value="Papua">Papua</option>
+              <option value="Papua Barat">Papua Barat</option>
+              <option value="Papua Selatan">Papua Selatan</option>
+              <option value="Papua Tengah">Papua Tengah</option>
+              <option value="Papua Pegunungan">Papua Pegunungan</option>
+              <option value="Papua Barat Daya">Papua Barat Daya</option>
+              <option value="Ambon">Ambon</option>
+              <option value="Jayapura">Jayapura</option>
+            </optgroup>
+          </select>
+          
+          <div className="text-gray-400 pointer-events-none pr-2">
+            <ChevronDown size={16} />
+          </div>
+
           <button
             type="submit"
             disabled={isLoading}
