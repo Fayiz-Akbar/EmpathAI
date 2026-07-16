@@ -22,9 +22,13 @@ const buildOverpassQuery = (lat, lng, radius = 8000) => {
   return `
     [out:json][timeout:25];
     (
-      nwr["amenity"~"^(clinic|hospital|doctors)$"](around:${radius},${lat},${lng});
-      nwr["healthcare"~"^(psychotherapist|counselling)$"](around:${radius},${lat},${lng});
-      nwr["healthcare:speciality"~"^(psychiatry|psychology)$"](around:${radius},${lat},${lng});
+      nwr["amenity"="clinic"](around:${radius},${lat},${lng});
+      nwr["amenity"="hospital"](around:${radius},${lat},${lng});
+      nwr["amenity"="doctors"](around:${radius},${lat},${lng});
+      nwr["healthcare"="psychotherapist"](around:${radius},${lat},${lng});
+      nwr["healthcare"="counselling"](around:${radius},${lat},${lng});
+      nwr["healthcare:speciality"="psychiatry"](around:${radius},${lat},${lng});
+      nwr["healthcare:speciality"="psychology"](around:${radius},${lat},${lng});
     );
     out center;
   `;
@@ -97,16 +101,22 @@ const parseElements = (elements) => {
 export const searchFacilitiesByCoord = async (lat, lng, radius = 15000) => {
   const query = buildOverpassQuery(lat, lng, radius);
 
-  const response = await axios.post(
-    OVERPASS_API,
-    `data=${encodeURIComponent(query)}`,
-    {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      timeout: 35000,
+  try {
+    const response = await axios.post(
+      OVERPASS_API,
+      `data=${encodeURIComponent(query)}`,
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        timeout: 35000,
+      }
+    );
+    return parseElements(response.data.elements || []);
+  } catch (err) {
+    if (err.response?.status === 429) {
+      throw new Error('Server pemetaan sedang sibuk (terlalu banyak permintaan). Mohon tunggu beberapa detik lalu coba lagi.');
     }
-  );
-
-  return parseElements(response.data.elements || []);
+    throw err;
+  }
 };
 
 /**
@@ -173,24 +183,34 @@ export const searchFacilitiesByArea = async (placeName) => {
     [out:json][timeout:25];
     ${areaIdQuery}
     (
-      nwr["amenity"~"^(clinic|hospital|doctors)$"](area.searchArea);
-      nwr["healthcare"~"^(psychotherapist|counselling)$"](area.searchArea);
-      nwr["healthcare:speciality"~"^(psychiatry|psychology)$"](area.searchArea);
+      nwr["amenity"="clinic"](area.searchArea);
+      nwr["amenity"="hospital"](area.searchArea);
+      nwr["amenity"="doctors"](area.searchArea);
+      nwr["healthcare"="psychotherapist"](area.searchArea);
+      nwr["healthcare"="counselling"](area.searchArea);
+      nwr["healthcare:speciality"="psychiatry"](area.searchArea);
+      nwr["healthcare:speciality"="psychology"](area.searchArea);
     );
     out center;
   `;
 
-  const response = await axios.post(
-    OVERPASS_API,
-    `data=${encodeURIComponent(query)}`,
-    {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      timeout: 35000,
+  try {
+    const response = await axios.post(
+      OVERPASS_API,
+      `data=${encodeURIComponent(query)}`,
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        timeout: 35000,
+      }
+    );
+    const facilities = parseElements(response.data.elements || []);
+    return { center, facilities };
+  } catch (err) {
+    if (err.response?.status === 429) {
+      throw new Error('Server pemetaan sedang sibuk (terlalu banyak permintaan). Mohon tunggu beberapa detik lalu coba lagi.');
     }
-  );
-
-  const facilities = parseElements(response.data.elements || []);
-  return { center, facilities };
+    throw err;
+  }
 };
 
 export { FACILITY_TYPES };
