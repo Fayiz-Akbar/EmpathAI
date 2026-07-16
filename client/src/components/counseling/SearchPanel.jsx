@@ -74,7 +74,8 @@ const SearchPanel = ({
   }, [autoLocation, provinces]);
 
   useEffect(() => {
-    if (autoLocation && autoLocation.regency && regencies.length > 0) {
+    const currentProvName = provinces.find(p => p.id === selectedProvinceId)?.name?.toLowerCase();
+    if (autoLocation && autoLocation.regency && regencies.length > 0 && currentProvName === autoLocation.province.toLowerCase()) {
       // Nominatim might return "Bandar Lampung", emsifa "KOTA BANDAR LAMPUNG"
       // We do a partial match (e.g., includes)
       const target = autoLocation.regency.toLowerCase();
@@ -84,7 +85,7 @@ const SearchPanel = ({
         setSelectedRegencyName(matchedReg.name);
       }
     }
-  }, [autoLocation, regencies]);
+  }, [autoLocation, regencies, selectedProvinceId, provinces]);
 
   const hasResults = facilities.length > 0;
   const hasSearched = hasResults || error;
@@ -124,7 +125,10 @@ const SearchPanel = ({
           <div className="relative flex-1 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
             <select
               value={selectedProvinceId}
-              onChange={(e) => setSelectedProvinceId(e.target.value)}
+              onChange={(e) => {
+                setSelectedProvinceId(e.target.value);
+                setSelectedRegencyName('');
+              }}
               className="w-full pl-3 pr-8 py-2 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
               style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
               required
