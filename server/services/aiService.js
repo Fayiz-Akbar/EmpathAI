@@ -7,7 +7,7 @@ const axios = require('axios');
  */
 const detectEmotion = async (text) => {
   try {
-    const aiServerUrl = process.env.PYTHON_AI_URL || 'http://127.0.0.1:5001';
+    const aiServerUrl = process.env.PYTHON_AI_URL || 'http://127.0.0.1:7860';
     const response = await axios.post(`${aiServerUrl}/predict`, { text });
     return response.data.emotion;
   } catch (error) {
