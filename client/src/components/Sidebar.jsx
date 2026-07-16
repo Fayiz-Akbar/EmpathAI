@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Menu, Search, Edit3, Heart, ShieldAlert, LogIn, Map, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Menu, Search, Edit3, Heart, ShieldAlert, LogIn, Map, BookOpen, MapPin } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
 import { useTranslation } from 'react-i18next';
@@ -104,6 +104,17 @@ const Sidebar = ({
           }`}
         >
           <BookOpen size={18} className={`${isCurrentPath('/wawasan') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> Kenapa EmpathAI?
+        </button>
+
+        <button
+          onClick={() => handleProtectedNavigation('/counseling-map')}
+          className={`w-full flex items-center gap-4 px-3 py-3 text-[15px] font-medium rounded-xl transition-colors focus:outline-none group ${
+            isCurrentPath('/counseling-map') 
+              ? 'bg-[#8FA697]/15 dark:bg-[#8FA697]/20 text-[#5B7062] dark:text-[#A7BDAF]' 
+              : 'text-gray-700 dark:text-gray-200 hover:bg-[#8FA697]/10 hover:text-[#5B7062] dark:hover:bg-[#8FA697]/20'
+          }`}
+        >
+          <MapPin size={18} className={`${isCurrentPath('/counseling-map') ? 'text-[#5B7062] dark:text-[#A7BDAF]' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#5B7062]'} transition-colors`} /> Cari Konseling
         </button>
 
         <button 

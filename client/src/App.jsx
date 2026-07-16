@@ -11,6 +11,7 @@ import AboutPage from './pages/AboutPage';
 import FAQPage from './pages/FAQPage';
 import FeedbackPage from './pages/FeedbackPage';
 import GeoMapPage from './pages/GeoMapPage';
+import CounselingMapPage from './pages/CounselingMapPage';
 import EduPage from './pages/EduPage';
 import Notification from './components/Notification';
 
@@ -44,6 +45,7 @@ const App = () => {
         <Route path="/self-care" element={<SelfCarePage />} />
         <Route path="/wawasan" element={<EduPage />} />
         <Route path="/sig-map" element={<GeoMapPage />} />
+        <Route path="/counseling-map" element={<CounselingMapPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
