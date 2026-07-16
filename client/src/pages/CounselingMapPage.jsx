@@ -304,7 +304,7 @@ const CounselingMapPage = () => {
           {facilities.length > 0 && (
             <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-3 z-[1000]">
               <p className="text-[11px] font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
-                <MapPin size={12} /> Legenda
+                <MapPin size={12} /> Keterangan
               </p>
               <div className="space-y-1.5">
                 {Object.entries(MARKER_COLORS).map(([key, val]) => (
