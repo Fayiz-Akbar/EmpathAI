@@ -10,7 +10,7 @@ import ChatHeader from '../components/ChatHeader';
 import ConfirmActionModal from '../components/ConfirmActionModal';
 import SearchPanel from '../components/counseling/SearchPanel';
 import FacilityPopup from '../components/counseling/FacilityPopup';
-import { searchFacilitiesByPlace } from '../services/overpassService';
+import { searchFacilitiesByPlace, searchFacilitiesByCoord } from '../services/overpassService';
 
 /** Default center: Jakarta (fallback when geolocation is denied) */
 const DEFAULT_CENTER = { lat: -6.2088, lng: 106.8456 };
@@ -90,25 +90,38 @@ const CounselingMapPage = () => {
   }, []);
 
   /**
-   * Search by city/place name.
+   * Search by city/place name OR by category.
    */
-  const handleSearch = useCallback(async (placeName) => {
+  const handleSearch = useCallback(async (query) => {
     setIsLoading(true);
     setError(null);
     setSelectedFacility(null);
 
+    const queryLower = query.toLowerCase();
+    const isCategory = ['rumah sakit', 'rs', 'klinik', 'psikolog', 'psikoterapis', 'konseling'].some(k => queryLower.includes(k));
+
     try {
-      const { center, facilities: results } = await searchFacilitiesByPlace(placeName);
-      setMapCenter(center);
+      let results;
+      if (isCategory) {
+        // If searching for a category, search around current map center instead of geocoding
+        results = await searchFacilitiesByCoord(mapCenter.lat, mapCenter.lng);
+        // We keep the center as is
+      } else {
+        // Geocode as a place name
+        const { center, facilities: placeResults } = await searchFacilitiesByPlace(query);
+        setMapCenter(center);
+        results = placeResults;
+      }
+      
       setFacilities(results);
     } catch (err) {
       console.error('Pencarian gagal:', err);
-      setError(err.message || 'Terjadi kesalahan saat mencari. Coba lagi.');
+      setError(err.message || 'Terjadi kesalahan saat mencari. Coba kata kunci lain.');
       setFacilities([]);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [mapCenter]);
 
   /**
    * Clear all search results and reset to user location.

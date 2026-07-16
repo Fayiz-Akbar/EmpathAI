@@ -15,29 +15,18 @@ const FACILITY_TYPES = {
 };
 
 /**
- * Build an Overpass QL query to find mental health facilities
+ * Build an optimized Overpass QL query to find mental health facilities
  * within a radius (meters) of a lat/lng coordinate.
  */
-const buildOverpassQuery = (lat, lng, radius = 15000) => {
+const buildOverpassQuery = (lat, lng, radius = 8000) => {
   return `
-    [out:json][timeout:30];
+    [out:json][timeout:25];
     (
-      node["amenity"="clinic"](around:${radius},${lat},${lng});
-      node["amenity"="hospital"](around:${radius},${lat},${lng});
-      node["amenity"="doctors"](around:${radius},${lat},${lng});
-      node["healthcare"="psychotherapist"](around:${radius},${lat},${lng});
-      node["healthcare"="counselling"](around:${radius},${lat},${lng});
-      node["healthcare:speciality"="psychiatry"](around:${radius},${lat},${lng});
-      node["healthcare:speciality"="psychology"](around:${radius},${lat},${lng});
-      way["amenity"="clinic"](around:${radius},${lat},${lng});
-      way["amenity"="hospital"](around:${radius},${lat},${lng});
-      way["amenity"="doctors"](around:${radius},${lat},${lng});
-      way["healthcare"="psychotherapist"](around:${radius},${lat},${lng});
-      way["healthcare"="counselling"](around:${radius},${lat},${lng});
-      way["healthcare:speciality"="psychiatry"](around:${radius},${lat},${lng});
-      way["healthcare:speciality"="psychology"](around:${radius},${lat},${lng});
+      nwr["amenity"~"^(clinic|hospital|doctors)$"](around:${radius},${lat},${lng});
+      nwr["healthcare"~"^(psychotherapist|counselling)$"](around:${radius},${lat},${lng});
+      nwr["healthcare:speciality"~"^(psychiatry|psychology)$"](around:${radius},${lat},${lng});
     );
-    out center body;
+    out center;
   `;
 };
 
