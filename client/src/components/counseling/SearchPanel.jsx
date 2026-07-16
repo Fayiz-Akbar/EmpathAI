@@ -11,11 +11,10 @@ const FILTER_OPTIONS = [
   { key: 'counselling',     label: 'Konseling' },
 ];
 
-/**
- * SearchPanel — Floating overlay search bar + expandable results panel.
- * Inspired by Google Maps: search bar sits on top of the map,
- * results panel slides down only when there are results.
- */
+const toTitleCase = (str) => {
+  return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
+
 const SearchPanel = ({
   facilities,
   isLoading,
@@ -25,15 +24,48 @@ const SearchPanel = ({
   onSelectFacility,
   locationLabel,
 }) => {
-  const [inputValue, setInputValue] = useState(locationLabel || '');
+  const [provinces, setProvinces] = useState([]);
+  const [regencies, setRegencies] = useState([]);
+  
+  const [selectedProvinceId, setSelectedProvinceId] = useState('');
+  const [selectedRegencyName, setSelectedRegencyName] = useState('');
+
   const [activeFilter, setActiveFilter] = useState('all');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Sync with parent's location label (e.g. when geolocation succeeds or 'Lokasi Saya' is clicked)
+  // Fetch provinces on mount
   useEffect(() => {
-    if (locationLabel) {
+    fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
+      .then(res => res.json())
+      .then(data => setProvinces(data))
+      .catch(err => console.error('Failed to load provinces:', err));
+  }, []);
+
+  // Fetch regencies when a province is selected
+  useEffect(() => {
+    if (!selectedProvinceId) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setInputValue(locationLabel);
+      setRegencies([]);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedRegencyName('');
+      return;
+    }
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`)
+      .then(res => res.json())
+      .then(data => {
+        setRegencies(data);
+        setSelectedRegencyName('');
+      })
+      .catch(err => console.error('Failed to load regencies:', err));
+  }, [selectedProvinceId]);
+
+  // Sync with parent's location label (e.g. when 'Lokasi Saya' is clicked)
+  useEffect(() => {
+    if (locationLabel === 'Lokasi Anda') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedProvinceId('');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedRegencyName('');
     }
   }, [locationLabel]);
 
@@ -42,11 +74,24 @@ const SearchPanel = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (inputValue.trim()) {
-      onSearch(inputValue.trim());
-      setActiveFilter('all');
-      setIsCollapsed(false);
+    let query = '';
+
+    if (!selectedProvinceId) {
+      query = 'Lokasi Anda';
+    } else {
+      const provName = provinces.find(p => p.id === selectedProvinceId)?.name || '';
+      if (!selectedRegencyName) {
+        // Only province
+        query = `Provinsi ${toTitleCase(provName)}`;
+      } else {
+        // Regency + Province
+        query = `${toTitleCase(selectedRegencyName)}, Provinsi ${toTitleCase(provName)}`;
+      }
     }
+
+    onSearch(query);
+    setActiveFilter('all');
+    setIsCollapsed(false);
   };
 
   // Filter results by type
@@ -58,105 +103,64 @@ const SearchPanel = ({
     <div className="absolute top-4 left-4 z-[1000] w-[calc(100%-2rem)] sm:w-[420px]">
 
       {/* Location Bar */}
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="flex items-center bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden p-1.5 gap-2">
-          <div className="pl-2 text-[#8FA697]">
-            <MapPin size={20} />
-          </div>
-          <select
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="flex-1 px-2 py-2.5 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
-            style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
-          >
-            <option value="Lokasi Anda">📍 Lokasi Anda Saat Ini</option>
-            <optgroup label="Pulau Sumatera">
-              <option value="Aceh">Aceh</option>
-              <option value="Sumatera Utara">Sumatera Utara</option>
-              <option value="Sumatera Barat">Sumatera Barat</option>
-              <option value="Riau">Riau</option>
-              <option value="Jambi">Jambi</option>
-              <option value="Sumatera Selatan">Sumatera Selatan</option>
-              <option value="Bengkulu">Bengkulu</option>
-              <option value="Lampung">Lampung</option>
-              <option value="Kepulauan Bangka Belitung">Kepulauan Bangka Belitung</option>
-              <option value="Kepulauan Riau">Kepulauan Riau</option>
-              <option value="Medan">Medan</option>
-              <option value="Palembang">Palembang</option>
-              <option value="Batam">Batam</option>
-              <option value="Pekanbaru">Pekanbaru</option>
-              <option value="Bandar Lampung">Bandar Lampung</option>
-              <option value="Padang">Padang</option>
-            </optgroup>
-            <optgroup label="Pulau Jawa & Bali">
-              <option value="DKI Jakarta">DKI Jakarta</option>
-              <option value="Jawa Barat">Jawa Barat</option>
-              <option value="Jawa Tengah">Jawa Tengah</option>
-              <option value="DI Yogyakarta">DI Yogyakarta</option>
-              <option value="Jawa Timur">Jawa Timur</option>
-              <option value="Banten">Banten</option>
-              <option value="Bali">Bali</option>
-              <option value="Surabaya">Surabaya</option>
-              <option value="Bandung">Bandung</option>
-              <option value="Semarang">Semarang</option>
-              <option value="Malang">Malang</option>
-              <option value="Surakarta">Surakarta</option>
-              <option value="Denpasar">Denpasar</option>
-            </optgroup>
-            <optgroup label="Nusa Tenggara">
-              <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
-              <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
-              <option value="Mataram">Mataram</option>
-              <option value="Kupang">Kupang</option>
-            </optgroup>
-            <optgroup label="Pulau Kalimantan">
-              <option value="Kalimantan Barat">Kalimantan Barat</option>
-              <option value="Kalimantan Tengah">Kalimantan Tengah</option>
-              <option value="Kalimantan Selatan">Kalimantan Selatan</option>
-              <option value="Kalimantan Timur">Kalimantan Timur</option>
-              <option value="Kalimantan Utara">Kalimantan Utara</option>
-              <option value="Samarinda">Samarinda</option>
-              <option value="Pontianak">Pontianak</option>
-              <option value="Banjarmasin">Banjarmasin</option>
-              <option value="Balikpapan">Balikpapan</option>
-            </optgroup>
-            <optgroup label="Pulau Sulawesi">
-              <option value="Sulawesi Utara">Sulawesi Utara</option>
-              <option value="Sulawesi Tengah">Sulawesi Tengah</option>
-              <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-              <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
-              <option value="Gorontalo">Gorontalo</option>
-              <option value="Sulawesi Barat">Sulawesi Barat</option>
-              <option value="Makassar">Makassar</option>
-              <option value="Manado">Manado</option>
-            </optgroup>
-            <optgroup label="Kepulauan Maluku & Papua">
-              <option value="Maluku">Maluku</option>
-              <option value="Maluku Utara">Maluku Utara</option>
-              <option value="Papua">Papua</option>
-              <option value="Papua Barat">Papua Barat</option>
-              <option value="Papua Selatan">Papua Selatan</option>
-              <option value="Papua Tengah">Papua Tengah</option>
-              <option value="Papua Pegunungan">Papua Pegunungan</option>
-              <option value="Papua Barat Daya">Papua Barat Daya</option>
-              <option value="Ambon">Ambon</option>
-              <option value="Jayapura">Jayapura</option>
-            </optgroup>
-          </select>
-          
-          <div className="text-gray-400 pointer-events-none pr-2">
-            <ChevronDown size={16} />
+      <form onSubmit={handleSubmit} className="relative bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden p-2 flex flex-col gap-2">
+        <div className="flex items-center gap-2 px-1">
+          <MapPin size={18} className="text-[#8FA697]" />
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Cakupan Wilayah</p>
+        </div>
+        
+        <div className="flex flex-col gap-2">
+          {/* Dropdown Provinsi */}
+          <div className="relative flex-1 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
+            <select
+              value={selectedProvinceId}
+              onChange={(e) => setSelectedProvinceId(e.target.value)}
+              className="w-full pl-3 pr-8 py-2 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
+              style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+            >
+              <option value="">📍 Lokasi Anda Saat Ini</option>
+              {provinces.map(prov => (
+                <option key={prov.id} value={prov.id}>
+                  {toTitleCase(prov.name)}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-2 text-gray-400 pointer-events-none">
+              <ChevronDown size={16} />
+            </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="bg-[#5B7062] hover:bg-[#4a5c50] text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
-          >
-            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-            Pindai
-          </button>
+          {/* Dropdown Kabupaten/Kota */}
+          {selectedProvinceId && (
+            <div className="relative flex-1 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
+              <select
+                value={selectedRegencyName}
+                onChange={(e) => setSelectedRegencyName(e.target.value)}
+                className="w-full pl-3 pr-8 py-2 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
+                style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+              >
+                <option value="">(Semua Kabupaten/Kota)</option>
+                {regencies.map(reg => (
+                  <option key={reg.id} value={reg.name}>
+                    {toTitleCase(reg.name)}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-2 text-gray-400 pointer-events-none">
+                <ChevronDown size={16} />
+              </div>
+            </div>
+          )}
         </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="mt-1 bg-[#5B7062] hover:bg-[#4a5c50] text-white w-full py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+        >
+          {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+          Pindai Fasilitas
+        </button>
       </form>
 
       {/* Results Panel — only visible after a search */}

@@ -13,7 +13,7 @@ import ChatHeader from '../components/ChatHeader';
 import ConfirmActionModal from '../components/ConfirmActionModal';
 import SearchPanel from '../components/counseling/SearchPanel';
 import FacilityPopup from '../components/counseling/FacilityPopup';
-import { searchFacilitiesByPlace, searchFacilitiesByCoord } from '../services/overpassService';
+import { searchFacilitiesByArea, searchFacilitiesByCoord } from '../services/overpassService';
 
 /** Default center: Jakarta (fallback when geolocation is denied) */
 const DEFAULT_CENTER = { lat: -6.2088, lng: 106.8456 };
@@ -141,12 +141,13 @@ const CounselingMapPage = () => {
         // Scan current map center (regency scale ~25km)
         results = await searchFacilitiesByCoord(mapCenter.lat, mapCenter.lng, 25000);
         setCurrentZoom(11);
+        setLocationName('Lokasi Anda');
       } else {
-        // Scan new place
-        const { center, facilities: placeResults } = await searchFacilitiesByPlace(inputValue);
+        // Scan exact administrative area boundaries via Nominatim + Overpass Area Search
+        const { center, facilities: areaResults } = await searchFacilitiesByArea(inputValue);
         setMapCenter(center);
-        setCurrentZoom(11);
-        results = placeResults;
+        setCurrentZoom(10); // Area search might cover a whole province, zoom out a bit more
+        results = areaResults;
         setLocationName(inputValue);
       }
       

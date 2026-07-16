@@ -139,4 +139,58 @@ export const searchFacilitiesByPlace = async (placeName, radius = 15000) => {
   return { center, facilities };
 };
 
+/**
+ * Geocode an area name, find its OSM Area ID, and search inside its boundaries.
+ * Highly recommended for large administrative areas (Provinces/Regencies).
+ */
+export const searchFacilitiesByArea = async (placeName) => {
+  const geoRes = await axios.get(`${NOMINATIM_API}/search`, {
+    params: { q: placeName, format: 'json', limit: 1, countrycodes: 'id' },
+    timeout: 10000,
+  });
+
+  if (!geoRes.data || geoRes.data.length === 0) {
+    throw new Error('Wilayah tidak ditemukan.');
+  }
+
+  const { lat, lon, osm_type, osm_id } = geoRes.data[0];
+  const center = { lat: parseFloat(lat), lng: parseFloat(lon) };
+
+  let areaIdQuery = '';
+  if (osm_type === 'relation') {
+    const areaId = 3600000000 + parseInt(osm_id, 10);
+    areaIdQuery = `area(${areaId})->.searchArea;`;
+  } else if (osm_type === 'way') {
+    const areaId = 2400000000 + parseInt(osm_id, 10);
+    areaIdQuery = `area(${areaId})->.searchArea;`;
+  } else {
+    // Fallback to radius search if the location isn't an area (e.g., node)
+    const facilities = await searchFacilitiesByCoord(center.lat, center.lng, 25000);
+    return { center, facilities };
+  }
+
+  const query = `
+    [out:json][timeout:25];
+    ${areaIdQuery}
+    (
+      nwr["amenity"~"^(clinic|hospital|doctors)$"](area.searchArea);
+      nwr["healthcare"~"^(psychotherapist|counselling)$"](area.searchArea);
+      nwr["healthcare:speciality"~"^(psychiatry|psychology)$"](area.searchArea);
+    );
+    out center;
+  `;
+
+  const response = await axios.post(
+    OVERPASS_API,
+    `data=${encodeURIComponent(query)}`,
+    {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      timeout: 35000,
+    }
+  );
+
+  const facilities = parseElements(response.data.elements || []);
+  return { center, facilities };
+};
+
 export { FACILITY_TYPES };
