@@ -22,7 +22,7 @@ const SearchPanel = ({
   selectedFacility,
   onSearch,
   onSelectFacility,
-  locationLabel,
+  autoLocation,
 }) => {
   const [provinces, setProvinces] = useState([]);
   const [regencies, setRegencies] = useState([]);
@@ -46,7 +46,6 @@ const SearchPanel = ({
     if (!selectedProvinceId) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRegencies([]);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedRegencyName('');
       return;
     }
@@ -54,40 +53,48 @@ const SearchPanel = ({
       .then(res => res.json())
       .then(data => {
         setRegencies(data);
-        setSelectedRegencyName('');
+        // Only reset if the current regency doesn't exist in the new list
+        setSelectedRegencyName(prev => {
+          return data.some(r => r.name.toLowerCase() === prev.toLowerCase()) ? prev : '';
+        });
       })
       .catch(err => console.error('Failed to load regencies:', err));
   }, [selectedProvinceId]);
 
-  // Sync with parent's location label (e.g. when 'Lokasi Saya' is clicked)
+  // Handle autoLocation matching
   useEffect(() => {
-    if (locationLabel === 'Lokasi Anda') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedProvinceId('');
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedRegencyName('');
+    if (autoLocation && autoLocation.province && provinces.length > 0) {
+      // Nominatim "Lampung", emsifa "LAMPUNG"
+      const matchedProv = provinces.find(p => p.name.toLowerCase() === autoLocation.province.toLowerCase());
+      if (matchedProv) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSelectedProvinceId(matchedProv.id);
+      }
     }
-  }, [locationLabel]);
+  }, [autoLocation, provinces]);
+
+  useEffect(() => {
+    if (autoLocation && autoLocation.regency && regencies.length > 0) {
+      // Nominatim might return "Bandar Lampung", emsifa "KOTA BANDAR LAMPUNG"
+      // We do a partial match (e.g., includes)
+      const target = autoLocation.regency.toLowerCase();
+      const matchedReg = regencies.find(r => r.name.toLowerCase().includes(target) || target.includes(r.name.toLowerCase().replace('kota ', '').replace('kabupaten ', '')));
+      if (matchedReg) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSelectedRegencyName(matchedReg.name);
+      }
+    }
+  }, [autoLocation, regencies]);
 
   const hasResults = facilities.length > 0;
   const hasSearched = hasResults || error;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let query = '';
+    if (!selectedProvinceId || !selectedRegencyName) return;
 
-    if (!selectedProvinceId) {
-      query = 'Lokasi Anda';
-    } else {
-      const provName = provinces.find(p => p.id === selectedProvinceId)?.name || '';
-      if (!selectedRegencyName) {
-        // Only province
-        query = `Provinsi ${toTitleCase(provName)}`;
-      } else {
-        // Regency + Province
-        query = `${toTitleCase(selectedRegencyName)}, Provinsi ${toTitleCase(provName)}`;
-      }
-    }
+    const provName = provinces.find(p => p.id === selectedProvinceId)?.name || '';
+    const query = `${toTitleCase(selectedRegencyName)}, Provinsi ${toTitleCase(provName)}`;
 
     onSearch(query);
     setActiveFilter('all');
@@ -117,8 +124,9 @@ const SearchPanel = ({
               onChange={(e) => setSelectedProvinceId(e.target.value)}
               className="w-full pl-3 pr-8 py-2 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
               style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+              required
             >
-              <option value="">📍 Lokasi Anda Saat Ini</option>
+              <option value="" disabled>Pilih Provinsi...</option>
               {provinces.map(prov => (
                 <option key={prov.id} value={prov.id}>
                   {toTitleCase(prov.name)}
@@ -131,32 +139,32 @@ const SearchPanel = ({
           </div>
 
           {/* Dropdown Kabupaten/Kota */}
-          {selectedProvinceId && (
-            <div className="relative flex-1 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
-              <select
-                value={selectedRegencyName}
-                onChange={(e) => setSelectedRegencyName(e.target.value)}
-                className="w-full pl-3 pr-8 py-2 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
-                style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
-              >
-                <option value="">(Semua Kabupaten/Kota)</option>
-                {regencies.map(reg => (
-                  <option key={reg.id} value={reg.name}>
-                    {toTitleCase(reg.name)}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-2 text-gray-400 pointer-events-none">
-                <ChevronDown size={16} />
-              </div>
+          <div className={`relative flex-1 bg-gray-50 rounded-lg border border-gray-200 flex items-center ${!selectedProvinceId ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <select
+              value={selectedRegencyName}
+              onChange={(e) => setSelectedRegencyName(e.target.value)}
+              className="w-full pl-3 pr-8 py-2 text-sm bg-transparent focus:outline-none text-gray-700 font-medium cursor-pointer appearance-none"
+              style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+              disabled={!selectedProvinceId}
+              required
+            >
+              <option value="" disabled>Pilih Kabupaten/Kota...</option>
+              {regencies.map(reg => (
+                <option key={reg.id} value={reg.name}>
+                  {toTitleCase(reg.name)}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-2 text-gray-400 pointer-events-none">
+              <ChevronDown size={16} />
             </div>
-          )}
+          </div>
         </div>
 
         <button
           type="submit"
-          disabled={isLoading}
-          className="mt-1 bg-[#5B7062] hover:bg-[#4a5c50] text-white w-full py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+          disabled={isLoading || !selectedProvinceId || !selectedRegencyName}
+          className="mt-1 bg-[#5B7062] hover:bg-[#4a5c50] disabled:bg-gray-300 disabled:cursor-not-allowed text-white w-full py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
         >
           {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
           Pindai Fasilitas

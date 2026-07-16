@@ -13,7 +13,7 @@ import ChatHeader from '../components/ChatHeader';
 import ConfirmActionModal from '../components/ConfirmActionModal';
 import SearchPanel from '../components/counseling/SearchPanel';
 import FacilityPopup from '../components/counseling/FacilityPopup';
-import { searchFacilitiesByArea, searchFacilitiesByCoord } from '../services/overpassService';
+import { searchFacilitiesByArea, searchFacilitiesByCoord, reverseGeocode } from '../services/overpassService';
 
 /** Default center: Jakarta (fallback when geolocation is denied) */
 const DEFAULT_CENTER = { lat: -6.2088, lng: 106.8456 };
@@ -74,6 +74,7 @@ const CounselingMapPage = () => {
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [autoLocation, setAutoLocation] = useState(null);
 
   const markerRefs = useRef({});
 
@@ -96,6 +97,10 @@ const CounselingMapPage = () => {
         setMapCenter(loc);
         setCurrentZoom(13);
         setLocationName('Lokasi Anda');
+        
+        reverseGeocode(loc.lat, loc.lng).then(({ province, regency }) => {
+          setAutoLocation({ province, regency });
+        });
       },
       () => {
         // Geolocation denied — keep Jakarta as default
@@ -118,6 +123,10 @@ const CounselingMapPage = () => {
         setCurrentZoom(13);
         setLocationName('Lokasi Anda');
         setIsLoading(false);
+        
+        reverseGeocode(loc.lat, loc.lng).then(({ province, regency }) => {
+          setAutoLocation({ province, regency });
+        });
       },
       (err) => {
         console.error('Geolocation error:', err);
@@ -299,6 +308,7 @@ const CounselingMapPage = () => {
             onSearch={handleSearch}
             onSelectFacility={handleSelectFacility}
             onClear={handleClear}
+            autoLocation={autoLocation}
           />
 
           {/* Map Legend — bottom-right */}

@@ -213,4 +213,30 @@ export const searchFacilitiesByArea = async (placeName) => {
   }
 };
 
+/**
+ * Reverse geocode a coordinate to get Province and Regency names.
+ * @param {number} lat 
+ * @param {number} lng 
+ * @returns {Promise<{ province: string, regency: string }>}
+ */
+export const reverseGeocode = async (lat, lng) => {
+  try {
+    const response = await axios.get(`${NOMINATIM_API}/reverse`, {
+      params: { format: 'json', lat, lon: lng, zoom: 10, 'accept-language': 'id' },
+      timeout: 10000,
+    });
+
+    if (response.data && response.data.address) {
+      const address = response.data.address;
+      const province = address.state || '';
+      const regency = address.city || address.county || address.town || '';
+      return { province, regency };
+    }
+    return { province: '', regency: '' };
+  } catch (err) {
+    console.error('Reverse geocoding failed:', err);
+    return { province: '', regency: '' };
+  }
+};
+
 export { FACILITY_TYPES };
