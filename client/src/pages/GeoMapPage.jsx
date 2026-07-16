@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import { Map, ShieldAlert, LogIn, Activity, FileText, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -87,8 +88,8 @@ const GeoMapPage = () => {
               
               {/* Kolom Peta */}
               <div className="lg:col-span-2 w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden relative z-0 flex flex-col">
-                <div className="flex-1 w-full relative">
-                  <MapContainer center={[-2.5489, 118.0149]} zoom={5} style={{ height: '100%', width: '100%', minHeight: '400px', zIndex: 0 }}>
+                <div className="w-full h-[500px] relative">
+                  <MapContainer center={[-2.5489, 118.0149]} zoom={5} style={{ height: '100%', width: '100%', zIndex: 0 }}>
                     <TileLayer
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -141,12 +142,12 @@ const GeoMapPage = () => {
                     <Activity size={18} className="text-gray-600"/> Data Peringkat Provinsi
                   </h2>
                   
-                  <div className="flex-1 w-full min-h-[300px]">
+                  <div className="w-full h-[350px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 10, left: 20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f3f4f6" />
                         <XAxis type="number" domain={[65, 80]} hide />
-                        <YAxis dataKey="province" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4b5563', fontWeight: 500 }} width={80} />
+                        <YAxis dataKey="province" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4b5563', fontWeight: 500 }} width={85} interval={0} />
                         <RechartsTooltip 
                           cursor={{ fill: '#f9fafb' }}
                           contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: 'none' }}
