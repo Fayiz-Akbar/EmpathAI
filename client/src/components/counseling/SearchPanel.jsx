@@ -94,7 +94,10 @@ const SearchPanel = ({
     if (!selectedProvinceId || !selectedRegencyName) return;
 
     const provName = provinces.find(p => p.id === selectedProvinceId)?.name || '';
-    const query = `${toTitleCase(selectedRegencyName)}, Provinsi ${toTitleCase(provName)}`;
+    
+    // Fix known typo from Emsifa API (Tulangbawang -> Tulang Bawang)
+    const cleanRegency = selectedRegencyName.replace(/tulangbawang/i, 'Tulang Bawang');
+    const query = `${toTitleCase(cleanRegency)}, ${toTitleCase(provName)}`;
 
     onSearch(query);
     setActiveFilter('all');

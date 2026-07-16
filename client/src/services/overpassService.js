@@ -1,7 +1,39 @@
 import axios from 'axios';
 
-const OVERPASS_API = 'https://overpass-api.de/api/interpreter';
+const OVERPASS_ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://lz4.overpass-api.de/api/interpreter',
+  'https://z.overpass-api.de/api/interpreter'
+];
+
 const NOMINATIM_API = 'https://nominatim.openstreetmap.org';
+
+/**
+ * Execute Overpass query with fallback mechanism to handle 429 Too Many Requests.
+ */
+const fetchFromOverpass = async (query) => {
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    try {
+      const response = await axios.post(
+        endpoint,
+        `data=${encodeURIComponent(query)}`,
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          timeout: 35000,
+        }
+      );
+      return response.data;
+    } catch (err) {
+      if (err.response?.status === 429) {
+        console.warn(`Overpass endpoint ${endpoint} busy (429). Trying next...`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  
+  throw new Error('Semua server pemetaan sedang sibuk. Mohon tunggu beberapa detik lalu coba lagi.');
+};
 
 /**
  * Facility type mapping from OSM tags to readable Indonesian labels.
@@ -100,23 +132,8 @@ const parseElements = (elements) => {
  */
 export const searchFacilitiesByCoord = async (lat, lng, radius = 15000) => {
   const query = buildOverpassQuery(lat, lng, radius);
-
-  try {
-    const response = await axios.post(
-      OVERPASS_API,
-      `data=${encodeURIComponent(query)}`,
-      {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        timeout: 35000,
-      }
-    );
-    return parseElements(response.data.elements || []);
-  } catch (err) {
-    if (err.response?.status === 429) {
-      throw new Error('Server pemetaan sedang sibuk (terlalu banyak permintaan). Mohon tunggu beberapa detik lalu coba lagi.');
-    }
-    throw err;
-  }
+  const data = await fetchFromOverpass(query);
+  return parseElements(data.elements || []);
 };
 
 /**
@@ -194,23 +211,9 @@ export const searchFacilitiesByArea = async (placeName) => {
     out center;
   `;
 
-  try {
-    const response = await axios.post(
-      OVERPASS_API,
-      `data=${encodeURIComponent(query)}`,
-      {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        timeout: 35000,
-      }
-    );
-    const facilities = parseElements(response.data.elements || []);
-    return { center, facilities };
-  } catch (err) {
-    if (err.response?.status === 429) {
-      throw new Error('Server pemetaan sedang sibuk (terlalu banyak permintaan). Mohon tunggu beberapa detik lalu coba lagi.');
-    }
-    throw err;
-  }
+  const data = await fetchFromOverpass(query);
+  const facilities = parseElements(data.elements || []);
+  return { center, facilities };
 };
 
 /**
