@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, MessageSquare, Flame, Calendar, ArrowRight, Brain } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -50,7 +50,7 @@ const DashboardPage = () => {
     if (!userId) navigate('/login');
   }, [userId, navigate]); // Bergantung pada userId (teks statis), bukan object user
 
-  const processAnalytics = (messages, sessions) => {
+  const processAnalytics = useCallback((messages) => {
     if (!messages || messages.length === 0) {
       setDominantMood(t('dashboard.noDataYet'));
       setTotalEmotions(0);
@@ -103,7 +103,7 @@ const DashboardPage = () => {
     });
 
     setEmotionData(weekData);
-  };
+  }, [t]);
 
   // Load Data Sesi & Analisis Seluruh Pesan
   useEffect(() => {
@@ -127,7 +127,7 @@ const DashboardPage = () => {
           }
         }
 
-        processAnalytics(allMessages, sessions);
+        processAnalytics(allMessages);
 
       } catch (error) {
         console.error("Gagal memuat atau menganalisis data:", error);
@@ -137,7 +137,7 @@ const DashboardPage = () => {
     };
 
     fetchAndAnalyzeData();
-  }, [userId]); // PERBAIKAN UTAMA: Dependency diubah menjadi userId agar tidak kelap-kelip
+  }, [userId, processAnalytics]);
 
   // Handler Sidebar
   const handleNewChat = () => {

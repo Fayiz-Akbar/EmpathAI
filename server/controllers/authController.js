@@ -9,17 +9,14 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Cek apakah email sudah terdaftar
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email sudah terdaftar!' });
     }
 
-    // Hash Password biar aman
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Simpan User Baru
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
@@ -34,13 +31,11 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Cari user berdasarkan email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Email atau password salah' });
     }
 
-    // Cek apakah akun sedang dikunci
     if (user.lockUntil && user.lockUntil > Date.now()) {
       const remainingSeconds = Math.ceil((user.lockUntil - Date.now()) / 1000);
       return res.status(403).json({ 
@@ -49,7 +44,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Cek kecocokan password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       user.loginAttempts = (user.loginAttempts || 0) + 1;

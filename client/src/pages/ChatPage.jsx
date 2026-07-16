@@ -37,6 +37,8 @@ const ChatPage = () => {
   const hasMessages = messages.length > 0;
   const chatEndRef = useRef(null);
 
+  const userId = user ? (user._id || user.id) : null;
+
   // Auto-scroll ke bawah saat ada pesan baru
   useEffect(() => {
     if (hasMessages) {
@@ -48,9 +50,8 @@ const ChatPage = () => {
   useEffect(() => {
     const loadSessions = async () => {
       try {
-        const currentUserId = user ? (user._id || user.id) : null;
-        if (currentUserId) {
-          const res = await getUserSessions(currentUserId);
+        if (userId) {
+          const res = await getUserSessions(userId);
           if (res.data) {
             setChatSessions(res.data);
           }
@@ -61,7 +62,7 @@ const ChatPage = () => {
     };
 
     loadSessions();
-  }, [user?._id, user?.id]);
+  }, [userId]);
 
   // Load isi chat (history) dari satu sesi yang dipilih
   useEffect(() => {
